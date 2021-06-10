@@ -1,10 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:gazi_app/pages/home.dart';
 import 'package:gazi_app/pages/login.dart';
-import 'package:toast/toast.dart' show Toast;
+import 'package:provider/provider.dart';
+
+import 'common/authentiacation.dart';
 
 void main() {
-  runApp(MyApp());
+  // WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ApplicationState(),
+      builder: (context, _) => MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -33,65 +43,135 @@ enum AuthStatus {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  AuthStatus authStatus = AuthStatus.notDetermined;
-
   @override
   void initState() {
     super.initState();
-    var auth = FirebaseAuthentication();
-    auth.currentUser().then((user) {
-      setState(() {
-        authStatus =
-            user == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
-      });
-    });
+    print("init state");
   }
 
+  AuthStatus authStatus = AuthStatus.notDetermined;
   void _signedIn() {
     setState(() {
       authStatus = AuthStatus.signedIn;
-      Toast.show("Logged in successfully", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.TOP);
     });
   }
 
   void _signedOut() {
     setState(() {
-      Toast.show("Logged out successfully", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.TOP);
       authStatus = AuthStatus.notSignedIn;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var user = UserModelRepository.instance.currentUser;
-    switch (authStatus) {
-      case AuthStatus.notDetermined:
-        return _buildWaitingScreen();
-      case AuthStatus.notSignedIn:
-        return LoginPage(
-          onSignedIn: _signedIn,
-        );
-      case AuthStatus.signedIn:
-        return HomePage(
-            // onSignedOut: _signedOut,
-            );
+    return Consumer<ApplicationState>(
+      builder: (context, appState, _) => Authentication(
+        email: appState.email,
+        loginState: appState.loginState,
+        startLoginFlow: appState.startLoginFlow,
+        verifyEmail: appState.verifyEmail,
+        signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
+        cancelRegistration: appState.cancelRegistration,
+        registerAccount: appState.registerAccount,
+        signOut: appState.signOut,
+      ),
+    );
+    // LoginPage(onSignedIn: _signedIn);
+    // if (_error) {
+    //   return HomePage(); //hata sayfası
+    // }
+
+    // // Show a loader until FlutterFire is initialized
+    // if (!_initialized) {
+    //   return _buildWaitingScreen();
+    // }
+
+    // var user = UserModelRepository.instance.currentUser;
+  }
+}
+
+class ApplicationState extends ChangeNotifier {
+  ApplicationState() {
+    init();
+  }
+
+  Future<void> init() async {
+    await Firebase.initializeApp();
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user != null) {
+        _loginState = ApplicationLoginState.loggedIn;
+      } else {
+        _loginState = ApplicationLoginState.loggedOut;
+      }
+      notifyListeners();
+    });
+  }
+
+  ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
+  ApplicationLoginState get loginState => _loginState;
+
+  String? _email;
+  String? get email => _email;
+
+  void startLoginFlow() {
+    _loginState = ApplicationLoginState.loggedOut;
+    notifyListeners();
+  }
+
+  void verifyEmail(
+    String email,
+    void Function(FirebaseAuthException e) errorCallback,
+  ) async {
+    try {
+      var methods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      if (methods.contains('password')) {
+        _loginState = ApplicationLoginState.loggedIn;
+      } else {
+        _loginState = ApplicationLoginState.register;
+      }
+      _email = email;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
     }
   }
 
-  Widget _buildWaitingScreen() {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: new ExactAssetImage('images/background.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
+  void signInWithEmailAndPassword(
+    String email,
+    String password,
+    void Function(FirebaseAuthException e) errorCallback,
+  ) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
   }
+
+  void cancelRegistration() {
+    _loginState = ApplicationLoginState.loggedOut;
+    notifyListeners();
+  }
+
+  void registerAccount(String email, String displayName, String password,
+      void Function(FirebaseAuthException e) errorCallback) async {
+    try {
+      var credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await credential.user!.updateProfile(displayName: displayName);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
+  // To here
 }
