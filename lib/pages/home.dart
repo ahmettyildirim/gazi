@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gazi_app/pages/account.dart';
+import 'package:gazi_app/pages/add_sale.dart';
 import 'package:gazi_app/pages/customers.dart';
 import 'package:gazi_app/pages/kurbanlar.dart';
+import 'package:gazi_app/pages/sales.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -51,8 +53,6 @@ class _HomePageState extends State<HomePage> {
       case 2:
         return KurbanPage();
       case 3:
-        return Text("Satışlar");
-      case 4:
         return AccountPage();
       default:
         return Text("Anasayfa");
@@ -69,6 +69,19 @@ class _HomePageState extends State<HomePage> {
       //   child: Icon(Icons.add),
       //   elevation: 2.0,
       // ),
+      floatingActionButton: Visibility(
+        visible: true,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AddSale()));
+          },
+          child: const Icon(Icons.add),
+          elevation: 10.0,
+          backgroundColor: Colors.blue,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page, // this will be set when a new tab is tapped
         onTap: navigationTapped,
@@ -85,10 +98,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: new Icon(Icons.account_tree_outlined),
             label: 'Kurbanlar',
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.receipt_long),
-            label: 'Satışlar',
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.account_box),

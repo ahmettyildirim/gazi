@@ -1,5 +1,6 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/hisse.dart';
 import 'package:gazi_app/pages/add_hisse.dart';
 
@@ -8,14 +9,14 @@ class HisseList extends StatefulWidget {
   _HisseListState createState() => _HisseListState();
 }
 
-var refHisse = FirebaseDatabase.instance.reference().child("hisse");
+var _repositoryInstance = DataRepository.instance;
 
 class _HisseListState extends State<HisseList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kotralar"),
+        title: Text("Hisseler"),
       ),
       body: Container(
         child: Column(
@@ -27,23 +28,17 @@ class _HisseListState extends State<HisseList> {
                 },
                 child: Text("Yeni Hisse Ekle")),
             Expanded(
-              child: StreamBuilder<Event>(
-                stream: refHisse.onValue,
-                builder: (context, event) {
-                  if (event.hasData) {
-                    var hisseler = <Hisse>[];
-                    var kotraValues = event.data!.snapshot.value;
-                    if (kotraValues != null) {
-                      kotraValues.forEach((key, value) {
-                        var hisse = Hisse.fromJson(value);
-                        hisseler.add(hisse);
-                      });
-                    }
-                    return ListView.builder(
-                      itemCount: hisseler.length,
-                      itemBuilder: (context, index) {
-                        var hisse = hisseler[index];
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: _repositoryInstance.getAllItems(CollectionKeys.hisse),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var hisseValues = snapshot.data!.docs;
 
+                    return ListView.builder(
+                      itemCount: hisseValues.length,
+                      itemBuilder: (context, index) {
+                        var hisse =
+                            HisseModel.fromJson(hisseValues[index].data());
                         return Card(
                           child: ListTile(
                               title: Text(

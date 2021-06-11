@@ -1,29 +1,22 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/pages/add_customer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomerList extends StatefulWidget {
-  @override
+  late bool selectable;
+  late Function(CustomerModel)? onCustomerSelected;
+  CustomerList({
+    Key? key,
+    this.selectable = false,
+    this.onCustomerSelected,
+  }) : super();
   _CustomerListState createState() => _CustomerListState();
 }
 
 var _repositoryInstance = DataRepository.instance;
-// var refCustomers = FirebaseDatabase.instance.reference().child("customers");
-// var refCustomersNew = FirebaseFirestore.instance.collection("customers");
-// Future<void> getCustomers() async {
-//   refCustomers.onValue.listen((event) {
-//     var values = event.snapshot.value;
-//     if (values != null) {
-//       values.forEach((key, value) {
-//         var customer = CustomerModel.fromJson(value);
-//       });
-//     }
-//   });
-// }
-
 Future<void> getCustomersNew() async {}
 
 class _CustomerListState extends State<CustomerList> {
@@ -43,7 +36,6 @@ class _CustomerListState extends State<CustomerList> {
         });
       }
     });
-    // getCustomers();
   }
 
   @override
@@ -72,7 +64,8 @@ class _CustomerListState extends State<CustomerList> {
               child: Text("Yeni Müşteri Ekle")),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _repositoryInstance.getAllItems(CollectionKeys.customers),
+              stream: _repositoryInstance.getAllItems(CollectionKeys.customers,
+                  orderBy: FieldKeys.customerName),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var customerValues = snapshot.data!.docs
@@ -102,11 +95,19 @@ class _CustomerListState extends State<CustomerList> {
                           CustomerModel.fromJson(customerValues[index].data());
                       return Dismissible(
                         key: ObjectKey(customer),
-                        child: Card(
-                          child: ListTile(
-                              title: Text(customer.name),
-                              subtitle: Text(customer.phone),
-                              leading: const Icon(Icons.account_box_rounded)),
+                        child: GestureDetector(
+                          onTap: () {
+                            print(widget.selectable);
+                            widget.onCustomerSelected!(customer);
+                            print("Customer Selected");
+                            Navigator.pop(context);
+                          },
+                          child: Card(
+                            child: ListTile(
+                                title: Text(customer.name),
+                                subtitle: Text(customer.phone),
+                                leading: const Icon(Icons.account_box_rounded)),
+                          ),
                         ),
                       );
                     },

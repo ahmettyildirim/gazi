@@ -8,15 +8,10 @@ class AccountPage extends StatefulWidget {
   _AccountPageState createState() => _AccountPageState();
 }
 
+var _repositoryInstance = DataRepository.instance;
+
 class _AccountPageState extends State<AccountPage> {
-  _AccountPageState() {
-    getKotraNums().then((val) => setState(() {
-          kotraNums = val!;
-        }));
-    getHisseNums().then((val) => setState(() {
-          hisseNums = val!;
-        }));
-  }
+  _AccountPageState() {}
   int hisseNums = 0;
   int kotraNums = 0;
 
@@ -27,6 +22,16 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    _repositoryInstance
+        .getItemCount(CollectionKeys.kotra)
+        .then((val) => setState(() {
+              kotraNums = val;
+            }));
+    _repositoryInstance
+        .getItemCount(CollectionKeys.hisse)
+        .then((val) => setState(() {
+              hisseNums = val;
+            }));
     return Container(
       child: Center(
         child: Column(
@@ -35,8 +40,8 @@ class _AccountPageState extends State<AccountPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("Kotralar"),
-                Text("Toplam kotra $kotraNums"),
+                Text("Kotarlar"),
+                Text("Toplam kotar $kotraNums"),
                 TextButton(
                     onPressed: () {
                       Navigator.push(context,

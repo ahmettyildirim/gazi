@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/model/kotra.dart';
 
 class AddKotra extends StatefulWidget {
   _AddKotraState createState() => _AddKotraState();
@@ -11,8 +12,9 @@ class _AddKotraState extends State<AddKotra> {
   final _kotraNoController = TextEditingController();
 
   Future<void> addKotra() async {
-    await addNewKotra(int.parse(_kotraNoController.text),
-        int.parse(_capasityController.text));
+    KotraModel kotra = new KotraModel(int.parse(_kotraNoController.text),
+        int.parse(_capasityController.text), 0);
+    await DataRepository.instance.addItem(kotra);
     Navigator.pop(context);
   }
 
@@ -23,7 +25,7 @@ class _AddKotraState extends State<AddKotra> {
     final screenHeight = screenInfo.size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Yeni Kotra Ekle"),
+        title: Text("Yeni Kotar Ekle"),
       ),
       body: Center(
           child: SingleChildScrollView(
@@ -36,7 +38,7 @@ class _AddKotraState extends State<AddKotra> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   controller: _kotraNoController,
-                  decoration: InputDecoration(hintText: 'Kotra Numarası'),
+                  decoration: InputDecoration(hintText: 'Kotar Numarası'),
                 ),
               ),
               Padding(

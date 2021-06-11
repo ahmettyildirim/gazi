@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/model/hisse.dart';
 
 class AddHisse extends StatefulWidget {
   @override
   _AddHisseState createState() => _AddHisseState();
 }
 
+var _repositoryInstance = DataRepository.instance;
+
 class _AddHisseState extends State<AddHisse> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddHisseFormState');
   final _amountController = TextEditingController();
   final _countController = TextEditingController();
+
   Future<void> addHisse() async {
-    await addNewHisse(
+    HisseModel hisse = new HisseModel(
         int.parse(_amountController.text), int.parse(_countController.text));
+    await _repositoryInstance.addItem(hisse);
     Navigator.pop(context);
   }
 
@@ -23,7 +28,7 @@ class _AddHisseState extends State<AddHisse> {
     final screenHeight = screenInfo.size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Yeni Kotra Ekle"),
+        title: Text("Yeni Hisse Ekle"),
       ),
       body: Center(
           child: SingleChildScrollView(

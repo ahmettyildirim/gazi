@@ -19,6 +19,8 @@ class FieldKeys {
   static final kotraNo = "no";
   static final kotraCapacity = "capacity";
   static final kotraNumOfItems = "numOfItems";
+  static final hisseAmount = "amount";
+  static final hisseCount = "count";
 }
 
 var refKotra =
@@ -55,13 +57,21 @@ class DataRepository {
         genericModel.colRef.doc(), genericModel.toMap());
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllItems(
-      String collectionName) {
-    return getCollectionReference(collectionName)
-        .orderBy("phone_number")
-        .snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllItems(String collectionName,
+      {String? orderBy}) {
+    return orderBy == null
+        ? getCollectionReference(collectionName).snapshots()
+        : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
   }
 
+//generic functions
+  Future<int> getItemCount(String collectionName) async {
+    var snapShot =
+        await FirebaseFirestore.instance.collection(collectionName).get();
+    return snapShot.size;
+  }
+
+//////////////////////////////////////////////////////////////////////////////////
 //customer document references
 
   CollectionReference<Map<String, dynamic>> _customerCollRef() =>
@@ -118,7 +128,6 @@ Future<int?> getKotraNums() async {
   DataSnapshot snapshot = await refKotra.once();
   int count = 0;
   var comingValues = snapshot.value;
-  print(comingValues);
   if (comingValues != null) {
     comingValues.forEach((key, value) {
       count++;
@@ -141,7 +150,6 @@ Future<int?> getHisseNums() async {
   DataSnapshot snapshot = await refHisse.once();
   int count = 0;
   var comingValues = snapshot.value;
-  print(comingValues);
   if (comingValues != null) {
     comingValues.forEach((key, value) {
       count++;
