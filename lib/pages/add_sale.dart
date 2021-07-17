@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
@@ -102,7 +103,9 @@ class _AddSaleState extends State<AddSale> {
                   : _getHisse(screenWidth, screenHeight),
               Padding(
                   padding: EdgeInsets.all(screenHeight / 30),
-                  child: ElevatedButton(onPressed: () {}, child: Text("Ekle"))),
+                  child: ElevatedButton(onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                  }, child: Text("Ekle"))),
             ],
           ),
         ),
