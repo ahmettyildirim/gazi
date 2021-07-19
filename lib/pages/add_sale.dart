@@ -5,6 +5,7 @@ import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/hisse.dart';
 import 'package:gazi_app/pages/customer_Select.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class AddSale extends StatefulWidget {
   @override
@@ -19,10 +20,17 @@ class _AddSaleState extends State<AddSale> {
   final _customerController = TextEditingController();
   final _kgController = TextEditingController();
   final _kgAmountController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _totalAmountController = TextEditingController();
   final _kaparoController = TextEditingController();
   final _kalanTutarController = TextEditingController();
   final _hisseCountController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _nameController = TextEditingController();
+  var maskFormatter = new MaskTextInputFormatter(
+      mask: '(###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
   int _kurbanTip = 0;
+  int _buyukKurbanTip = 0;
   int _kurbanSubTip = 0;
   Color _inActiveColor = Colors.blue.shade100;
   Color _activeColor = Colors.blue.shade700;
@@ -56,43 +64,60 @@ class _AddSaleState extends State<AddSale> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
-                child: TextFormField(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerSelect(
-                                  onCustomerSelected: _selectCustomer,
-                                )));
-                  },
-                  keyboardType: TextInputType.number,
-                  controller: _customerController,
-                  decoration: InputDecoration(
-                      hintText: 'Müşteri Seçmek İçin Buraya Tıklayın'),
-                  readOnly: true,
-                ),
-              ),
-              selectedCustomer != null ? _getTypeMenu(screenWidth) : Center(),
+              // Padding(
+              //   padding: EdgeInsets.all(screenHeight / 30),
+              //   child: TextFormField(
+              //     onTap: () {
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => CustomerSelect(
+              //                     onCustomerSelected: _selectCustomer,
+              //                   )));
+              //     },
+              //     keyboardType: TextInputType.number,
+              //     controller: _customerController,
+              //     decoration: InputDecoration(
+              //         hintText: 'Müşteri Seçmek İçin Buraya Tıklayın'),
+              //     readOnly: true,
+              //   ),
+              // ),
+              _getTypeMenu(screenWidth),
               _kurbanTip == 1
-                  ? _getBuyukbasSubmenu(screenWidth)
+                  ? _getBuyukbasTypeMenu(screenWidth)
                   : _kurbanTip == 2
                       ? _getKucukbasSubmenu(screenWidth)
                       : Center(),
+              _kurbanTip == 1
+                  ? _buyukKurbanTip != 0
+                      ? _getBuyukbasSubmenu(screenWidth)
+                      : Center()
+                  : Center(),
+              _kurbanSubTip != 0
+                  ? _getPhone(screenWidth, screenHeight)
+                  : Center(),
+              _kurbanSubTip != 0
+                  ? _getName(screenWidth, screenHeight)
+                  : Center(),
               _kurbanSubTip != 0
                   ? _getNum(screenWidth, screenHeight)
                   : Center(),
-              [0, 6].contains(_kurbanSubTip)
+              [0, 2, 3, 6].contains(_kurbanSubTip)
                   ? Center()
                   : _getKg(screenWidth, screenHeight),
-              [0, 6].contains(_kurbanSubTip)
+              [0, 3, 6].contains(_kurbanSubTip)
                   ? Center()
                   : _getKgAmount(screenWidth, screenHeight),
+              ![3].contains(_kurbanSubTip)
+                  ? Center()
+                  : _getAmount(screenWidth, screenHeight),
+              [0, 2, 3].contains(_kurbanSubTip)
+                  ? Center()
+                  : _getTotal(screenWidth, screenHeight),
               [0].contains(_kurbanSubTip)
                   ? Center()
                   : _getKaparo(screenWidth, screenHeight),
-              [0].contains(_kurbanSubTip)
+              [0, 2].contains(_kurbanSubTip)
                   ? Center()
                   : _getKalanTutar(screenWidth, screenHeight),
               ![4].contains(_kurbanSubTip)
@@ -103,9 +128,11 @@ class _AddSaleState extends State<AddSale> {
                   : _getHisse(screenWidth, screenHeight),
               Padding(
                   padding: EdgeInsets.all(screenHeight / 30),
-                  child: ElevatedButton(onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                  }, child: Text("Ekle"))),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                      },
+                      child: Text("Ekle"))),
             ],
           ),
         ),
@@ -169,6 +196,67 @@ class _AddSaleState extends State<AddSale> {
     );
   }
 
+  Widget _getBuyukbasTypeMenu(double screenWidth) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _buyukKurbanTip = _buyukKurbanTip == 1 ? 0 : 1;
+                _kurbanSubTip = 0;
+              });
+            },
+            child: SizedBox(
+              width: screenWidth / 4,
+              height: 30,
+              child: Container(
+                alignment: Alignment.center,
+                color: _buyukKurbanTip == 1 ? _activeColor : _inActiveColor,
+                child: Text(
+                  "Dana",
+                  style: TextStyle(
+                      color: _buyukKurbanTip == 1
+                          ? _activeFontColor
+                          : _inActiveFontColor,
+                      fontSize: screenWidth / 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _buyukKurbanTip = _buyukKurbanTip == 2 ? 0 : 2;
+                _kurbanSubTip = 0;
+              });
+            },
+            child: SizedBox(
+              width: screenWidth / 4,
+              height: 30,
+              child: Container(
+                alignment: Alignment.center,
+                color: _buyukKurbanTip == 2 ? _activeColor : _inActiveColor,
+                child: Text(
+                  "Düve",
+                  style: TextStyle(
+                      color: _buyukKurbanTip == 2
+                          ? _activeFontColor
+                          : _inActiveFontColor,
+                      fontSize: screenWidth / 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _getBuyukbasSubmenu(double screenWidth) {
     return Padding(
       padding: EdgeInsets.only(top: 10.0),
@@ -179,6 +267,7 @@ class _AddSaleState extends State<AddSale> {
             onTap: () {
               setState(() {
                 _kurbanSubTip = _kurbanSubTip == 1 ? 0 : 1;
+                refreshFields();
               });
             },
             child: SizedBox(
@@ -188,7 +277,7 @@ class _AddSaleState extends State<AddSale> {
                 alignment: Alignment.center,
                 color: _kurbanSubTip == 1 ? _activeColor : _inActiveColor,
                 child: Text(
-                  "Ayaktan(Kilo)",
+                  "Ayaktan\n(Kilo)",
                   style: TextStyle(
                       color: _kurbanSubTip == 1
                           ? _activeFontColor
@@ -203,6 +292,7 @@ class _AddSaleState extends State<AddSale> {
             onTap: () {
               setState(() {
                 _kurbanSubTip = _kurbanSubTip == 2 ? 0 : 2;
+                refreshFields();
               });
             },
             child: SizedBox(
@@ -227,6 +317,7 @@ class _AddSaleState extends State<AddSale> {
             onTap: () {
               setState(() {
                 _kurbanSubTip = _kurbanSubTip == 3 ? 0 : 3;
+                refreshFields();
               });
             },
             child: SizedBox(
@@ -251,6 +342,7 @@ class _AddSaleState extends State<AddSale> {
             onTap: () {
               setState(() {
                 _kurbanSubTip = _kurbanSubTip == 4 ? 0 : 4;
+                refreshFields();
               });
             },
             child: SizedBox(
@@ -286,6 +378,7 @@ class _AddSaleState extends State<AddSale> {
             onTap: () {
               setState(() {
                 _kurbanSubTip = _kurbanSubTip == 5 ? 0 : 5;
+                refreshFields();
               });
             },
             child: SizedBox(
@@ -310,6 +403,7 @@ class _AddSaleState extends State<AddSale> {
             onTap: () {
               setState(() {
                 _kurbanSubTip = _kurbanSubTip == 6 ? 0 : 6;
+                refreshFields();
               });
             },
             child: SizedBox(
@@ -343,9 +437,48 @@ class _AddSaleState extends State<AddSale> {
         keyboardType: TextInputType.number,
         controller: _saleNoController,
         decoration: InputDecoration(
-            hintText: _kurbanSubTip != 6
+            labelText: _kurbanSubTip != 6
                 ? 'Kurban No'
                 : 'Kurban Numaraları (virgul ile ayırabilirsiniz)'),
+      ),
+    );
+  }
+
+  Widget _getPhone(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+      child: TextFormField(
+          keyboardType: TextInputType.phone,
+          controller: _phoneController,
+          inputFormatters: [maskFormatter],
+          decoration: InputDecoration(labelText: 'Cep Telefonu'),
+          onChanged: getCustomerByPhone),
+    );
+  }
+
+  Future<void> getCustomerByPhone(phone) async {
+    var value = await _repositoryInstance.getAllItemsByFilter(
+        CollectionKeys.customers,
+        filterName: FieldKeys.customerPhone,
+        filterValue: _phoneController.text);
+    if (value.docs.isNotEmpty) {
+      var customer = CustomerModel.fromJson(value.docs.first.data());
+      setState(() {
+        _nameController.text = customer.name;
+      });
+    } else {
+      _nameController.text = "";
+    }
+  }
+
+  Widget _getName(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+      child: TextFormField(
+        controller: _nameController,
+        decoration: InputDecoration(labelText: 'Müşteri Adı Soyadı'),
       ),
     );
   }
@@ -355,10 +488,10 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 10),
       child: TextFormField(
-        keyboardType: TextInputType.number,
-        controller: _kgController,
-        decoration: InputDecoration(hintText: 'KG'),
-      ),
+          keyboardType: TextInputType.number,
+          controller: _kgController,
+          decoration: InputDecoration(labelText: 'KG'),
+          onChanged: calculateTotal),
     );
   }
 
@@ -367,9 +500,34 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 10),
       child: TextFormField(
+          keyboardType: TextInputType.number,
+          controller: _kgAmountController,
+          decoration: InputDecoration(labelText: 'KG Birim Biyatı'),
+          onChanged: calculateTotal),
+    );
+  }
+
+  Widget _getAmount(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+      child: TextFormField(
+          keyboardType: TextInputType.number,
+          controller: _amountController,
+          decoration: InputDecoration(labelText: 'Birim Biyatı'),
+          onChanged: getRemainingAmountForNotKg),
+    );
+  }
+
+  Widget _getTotal(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+      child: TextFormField(
         keyboardType: TextInputType.number,
-        controller: _kgAmountController,
-        decoration: InputDecoration(hintText: 'KG Birim Biyatı'),
+        readOnly: true,
+        controller: _totalAmountController,
+        decoration: InputDecoration(labelText: 'Genel Toplam'),
       ),
     );
   }
@@ -381,7 +539,8 @@ class _AddSaleState extends State<AddSale> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _kaparoController,
-        decoration: InputDecoration(hintText: 'Alınan Kaparo'),
+        decoration: InputDecoration(labelText: 'Alınan Kaparo'),
+        onChanged: getRemainingAmount,
       ),
     );
   }
@@ -393,7 +552,9 @@ class _AddSaleState extends State<AddSale> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _kalanTutarController,
-        decoration: InputDecoration(hintText: 'Kalan Tutar'),
+        readOnly: true,
+        decoration: InputDecoration(labelText: 'Kalan Tutar'),
+        onChanged: getRemainingAmount,
       ),
     );
   }
@@ -405,7 +566,7 @@ class _AddSaleState extends State<AddSale> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _hisseCountController,
-        decoration: InputDecoration(hintText: 'Hisse Sayısı'),
+        decoration: InputDecoration(labelText: 'Hisse Sayısı'),
       ),
     );
   }
@@ -454,5 +615,58 @@ class _AddSaleState extends State<AddSale> {
             }
           }),
     );
+  }
+
+  void getRemainingAmount(val) {
+    if(_kurbanSubTip == 2){
+      return;
+    }if(_kurbanSubTip == 3){
+      getRemainingAmountForNotKg(val);
+      return;
+    }
+    if (_totalAmountController.text.isNotEmpty) {
+      int kaparo = _kaparoController.text.isEmpty
+          ? 0
+          : int.parse(_kaparoController.text);
+      setState(() {
+        _kalanTutarController.text =
+            (int.parse(_totalAmountController.text) - kaparo).toString();
+      });
+    }
+  }
+  void getRemainingAmountForNotKg(val) {
+    if (_amountController.text.isNotEmpty) {
+      int kaparo = _kaparoController.text.isEmpty
+          ? 0
+          : int.parse(_kaparoController.text);
+      setState(() {
+        _kalanTutarController.text =
+            (int.parse(_amountController.text) - kaparo).toString();
+      });
+    }
+  }
+
+  void calculateTotal(val) {
+    if (_kgController.text.isNotEmpty && _kgAmountController.text.isNotEmpty) {
+      setState(() {
+        _totalAmountController.text = (int.parse(_kgController.text) *
+                int.parse(_kgAmountController.text))
+            .toString();
+      });
+      getRemainingAmount(val);
+    } else {
+      _totalAmountController.text = "";
+    }
+  }
+
+  void refreshFields(){
+    _kgController.text="";
+    _kalanTutarController.text="";
+    _amountController.text="";
+    _saleNoController.text="";
+    _hisseCountController.text="";
+    _kaparoController.text="";
+    _kgAmountController.text="";
+    _totalAmountController.text="";
   }
 }

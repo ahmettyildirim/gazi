@@ -64,6 +64,12 @@ class DataRepository {
         : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllItemsByFilter(String collectionName, 
+      {String? filterName, String? filterValue}) {
+    return getCollectionReference(collectionName).where(filterName!, isEqualTo: filterValue).snapshots().first;
+        
+  }
+
 //generic functions
   Future<int> getItemCount(String collectionName) async {
     var snapShot =
