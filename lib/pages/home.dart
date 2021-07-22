@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.account_tree_outlined),
-            label: 'Kurbanlar',
+            label: 'Hisseler',
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.account_box),

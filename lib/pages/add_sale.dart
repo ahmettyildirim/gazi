@@ -1,11 +1,18 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/hisse.dart';
+import 'package:gazi_app/model/hisse_kurban.dart';
+import 'package:gazi_app/model/sale.dart';
 import 'package:gazi_app/pages/customer_Select.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'hisse_select.dart';
 
 class AddSale extends StatefulWidget {
   @override
@@ -37,12 +44,15 @@ class _AddSaleState extends State<AddSale> {
   Color _inActiveFontColor = Colors.grey.shade700;
   Color _activeFontColor = Colors.grey.shade50;
   CustomerModel? selectedCustomer;
-  HisseModel? _selectedHisse;
-
-  void _selectCustomer(CustomerModel customer) {
+  HisseKurbanModel? _selectedHisse;
+  String _remainingHisseLabelText = 'Hisse Sayısı';
+  void _selectKurban(HisseKurbanModel kurban) {
     setState(() {
-      _customerController.text = customer.name;
-      selectedCustomer = customer;
+      _saleNoController.text = kurban.kurbanNo.toString();
+      _remainingHisseLabelText =
+          "Hisse Sayısı (Kalan Hisse ${kurban.remainingHisse.toString()})";
+      _selectedHisse = kurban;
+      _amountController.text = kurban.hisseAmount.toString();
     });
   }
 
@@ -99,16 +109,22 @@ class _AddSaleState extends State<AddSale> {
               _kurbanSubTip != 0
                   ? _getName(screenWidth, screenHeight)
                   : Center(),
-              _kurbanSubTip != 0
-                  ? _getNum(screenWidth, screenHeight)
-                  : Center(),
-              [0, 2, 3, 6].contains(_kurbanSubTip)
+              [0, 4].contains(_kurbanSubTip)
+                  ? Center()
+                  : _getNum(screenWidth, screenHeight),
+              ![4].contains(_kurbanSubTip)
+                  ? Center()
+                  : _getNumForHisse(screenWidth, screenHeight),
+              ![4].contains(_kurbanSubTip)
+                  ? Center()
+                  : _getHisse(screenWidth, screenHeight),
+              [0, 2, 3, 4, 6].contains(_kurbanSubTip)
                   ? Center()
                   : _getKg(screenWidth, screenHeight),
-              [0, 3, 6].contains(_kurbanSubTip)
+              [0, 3, 4, 6].contains(_kurbanSubTip)
                   ? Center()
                   : _getKgAmount(screenWidth, screenHeight),
-              ![3].contains(_kurbanSubTip)
+              ![3, 4].contains(_kurbanSubTip)
                   ? Center()
                   : _getAmount(screenWidth, screenHeight),
               [0, 2, 3].contains(_kurbanSubTip)
@@ -120,18 +136,10 @@ class _AddSaleState extends State<AddSale> {
               [0, 2].contains(_kurbanSubTip)
                   ? Center()
                   : _getKalanTutar(screenWidth, screenHeight),
-              ![4].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getHisseType(screenWidth, screenHeight),
-              ![4].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getHisse(screenWidth, screenHeight),
               Padding(
                   padding: EdgeInsets.all(screenHeight / 30),
                   child: ElevatedButton(
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut();
-                      },
+                      onPressed: addSale,
                       child: Text("Ekle"))),
             ],
           ),
@@ -444,6 +452,35 @@ class _AddSaleState extends State<AddSale> {
     );
   }
 
+  Widget _getNumForHisse(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              controller: _saleNoController,
+              decoration: InputDecoration(labelText: "Kurban No"),
+            ),
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HisseKurbanSelect(
+                              onHisseSelected: _selectKurban,
+                            )));
+              },
+              child: Text("Listeden Seç "))
+        ],
+      ),
+    );
+  }
+
   Widget _getPhone(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
@@ -463,8 +500,9 @@ class _AddSaleState extends State<AddSale> {
         filterName: FieldKeys.customerPhone,
         filterValue: _phoneController.text);
     if (value.docs.isNotEmpty) {
-      var customer = CustomerModel.fromJson(value.docs.first.data());
+      var customer = CustomerModel.fromJson(value.docs.first.data(), id: value.docs.first.id);
       setState(() {
+        selectedCustomer = customer;
         _nameController.text = customer.name;
       });
     } else {
@@ -512,6 +550,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 10),
       child: TextFormField(
+          readOnly: _kurbanSubTip == 4,
           keyboardType: TextInputType.number,
           controller: _amountController,
           decoration: InputDecoration(labelText: 'Birim Biyatı'),
@@ -566,61 +605,17 @@ class _AddSaleState extends State<AddSale> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _hisseCountController,
-        decoration: InputDecoration(labelText: 'Hisse Sayısı'),
+        onChanged: calculateTotal,
+        decoration: InputDecoration(labelText: _remainingHisseLabelText),
       ),
     );
   }
 
-  Widget _getHisseType(double screenWidth, double screenHeight) {
-    return SizedBox(
-      width: screenWidth,
-      height: 100,
-      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: _repositoryInstance.getAllItems(CollectionKeys.hisse),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData)
-              return Text("Loading.....");
-            else {
-              List<DropdownMenuItem<HisseModel>> hisseItems = [];
-              for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                DocumentSnapshot snap = snapshot.data!.docs[i];
-                var hisse = HisseModel.fromJson(snapshot.data!.docs[i].data());
-                hisseItems.add(
-                  DropdownMenuItem(
-                    child: Text(
-                      hisse.amount.toString(),
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    value: hisse,
-                  ),
-                );
-              }
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  DropdownButton<HisseModel>(
-                    items: hisseItems,
-                    onChanged: (currencyValue) {
-                      print(currencyValue!.amount.toString());
-                    },
-                    // value: selectedCurrency,
-                    isExpanded: false,
-                    hint: new Text(
-                      "Hisse Tipini Seçiniz",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ],
-              );
-            }
-          }),
-    );
-  }
-
   void getRemainingAmount(val) {
-    if(_kurbanSubTip == 2){
+    if (_kurbanSubTip == 2) {
       return;
-    }if(_kurbanSubTip == 3){
+    }
+    if (_kurbanSubTip == 3) {
       getRemainingAmountForNotKg(val);
       return;
     }
@@ -634,6 +629,7 @@ class _AddSaleState extends State<AddSale> {
       });
     }
   }
+
   void getRemainingAmountForNotKg(val) {
     if (_amountController.text.isNotEmpty) {
       int kaparo = _kaparoController.text.isEmpty
@@ -647,26 +643,90 @@ class _AddSaleState extends State<AddSale> {
   }
 
   void calculateTotal(val) {
-    if (_kgController.text.isNotEmpty && _kgAmountController.text.isNotEmpty) {
-      setState(() {
-        _totalAmountController.text = (int.parse(_kgController.text) *
-                int.parse(_kgAmountController.text))
-            .toString();
-      });
-      getRemainingAmount(val);
+    if (_kurbanSubTip == 4) {
+      if (_hisseCountController.text.isNotEmpty &&
+          _amountController.text.isNotEmpty) {
+        setState(() {
+          _totalAmountController.text = (int.parse(_hisseCountController.text) *
+                  int.parse(_amountController.text))
+              .toString();
+        });
+        getRemainingAmount(val);
+      } else {
+        _totalAmountController.text = "";
+      }
     } else {
-      _totalAmountController.text = "";
+      if (_kgController.text.isNotEmpty &&
+          _kgAmountController.text.isNotEmpty) {
+        setState(() {
+          _totalAmountController.text = (int.parse(_kgController.text) *
+                  int.parse(_kgAmountController.text))
+              .toString();
+        });
+        getRemainingAmount(val);
+      } else {
+        _totalAmountController.text = "";
+      }
     }
   }
 
-  void refreshFields(){
-    _kgController.text="";
-    _kalanTutarController.text="";
-    _amountController.text="";
-    _saleNoController.text="";
-    _hisseCountController.text="";
-    _kaparoController.text="";
-    _kgAmountController.text="";
-    _totalAmountController.text="";
+  void refreshFields() {
+    _kgController.text = "";
+    _kalanTutarController.text = "";
+    _amountController.text = "";
+    _saleNoController.text = "";
+    _hisseCountController.text = "";
+    _kaparoController.text = "";
+    _kgAmountController.text = "";
+    _totalAmountController.text = "";
+  }
+  Future<void> addSale() async {
+    SaleModel sale = new SaleModel(
+      customerRef: selectedCustomer!.id,
+      kurbanTip: _kurbanTip,
+      buyukKurbanTip: _buyukKurbanTip,
+      kurbanSubTip: _kurbanSubTip,
+      kurbanNo: _saleNoController.text.isEmpty ? 0 : int.parse(_saleNoController.text),
+      kg: _kgController.text.isEmpty ? 0 : int.parse(_kgController.text),
+      kgAmount: _kgAmountController.text.isEmpty ? 0 : int.parse(_kgAmountController.text),
+      generalAmount: _amountController.text.isEmpty ? 0 : int.parse(_amountController.text),
+      kaparo: _kaparoController.text.isEmpty ? 0 : int.parse(_kaparoController.text),
+      remainingAmount :_kalanTutarController.text.isEmpty ? 0 : int.parse(_kalanTutarController.text),
+      hisseNum: _hisseCountController.text.isEmpty ? 0 : int.parse(_hisseCountController.text),
+      hisseRef: "hisse"
+    );
+    await DataRepository.instance.addItem(sale);
+    Navigator.pop(context);
+  }
+
+  Future<void> wasup() async{
+    var whatsapp = "905309383594";
+                        // FirebaseAuth.instance.signOut();
+                        var whatsappURl_android = "whatsapp://send?phone="+"05309383594"+"&text=hello";
+                          var whatappURL_ios ="https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
+                          if(Platform.isIOS){
+                            // for iOS phone only
+                            if( await canLaunch(whatappURL_ios)){
+                              await launch(whatappURL_ios, forceSafariVC: false);
+                              whatappURL_ios ="https://wa.me/905549287548?text=${Uri.parse("hello")}";
+                              await launch(whatappURL_ios, forceSafariVC: false);
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: new Text("whatsapp no installed")));
+
+                            }
+
+                          }else{
+                            // android , web
+                            if( await canLaunch(whatsappURl_android)){
+                              await launch(whatsappURl_android);
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: new Text("whatsapp no installed")));
+
+                            }
+
+
+                          }
   }
 }
