@@ -5,9 +5,11 @@ import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/general_model.dart';
 
 class KotraModel implements GenericModel {
+  String id = "";
   int no;
   int capacity;
   int numOfItems;
+  late String collectionReferenceName;
 
   KotraModel(this.no, this.capacity, this.numOfItems) {
     this.colRef =

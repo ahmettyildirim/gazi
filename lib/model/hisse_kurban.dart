@@ -5,26 +5,30 @@ import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/general_model.dart';
 
 class HisseKurbanModel implements GenericModel {
+  String id = "";
   int kurbanNo;
   int kotraNo;
   int hisseNo;
   int hisseAmount;
   int remainingHisse = 0;
   late CollectionReference<Map<String, dynamic>> colRef;
+  String collectionReferenceName = CollectionKeys.hisseKurban;
 
   HisseKurbanModel(
-      this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount, {this.remainingHisse = 0}) {
+      this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount, {this.remainingHisse = 0, this.id = ""}) {
+    this.collectionReferenceName = CollectionKeys.hisseKurban;
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.hisseKurban);
   }
 
-  factory HisseKurbanModel.fromJson(Map<dynamic, dynamic> json) {
+  factory HisseKurbanModel.fromJson(Map<dynamic, dynamic> json,  {String id = ""}) {
     return HisseKurbanModel(
       json[FieldKeys.hisseKurbanKurbanNo] as int,
       json[FieldKeys.hisseKurbanKotraNo] as int,
       json[FieldKeys.hisseKurbanHisseNum] as int,
       json[FieldKeys.hisseKurbanHisseAmount] as int,
       remainingHisse: json[FieldKeys.hisseKurbanRemainingHisse] as int,
+      id: id
     );
   }
   HashMap<String, dynamic> toMap() {

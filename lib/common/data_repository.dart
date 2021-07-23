@@ -29,6 +29,7 @@ class FieldKeys {
   late int kurbanSubTip = 0;
   late int kurbanNo;
   late int kg;
+  late int amount;
   late int kgAmount;
   late int generalAmount;
   late int kaparo;
@@ -42,6 +43,7 @@ class FieldKeys {
   static final saleKurbanNo = "kurban_no";
   static final saleKg = "kg";
   static final saleKgAmount = "kg_amount";
+  static final saleAmount = "amount";
   static final saleGeneralAmount = "general_amount";
   static final saleKaparo = "kaparo";
   static final saleRemainingAmount = "remaining_amount";
@@ -88,6 +90,25 @@ class DataRepository {
         genericModel.colRef.doc(), genericModel.toMap());
   }
 
+  Future<DocumentReference> addNewItem(GenericModel genericModel) async {
+    // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
+    return _firestore
+        .collection(genericModel.collectionReferenceName)
+        .add(genericModel.toMap());
+    // return await _addNewDocument(
+    //     genericModel.colRef.doc(), genericModel.toMap());
+  }
+
+  Future<void> updateItem(GenericModel genericModel) async {
+    // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
+    return _firestore
+        .collection(genericModel.collectionReferenceName)
+        .doc(genericModel.id)
+        .update(genericModel.toMap());
+    // return await _addNewDocument(
+    //     genericModel.colRef.doc(), genericModel.toMap());
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllItems(String collectionName,
       {String? orderBy}) {
     return orderBy == null
@@ -95,10 +116,14 @@ class DataRepository {
         : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getAllItemsByFilter(String collectionName, 
-      {String? filterName, String? filterValue}) {
-    return getCollectionReference(collectionName).where(filterName!, isEqualTo: filterValue).snapshots().first;
-        
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllItemsByFilter(
+      String collectionName,
+      {String? filterName,
+      Object? filterValue}) {
+    return getCollectionReference(collectionName)
+        .where(filterName!, isEqualTo: filterValue)
+        .snapshots()
+        .first;
   }
 
 //generic functions

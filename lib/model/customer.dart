@@ -7,11 +7,11 @@ import 'package:gazi_app/model/general_model.dart';
 class CustomerModel implements GenericModel {
   String id = "";
   String name;
-  String email;
   String phone;
   late CollectionReference<Map<String, dynamic>> colRef;
+  String collectionReferenceName = CollectionKeys.customers;
 
-  CustomerModel(this.name, this.email, this.phone,{this.id = ""}) {
+  CustomerModel(this.name,  this.phone,{this.id = ""}) {
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.customers);
   }
@@ -19,7 +19,6 @@ class CustomerModel implements GenericModel {
   factory CustomerModel.fromJson(Map<dynamic, dynamic> json, {String id = ""}) {
     return CustomerModel(
       json["name"] as String,
-      json["email"] as String,
       json["phone_number"] as String,
       id: id
     );
@@ -30,7 +29,6 @@ class CustomerModel implements GenericModel {
   HashMap<String, dynamic> toMap() {
     var customer = HashMap<String, dynamic>();
     customer[FieldKeys.customerName] = this.name;
-    customer[FieldKeys.customerMail] = this.email;
     customer[FieldKeys.customerPhone] = this.phone;
     return customer;
   }

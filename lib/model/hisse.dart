@@ -5,8 +5,10 @@ import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/general_model.dart';
 
 class HisseModel implements GenericModel {
+  String id = "";
   int amount;
   int count;
+  late String collectionReferenceName;
 
   HisseModel(this.amount, this.count) {
     this.colRef =

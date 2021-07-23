@@ -90,7 +90,7 @@ class _KurbanPageState extends State<KurbanPage> {
                     itemCount: kurbanValues.length,
                     itemBuilder: (context, index) {
                       var hisseKurban =
-                          HisseKurbanModel.fromJson(kurbanValues[index].data());
+                          HisseKurbanModel.fromJson(kurbanValues[index].data(), id: kurbanValues[index].id);
                       return Dismissible(
                         key: ObjectKey(hisseKurban),
                         child: GestureDetector(

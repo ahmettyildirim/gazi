@@ -17,7 +17,7 @@ class _AddCustomerState extends State<AddCustomer> {
 
   Future<void> addCustomer() async {
     CustomerModel customer = new CustomerModel(
-        _nameController.text, _emailController.text, _phoneController.text);
+        _nameController.text,  _phoneController.text);
     await DataRepository.instance.addItem(customer);
     Navigator.pop(context);
   }
