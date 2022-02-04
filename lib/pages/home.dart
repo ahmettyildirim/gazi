@@ -4,6 +4,7 @@ import 'package:gazi_app/pages/add_sale.dart';
 import 'package:gazi_app/pages/customers.dart';
 import 'package:gazi_app/pages/kurbanlar.dart';
 import 'package:gazi_app/pages/sales.dart';
+import 'package:gazi_app/pages/summary.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   Widget currentPage(int currentPageNum) {
     switch (currentPageNum) {
       case 0:
-        return Text("Anasayfa");
+        return SummaryPage();
       case 1:
         return CustomerList();
       case 2:

@@ -57,7 +57,6 @@ class _AddSaleState extends State<AddSale> {
     });
   }
 
-  void _changeKurbanTip() {}
 
   @override
   Widget build(BuildContext context) {
@@ -140,10 +139,12 @@ class _AddSaleState extends State<AddSale> {
               [0, 2].contains(_kurbanSubTip)
                   ? Center()
                   : _getKalanTutar(screenWidth, screenHeight),
-              Padding(
-                  padding: EdgeInsets.all(screenHeight / 30),
-                  child:
-                      ElevatedButton(onPressed: addSale, child: Text("Ekle"))),
+              _kurbanSubTip != 0
+                  ? Padding(
+                      padding: EdgeInsets.all(screenHeight / 30),
+                      child: ElevatedButton(
+                          onPressed: addSale, child: Text("Ekle")))
+                  : Center(),
             ],
           ),
         ),
@@ -496,10 +497,22 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> getCustomerByPhone(phone) async {
+    print("başladı");
+    print(phone.length);
+    if(phone.length != 15){
+      setState(() {
+        _nameController.text = "";
+        selectedCustomer = null;
+      });
+      return;
+    }
     var value = await _repositoryInstance.getAllItemsByFilter(
         CollectionKeys.customers,
         filterName: FieldKeys.customerPhone,
         filterValue: _phoneController.text);
+    // if(phone!=_phoneController.text){
+    //   getCustomerByPhone(_phoneController.text);
+    // }
     if (value.docs.isNotEmpty) {
       print('girdi');
       var customer = CustomerModel.fromJson(value.docs.first.data(),
@@ -511,9 +524,8 @@ class _AddSaleState extends State<AddSale> {
     } else {
       print('girmedi');
       setState(() {
-      _nameController.text = "";
+        _nameController.text = "";
         selectedCustomer = null;
-        
       });
     }
   }
@@ -739,7 +751,7 @@ class _AddSaleState extends State<AddSale> {
         });
       }
     }
-    if(selectedCustomer!.name != _nameController.text){
+    if (selectedCustomer!.name != _nameController.text) {
       selectedCustomer!.name = _nameController.text;
       await _repositoryInstance.updateItem(selectedCustomer!);
     }
@@ -771,13 +783,60 @@ class _AddSaleState extends State<AddSale> {
         hisseNum: _hisseCountController.text.isEmpty
             ? 0
             : int.parse(_hisseCountController.text),
-        hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id);
+        hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id,
+        adet:
+            _adetController.text.isEmpty ? 0 : int.parse(_adetController.text));
     await DataRepository.instance.addItem(sale);
-    if(_kurbanSubTip == 4){
-      _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse - int.parse(_hisseCountController.text);
+    if (_kurbanSubTip == 4) {
+      _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
+          int.parse(_hisseCountController.text);
       await _repositoryInstance.updateItem(_selectedHisse!);
     }
+    await _showMyDialog();
     Navigator.pop(context);
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Satış Tamamlandı'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text('Satış İşlemi Tamamlandı..'),
+                Text('Müşteriye whatsapp mesajı göndermek ister misiniz?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Evet'),
+              onPressed: () {
+                print('Confirmed');
+                var phone = selectedCustomer!.phone;
+                phone = phone.replaceAll(' ', '');
+                phone = phone.replaceAll('(', '');
+                phone = phone.replaceAll(')', '');
+                phone = phone.replaceAll('-', '');
+                phone = "90" + phone;
+
+                wasup(phone);
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Hayır'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> searchForHisse(val) async {
@@ -812,18 +871,18 @@ class _AddSaleState extends State<AddSale> {
     }
   }
 
-  Future<void> wasup() async {
+  Future<void> wasup(String num) async {
     var whatsapp = "905309383594";
     // FirebaseAuth.instance.signOut();
-    var whatsappURl_android =
-        "whatsapp://send?phone=" + "05309383594" + "&text=hello";
-    var whatappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
+    var whatsappURl_android = "whatsapp://send?phone=" + num + "&text=hello";
+    var whatappURL_ios =
+        "https://wa.me/$num?text=${Uri.parse("Kurban satış işlemi gerçekleşti")}";
     if (Platform.isIOS) {
       // for iOS phone only
       if (await canLaunch(whatappURL_ios)) {
         await launch(whatappURL_ios, forceSafariVC: false);
         whatappURL_ios =
-            "https://wa.me/905549287548?text=${Uri.parse("hello")}";
+            "https://wa.me/$num?text=${Uri.parse("Kurban satış işlemi gerçekleşti")}";
         await launch(whatappURL_ios, forceSafariVC: false);
       } else {
         ScaffoldMessenger.of(context)

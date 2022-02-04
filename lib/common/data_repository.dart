@@ -49,6 +49,7 @@ class FieldKeys {
   static final saleRemainingAmount = "remaining_amount";
   static final saleHisseRef = "hisse_ref";
   static final saleHisseNum = "hisse_num";
+  static final saleAdet = "adet";
   static final kotraNo = "no";
   static final kotraCapacity = "capacity";
   static final kotraNumOfItems = "numOfItems";
@@ -111,6 +112,12 @@ class DataRepository {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllItems(String collectionName,
       {String? orderBy}) {
+    return orderBy == null
+        ? getCollectionReference(collectionName).snapshots()
+        : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
+  }
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getAllItemsFuture(String collectionName,
+      {String? orderBy}) async{
     return orderBy == null
         ? getCollectionReference(collectionName).snapshots()
         : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
