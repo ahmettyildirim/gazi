@@ -33,6 +33,7 @@ class _AddSaleState extends State<AddSale> {
   final _kaparoController = TextEditingController();
   final _kalanTutarController = TextEditingController();
   final _hisseCountController = TextEditingController();
+  final _aciklamaController = TextEditingController();
   final _phoneController = TextEditingController();
   final _nameController = TextEditingController();
   var maskFormatter = new MaskTextInputFormatter(
@@ -56,7 +57,6 @@ class _AddSaleState extends State<AddSale> {
       _amountController.text = kurban.hisseAmount.toString();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +140,14 @@ class _AddSaleState extends State<AddSale> {
                   ? Center()
                   : _getKalanTutar(screenWidth, screenHeight),
               _kurbanSubTip != 0
+                  ? _getAciklama(screenWidth, screenHeight)
+                  : Center(),
+              _kurbanSubTip != 0
                   ? Padding(
                       padding: EdgeInsets.all(screenHeight / 30),
                       child: ElevatedButton(
                           onPressed: addSale, child: Text("Ekle")))
-                  : Center(),
+                  : Center()
             ],
           ),
         ),
@@ -499,7 +502,7 @@ class _AddSaleState extends State<AddSale> {
   Future<void> getCustomerByPhone(phone) async {
     print("başladı");
     print(phone.length);
-    if(phone.length != 15){
+    if (phone.length != 15) {
       setState(() {
         _nameController.text = "";
         selectedCustomer = null;
@@ -643,6 +646,20 @@ class _AddSaleState extends State<AddSale> {
     );
   }
 
+  Widget _getAciklama(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+      child: TextFormField(
+        keyboardType: TextInputType.multiline,
+        controller: _aciklamaController,
+        maxLines: null,
+        minLines: 2,
+        decoration: InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
+      ),
+    );
+  }
+
   void getRemainingAmount(val) {
     if (_kurbanSubTip == 2) {
       return;
@@ -728,6 +745,7 @@ class _AddSaleState extends State<AddSale> {
     _kgAmountController.text = "";
     _totalAmountController.text = "";
     _adetController.text = "";
+    _aciklamaController.text = "";
   }
 
   Future<void> addSale() async {
@@ -785,7 +803,9 @@ class _AddSaleState extends State<AddSale> {
             : int.parse(_hisseCountController.text),
         hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id,
         adet:
-            _adetController.text.isEmpty ? 0 : int.parse(_adetController.text));
+            _adetController.text.isEmpty ? 0 : int.parse(_adetController.text),
+        aciklama:
+            _aciklamaController.text.isEmpty ? "" : _aciklamaController.text);
     await DataRepository.instance.addItem(sale);
     if (_kurbanSubTip == 4) {
       _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -

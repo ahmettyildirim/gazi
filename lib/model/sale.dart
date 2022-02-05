@@ -20,6 +20,7 @@ class SaleModel implements GenericModel {
   late String hisseRef;
   late int hisseNum;
   late int adet;
+  late String? aciklama;
   late CollectionReference<Map<String, dynamic>> colRef;
   late String collectionReferenceName = CollectionKeys.sales;
 
@@ -37,9 +38,10 @@ class SaleModel implements GenericModel {
       required this.remainingAmount,
       required this.hisseRef,
       required this.hisseNum,
-      required this.adet}) {
-    this.colRef = DataRepository.instance
-        .getCollectionReference(CollectionKeys.sales);
+      required this.adet,
+      required this.aciklama}) {
+    this.colRef =
+        DataRepository.instance.getCollectionReference(CollectionKeys.sales);
   }
 
   factory SaleModel.fromJson(Map<dynamic, dynamic> json) {
@@ -58,7 +60,8 @@ class SaleModel implements GenericModel {
       hisseNum: json[FieldKeys.saleHisseNum] as int,
       hisseRef: json[FieldKeys.saleHisseRef] as String,
       adet: json[FieldKeys.saleAdet] as int,
-);
+      aciklama: json[FieldKeys.aciklama] as String?,
+    );
   }
 
   HashMap<String, dynamic> toMap() {
@@ -77,6 +80,7 @@ class SaleModel implements GenericModel {
     sale[FieldKeys.saleHisseNum] = this.hisseNum;
     sale[FieldKeys.saleHisseRef] = this.hisseRef;
     sale[FieldKeys.saleAdet] = this.adet;
+    sale[FieldKeys.aciklama] = this.aciklama;
     return sale;
   }
 }

@@ -14,22 +14,22 @@ class HisseKurbanModel implements GenericModel {
   late CollectionReference<Map<String, dynamic>> colRef;
   String collectionReferenceName = CollectionKeys.hisseKurban;
 
-  HisseKurbanModel(
-      this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount, {this.remainingHisse = 0, this.id = ""}) {
+  HisseKurbanModel(this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount,
+      {this.remainingHisse = 0, this.id = ""}) {
     this.collectionReferenceName = CollectionKeys.hisseKurban;
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.hisseKurban);
   }
 
-  factory HisseKurbanModel.fromJson(Map<dynamic, dynamic> json,  {String id = ""}) {
+  factory HisseKurbanModel.fromJson(Map<dynamic, dynamic> json,
+      {String id = ""}) {
     return HisseKurbanModel(
-      json[FieldKeys.hisseKurbanKurbanNo] as int,
-      json[FieldKeys.hisseKurbanKotraNo] as int,
-      json[FieldKeys.hisseKurbanHisseNum] as int,
-      json[FieldKeys.hisseKurbanHisseAmount] as int,
-      remainingHisse: json[FieldKeys.hisseKurbanRemainingHisse] as int,
-      id: id
-    );
+        json[FieldKeys.hisseKurbanKurbanNo] as int,
+        json[FieldKeys.hisseKurbanKotraNo] as int,
+        json[FieldKeys.hisseKurbanHisseNum] as int,
+        json[FieldKeys.hisseKurbanHisseAmount] as int,
+        remainingHisse: json[FieldKeys.hisseKurbanRemainingHisse] as int,
+        id: id);
   }
   HashMap<String, dynamic> toMap() {
     var hisseKurban = HashMap<String, dynamic>();
@@ -40,5 +40,4 @@ class HisseKurbanModel implements GenericModel {
     hisseKurban[FieldKeys.hisseKurbanRemainingHisse] = this.remainingHisse;
     return hisseKurban;
   }
-
 }
