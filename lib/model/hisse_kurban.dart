@@ -12,6 +12,8 @@ class HisseKurbanModel implements GenericModel {
   int hisseAmount;
   int remainingHisse = 0;
   late CollectionReference<Map<String, dynamic>> colRef;
+  late DateTime createTime;
+  late String createUser;
   String collectionReferenceName = CollectionKeys.hisseKurban;
 
   HisseKurbanModel(this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount,

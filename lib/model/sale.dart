@@ -23,6 +23,8 @@ class SaleModel implements GenericModel {
   late String? aciklama;
   late CollectionReference<Map<String, dynamic>> colRef;
   late String collectionReferenceName = CollectionKeys.sales;
+  late DateTime createTime;
+  late String createUser;
 
   SaleModel(
       {required this.customerRef,

@@ -1,14 +1,11 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
-import 'package:gazi_app/model/hisse.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
+import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
-import 'package:gazi_app/pages/customer_Select.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,7 +21,6 @@ var _repositoryInstance = DataRepository.instance;
 class _AddSaleState extends State<AddSale> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddHisseFormState');
   final _saleNoController = TextEditingController();
-  final _customerController = TextEditingController();
   final _kgController = TextEditingController();
   final _adetController = TextEditingController();
   final _kgAmountController = TextEditingController();
@@ -792,9 +788,7 @@ class _AddSaleState extends State<AddSale> {
         generalAmount: _totalAmountController.text.isEmpty
             ? 0
             : int.parse(_totalAmountController.text),
-        kaparo: _kaparoController.text.isEmpty
-            ? 0
-            : int.parse(_kaparoController.text),
+        kaparo: 0,
         remainingAmount: _kalanTutarController.text.isEmpty
             ? 0
             : int.parse(_kalanTutarController.text),
@@ -806,14 +800,21 @@ class _AddSaleState extends State<AddSale> {
             _adetController.text.isEmpty ? 0 : int.parse(_adetController.text),
         aciklama:
             _aciklamaController.text.isEmpty ? "" : _aciklamaController.text);
-    await DataRepository.instance.addItem(sale);
+    var addedItem = await DataRepository.instance.addNewItem(sale);
+    if (_kaparoController.text.isNotEmpty) {
+      PaymentModel payment = new PaymentModel(
+          amount: int.parse(_kaparoController.text),
+          paymentType: PaymentType.Nakit);
+      var result =
+          await DataRepository.instance.addNewPayment(addedItem, payment);
+    }
     if (_kurbanSubTip == 4) {
       _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
           int.parse(_hisseCountController.text);
       await _repositoryInstance.updateItem(_selectedHisse!);
     }
-    await _showMyDialog();
-    Navigator.pop(context);
+    // await _showMyDialog();
+    // Navigator.pop(context);
   }
 
   Future<void> _showMyDialog() async {

@@ -4,6 +4,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gazi_app/model/payment.dart';
 
 class CollectionKeys {
   static final users = "users";
@@ -12,6 +14,7 @@ class CollectionKeys {
   static final sales = "sales";
   static final kotra = "kotra";
   static final hisse = "hisse";
+  static final payment = "payment";
 }
 
 class FieldKeys {
@@ -56,6 +59,12 @@ class FieldKeys {
   static final kotraNumOfItems = "numOfItems";
   static final hisseAmount = "amount";
   static final hisseCount = "count";
+  static final createUser = "create_user";
+  static final createTime = "create_time";
+  static final updateUser = "update_user";
+  static final updateTime = "update_time";
+  static final paymentAmount = "amount";
+  static final paymentType = "type";
 }
 
 var refKotra =
@@ -88,25 +97,40 @@ class DataRepository {
 
 //generic functions
   Future<void> addItem(GenericModel genericModel) async {
-    return await _addNewDocument(
-        genericModel.colRef.doc(), genericModel.toMap());
+    var map = genericModel.toMap();
+    map[FieldKeys.createUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.createTime] = DateTime.now();
+    return await _addNewDocument(genericModel.colRef.doc(), map);
   }
 
   Future<DocumentReference> addNewItem(GenericModel genericModel) async {
+    var map = genericModel.toMap();
+    map[FieldKeys.createUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.createTime] = DateTime.now();
     // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
-    return _firestore
-        .collection(genericModel.collectionReferenceName)
-        .add(genericModel.toMap());
+    return _firestore.collection(genericModel.collectionReferenceName).add(map);
     // return await _addNewDocument(
     //     genericModel.colRef.doc(), genericModel.toMap());
   }
 
+  Future<DocumentReference> addNewItemToCollection(
+      CollectionReference<Map<String, dynamic>> collection,
+      GenericModel genericModel) async {
+    var map = genericModel.toMap();
+    map[FieldKeys.createUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.createTime] = DateTime.now();
+    return collection.add(map);
+  }
+
   Future<void> updateItem(GenericModel genericModel) async {
+    var map = genericModel.toMap();
+    map[FieldKeys.updateUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.updateTime] = DateTime.now();
     // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
     return _firestore
         .collection(genericModel.collectionReferenceName)
         .doc(genericModel.id)
-        .update(genericModel.toMap());
+        .update(map);
     // return await _addNewDocument(
     //     genericModel.colRef.doc(), genericModel.toMap());
   }
@@ -185,6 +209,17 @@ class DataRepository {
 //hisse operations
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllHisse() {
     return _customerCollRef().orderBy(FieldKeys.customerName).snapshots();
+  }
+
+  // sale operations
+  Future<DocumentReference> addNewPayment(
+      DocumentReference reference, PaymentModel payment) async {
+    var values = await reference.get();
+    var data = values.data() as Map<String, dynamic>;
+    int kaparo = data[FieldKeys.saleKaparo];
+    await reference.update({FieldKeys.saleKaparo: kaparo + payment.amount});
+    return await addNewItemToCollection(
+        reference.collection(CollectionKeys.payment), payment);
   }
 }
 
