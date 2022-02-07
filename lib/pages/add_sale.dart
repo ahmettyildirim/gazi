@@ -813,8 +813,8 @@ class _AddSaleState extends State<AddSale> {
           int.parse(_hisseCountController.text);
       await _repositoryInstance.updateItem(_selectedHisse!);
     }
-    // await _showMyDialog();
-    // Navigator.pop(context);
+    await _showMyDialog();
+    Navigator.pop(context);
   }
 
   Future<void> _showMyDialog() async {
