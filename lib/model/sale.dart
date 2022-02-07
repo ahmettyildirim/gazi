@@ -4,6 +4,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/general_model.dart';
 
+String getKurbanTypeName(int typeId) {
+  return typeId == 1 ? "Büyükbaş" : "Küçükbaş";
+}
+
+String getKurbanSubTypeName(int typeId) {
+  switch (typeId) {
+    case 1:
+      return "Ayaktan(Kilo)";
+    case 2:
+      return "Karkas";
+    case 3:
+      return "Ayaktan";
+    case 4:
+      return "Hisse";
+    case 5:
+      return "Ayaktan(Kilo)";
+    case 6:
+      return "Ayaktan";
+    default:
+      return "";
+  }
+}
+
 class SaleModel implements GenericModel {
   String id = "";
   late String customerRef;

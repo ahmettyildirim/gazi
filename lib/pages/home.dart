@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gazi_app/pages/account.dart';
 import 'package:gazi_app/pages/add_sale.dart';
 import 'package:gazi_app/pages/customers.dart';
 import 'package:gazi_app/pages/kurbanlar.dart';
@@ -54,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       case 2:
         return KurbanPage();
       case 3:
-        return AccountPage();
+        return SalesList();
       default:
         return Text("Anasayfa");
     }

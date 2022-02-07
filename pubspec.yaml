@@ -57,6 +57,7 @@ flutter:
     - images/background.jpg
     - images/dana.png
     - images/sheep.png
+    - images/cow.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

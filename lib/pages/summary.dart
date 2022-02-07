@@ -9,15 +9,6 @@ class SummaryPage extends StatefulWidget {
 }
 
 var _repositoryInstance = DataRepository.instance;
-List<String> images = [
-  "images/dana.png",
-  "images/sheep.png",
-  "images/sheep.png",
-  "images/dana.png",
-  "images/sheep.png",
-  "images/dana.png",
-  "images/sheep.png",
-];
 String getTitle(int index) {
   switch (index) {
     case 1:
@@ -39,7 +30,7 @@ String getTitle(int index) {
 
 String getImagePath(int index) {
   if (index < 5) {
-    return "images/dana.png";
+    return "images/cow.jpg";
   } else {
     return "images/sheep.png";
   }
@@ -413,60 +404,6 @@ class _SummaryPageState extends State<SummaryPage> {
       ),
     );
   }
-}
-
-Widget myList(BuildContext context) {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListTile(
-        leading: CircleAvatar(
-          backgroundImage: AssetImage(images[index]),
-        ),
-        title: Text("Karkas"),
-        subtitle: Text("Satış Adeti :50\nÖdenen Tutar: 100\nKalan Tutar:500"),
-      );
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 20);
-    },
-    itemCount: images.length,
-    padding: EdgeInsets.all(5),
-    shrinkWrap: true,
-    scrollDirection: Axis.vertical,
-  );
-}
-
-Widget buildCard(Iterable saleModel) {
-  var heading = 'Büyükbaş';
-  var subheading = "Ayaktan Kilo";
-  var supportingText =
-      '\n\nBeautiful home to rent,\n recently r\nefurbished \nwith modern appliances...';
-  return Container(
-    child: Card(
-        elevation: 3.0,
-        child: Container(
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(heading),
-                subtitle: Text(subheading),
-              ),
-              ButtonBar(
-                children: [
-                  TextButton(
-                    child: const Text('CONTACT AGENT'),
-                    onPressed: () {/* ... */},
-                  ),
-                  TextButton(
-                    child: const Text('LEARN MORE'),
-                    onPressed: () {/* ... */},
-                  )
-                ],
-              )
-            ],
-          ),
-        )),
-  );
 }
 
 int getKucukKurbanAdet(List<SaleModel> list) {
