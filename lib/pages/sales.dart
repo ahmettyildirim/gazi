@@ -55,12 +55,15 @@ class _SalesListState extends State<SalesList> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.only(top:40, bottom:0, left:10, right:10),
             child: TextField(
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(
+                decimal: true,
+                signed: true
+              ),
               controller: _nameController,
               decoration:
-                  InputDecoration(labelText: "Kurban numarası ile ara.."),
+                  InputDecoration(labelText: "Kurban numarası ile ara"),
             ),
           ),
           Row(
