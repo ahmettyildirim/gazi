@@ -30,9 +30,9 @@ String getTitle(int index) {
 
 String getImagePath(int index) {
   if (index < 5) {
-    return "images/cow.jpg";
+    return "images/dana.jpg";
   } else {
-    return "images/sheep.png";
+    return "images/sheep.JPG";
   }
 }
 

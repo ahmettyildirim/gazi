@@ -20,6 +20,14 @@ class SalesList extends StatefulWidget {
 var _repositoryInstance = DataRepository.instance;
 Future<void> getCustomersNew() async {}
 
+String getImagePath(int index) {
+  if (index == 1) {
+    return "images/dana.jpg";
+  } else {
+    return "images/sheep.JPG";
+  }
+}
+
 class _SalesListState extends State<SalesList> {
   final _nameController = TextEditingController();
   String _searchText = "";
@@ -99,7 +107,14 @@ class _SalesListState extends State<SalesList> {
                                 getKurbanSubTypeName(sale.kurbanSubTip)),
                             subtitle: Text(
                                 "Toplam tutar :${sale.generalAmount} \nÖdenen tutar : ${sale.kaparo}"),
-                            leading: Text(sale.kurbanNo.toString()),
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage(getImagePath(sale.kurbanTip)),
+                            ),
+                            trailing: Text(
+                              sale.kurbanNo.toString(),
+                              style: TextStyle(fontSize: 22),
+                            ),
                           )),
                         ),
                       );
