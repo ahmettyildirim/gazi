@@ -11,13 +11,14 @@ class HisseKurbanModel implements GenericModel {
   int hisseNo;
   int hisseAmount;
   int remainingHisse = 0;
+  late String? aciklama;
   late CollectionReference<Map<String, dynamic>> colRef;
   late DateTime createTime;
   late String createUser;
   String collectionReferenceName = CollectionKeys.hisseKurban;
 
   HisseKurbanModel(this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount,
-      {this.remainingHisse = 0, this.id = ""}) {
+      {this.remainingHisse = 0, this.id = "", this.aciklama = ""}) {
     this.collectionReferenceName = CollectionKeys.hisseKurban;
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.hisseKurban);
@@ -30,6 +31,7 @@ class HisseKurbanModel implements GenericModel {
         json[FieldKeys.hisseKurbanKotraNo] as int,
         json[FieldKeys.hisseKurbanHisseNum] as int,
         json[FieldKeys.hisseKurbanHisseAmount] as int,
+        aciklama: (json[FieldKeys.aciklama] ?? "") as String,
         remainingHisse: json[FieldKeys.hisseKurbanRemainingHisse] as int,
         id: id);
   }
@@ -40,6 +42,7 @@ class HisseKurbanModel implements GenericModel {
     hisseKurban[FieldKeys.hisseKurbanHisseNum] = this.hisseNo;
     hisseKurban[FieldKeys.hisseKurbanHisseAmount] = this.hisseAmount;
     hisseKurban[FieldKeys.hisseKurbanRemainingHisse] = this.remainingHisse;
+    hisseKurban[FieldKeys.aciklama] = this.aciklama;
     return hisseKurban;
   }
 }

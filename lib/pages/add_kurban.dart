@@ -14,6 +14,7 @@ class _AddKurbanState extends State<AddKurban> {
   final _hisseNumController = TextEditingController();
   final _hisseAmountController = TextEditingController();
   final _totalAmountController = TextEditingController();
+  final _aciklamaController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var screenInfo = MediaQuery.of(context);
@@ -68,6 +69,18 @@ class _AddKurbanState extends State<AddKurban> {
                     decoration: InputDecoration(labelText: 'Toplam Tutar')),
               ),
               Padding(
+                padding: EdgeInsets.only(
+                    left: screenHeight / 30, right: screenHeight / 30, top: 10),
+                child: TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  controller: _aciklamaController,
+                  maxLines: null,
+                  minLines: 2,
+                  decoration:
+                      InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
+                ),
+              ),
+              Padding(
                   padding: EdgeInsets.all(screenHeight / 30),
                   child: ElevatedButton(
                       onPressed: addKurban, child: Text("Ekle"))),
@@ -84,13 +97,15 @@ class _AddKurbanState extends State<AddKurban> {
         int.parse(_kotraNoController.text),
         int.parse(_hisseNumController.text),
         int.parse(_hisseAmountController.text),
+        aciklama: _aciklamaController.text,
         remainingHisse: int.parse(_hisseNumController.text));
     await DataRepository.instance.addItem(hisseKurban);
     Navigator.pop(context);
   }
 
   void calculateTotal(val) {
-    if (_hisseNumController.text.isNotEmpty && _hisseAmountController.text.isNotEmpty) {
+    if (_hisseNumController.text.isNotEmpty &&
+        _hisseAmountController.text.isNotEmpty) {
       setState(() {
         _totalAmountController.text = (int.parse(_hisseNumController.text) *
                 int.parse(_hisseAmountController.text))
