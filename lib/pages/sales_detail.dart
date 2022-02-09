@@ -12,22 +12,27 @@ class SaleDetails extends StatefulWidget {
 class _SaleDetailsState extends State<SaleDetails> {
   double width = 0;
   Widget getRowInfo(String item, String value) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(item),
-          Container(
-              width: width / 2,
-              child: Text(
-                value,
-                overflow: TextOverflow.visible,
-                textAlign: TextAlign.end,
-              ))
-        ],
-      ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(item),
+              Container(
+                  width: width / 2,
+                  child: Text(
+                    value,
+                    overflow: TextOverflow.visible,
+                    textAlign: TextAlign.end,
+                  ))
+            ],
+          ),
+        ),
+        Divider(height: 2.0),
+      ],
     );
   }
 
@@ -46,16 +51,11 @@ class _SaleDetailsState extends State<SaleDetails> {
             child: Column(
               children: [
                 getRowInfo("No", widget.sale.kurbanNo.toString()),
-                Divider(height: 2.0),
                 getRowInfo("Müşteri Adı", widget.sale.customer.name),
-                Divider(height: 2.0),
                 getRowInfo("Müşteri Telefonu", widget.sale.customer.phone),
-                Divider(height: 2.0),
                 getRowInfo("Tip", getKurbanTypeName(widget.sale.kurbanTip)),
-                Divider(height: 2.0),
                 getRowInfo(
                     "Alt Tip", getKurbanSubTypeName(widget.sale.kurbanSubTip)),
-                Divider(height: 2.0),
                 widget.sale.kurbanTip == 1
                     ? getRowInfo(
                         "Cins", getBuyukKurbanCins(widget.sale.buyukKurbanTip))
@@ -67,36 +67,27 @@ class _SaleDetailsState extends State<SaleDetails> {
                 [0, 2, 3, 4, 6].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Kg", widget.sale.kg.toString() + " kg"),
-                Divider(height: 2.0),
                 [0, 2, 3, 4, 6].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Kg Birim Fiyatı",
                         widget.sale.kgAmount.toString() + " TL"),
-                Divider(height: 2.0),
                 ![3, 4, 6].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo(
                         "Birim Fiyatı", widget.sale.amount.toString() + " TL"),
-                Divider(height: 2.0),
                 [0, 2, 3].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Genel Toplam",
                         widget.sale.generalAmount.toString() + " TL"),
-                Divider(height: 2.0),
                 getRowInfo(
                     "Alınan Kaparo", widget.sale.kaparo.toString() + " TL"),
-                Divider(height: 2.0),
                 [0, 2].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Kalan Tutar",
                         widget.sale.remainingAmount.toString() + " TL"),
-                Divider(height: 2.0),
                 getRowInfo("Açıklama", widget.sale.aciklama!),
-                Divider(height: 2.0),
                 getRowInfo("Satış Tarihi", formattedDate),
-                Divider(height: 2.0),
                 getRowInfo("Satışı Yapan", widget.sale.createUser!),
-                Divider(height: 2.0),
               ],
             ),
           ),
