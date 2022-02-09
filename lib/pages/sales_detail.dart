@@ -16,9 +16,8 @@ class _SaleDetailsState extends State<SaleDetails> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(item),
@@ -41,9 +40,8 @@ class _SaleDetailsState extends State<SaleDetails> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Müşteri Telefonu"),
@@ -54,7 +52,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                   textAlign: TextAlign.end,
                 ),
                 onPressed: () {
-                  _makePhoneCall(value);
+                  _makePhoneCall("0" + value);
                 },
               )
             ],
@@ -81,7 +79,7 @@ class _SaleDetailsState extends State<SaleDetails> {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     String formattedDate =
-        DateFormat('dd-MM-yyyy – kk:mm').format(widget.sale.createTime!);
+        DateFormat('dd-MM-yyyy kk:mm').format(widget.sale.createTime!);
     return Scaffold(
         appBar: AppBar(
           title: Text("Satış Detayı"),
