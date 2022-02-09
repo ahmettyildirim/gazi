@@ -100,8 +100,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Hisseler',
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.account_box),
-            label: 'Kullanıcı',
+            icon: new Icon(Icons.animation),
+            label: 'Satışlar',
           ),
         ],
       ),
