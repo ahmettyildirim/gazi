@@ -65,6 +65,7 @@ class FieldKeys {
   static final updateTime = "update_time";
   static final paymentAmount = "amount";
   static final paymentType = "type";
+  static final customer = "customer";
 }
 
 var refKotra =

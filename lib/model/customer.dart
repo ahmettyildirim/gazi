@@ -10,8 +10,8 @@ class CustomerModel implements GenericModel {
   String phone;
   late CollectionReference<Map<String, dynamic>> colRef;
   String collectionReferenceName = CollectionKeys.customers;
-  late DateTime createTime;
-  late String createUser;
+  late DateTime? createTime;
+  late String? createUser;
 
   CustomerModel(this.name, this.phone, {this.id = ""}) {
     this.colRef = DataRepository.instance

@@ -9,8 +9,8 @@ class HisseModel implements GenericModel {
   int amount;
   int count;
   late String collectionReferenceName;
-  late DateTime createTime;
-  late String createUser;
+  late DateTime? createTime;
+  late String? createUser;
 
   HisseModel(this.amount, this.count) {
     this.colRef =

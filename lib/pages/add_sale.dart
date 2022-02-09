@@ -746,7 +746,6 @@ class _AddSaleState extends State<AddSale> {
 
   Future<void> addSale() async {
     if (selectedCustomer == null) {
-      print('selected customer nulmuş');
       CustomerModel customer =
           new CustomerModel(_nameController.text, _phoneController.text);
       var customerref = await DataRepository.instance.addNewItem(customer);
@@ -756,7 +755,6 @@ class _AddSaleState extends State<AddSale> {
           filterName: FieldKeys.customerPhone,
           filterValue: _phoneController.text);
       if (value.docs.isNotEmpty) {
-        print('girdi');
         var customer = CustomerModel.fromJson(value.docs.first.data(),
             id: value.docs.first.id);
         setState(() {
@@ -769,8 +767,8 @@ class _AddSaleState extends State<AddSale> {
       selectedCustomer!.name = _nameController.text;
       await _repositoryInstance.updateItem(selectedCustomer!);
     }
-    print('selected customer değilmiş');
     SaleModel sale = new SaleModel(
+        customer: selectedCustomer!,
         customerRef: selectedCustomer!.id,
         kurbanTip: _kurbanTip,
         buyukKurbanTip: _buyukKurbanTip,

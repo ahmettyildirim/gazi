@@ -17,8 +17,8 @@ class PaymentModel implements GenericModel {
   int amount;
   PaymentType paymentType;
   late String collectionReferenceName;
-  late DateTime createTime;
-  late String createUser;
+  late DateTime? createTime;
+  late String? createUser;
 
   PaymentModel({required this.amount, required this.paymentType}) {
     this.colRef =

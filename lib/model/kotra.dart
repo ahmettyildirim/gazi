@@ -10,8 +10,8 @@ class KotraModel implements GenericModel {
   int capacity;
   int numOfItems;
   late String collectionReferenceName;
-  late DateTime createTime;
-  late String createUser;
+  late DateTime? createTime;
+  late String? createUser;
 
   KotraModel(this.no, this.capacity, this.numOfItems) {
     this.colRef =

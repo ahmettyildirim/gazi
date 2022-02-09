@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
 
 String getBuyukKurbanCins(int typeId) {
@@ -50,8 +51,9 @@ class SaleModel implements GenericModel {
   late String? aciklama;
   late CollectionReference<Map<String, dynamic>> colRef;
   late String collectionReferenceName = CollectionKeys.sales;
-  late DateTime createTime;
-  late String createUser;
+  late DateTime? createTime;
+  late String? createUser;
+  late CustomerModel customer;
 
   SaleModel(
       {required this.customerRef,
@@ -68,29 +70,34 @@ class SaleModel implements GenericModel {
       required this.hisseRef,
       required this.hisseNum,
       required this.adet,
-      required this.aciklama}) {
+      required this.aciklama,
+      this.createTime,
+      this.createUser,
+      required this.customer}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.sales);
   }
 
   factory SaleModel.fromJson(Map<dynamic, dynamic> json) {
     return SaleModel(
-      customerRef: json[FieldKeys.saleCustomerRef] as String,
-      kurbanTip: json[FieldKeys.saleKurbanTip] as int,
-      buyukKurbanTip: json[FieldKeys.saleBuyukKurbanTip] as int,
-      kurbanSubTip: json[FieldKeys.saleKurbanSubTip] as int,
-      kurbanNo: json[FieldKeys.saleKurbanNo] as int,
-      kg: json[FieldKeys.saleKg] as int,
-      kgAmount: json[FieldKeys.saleKgAmount] as int,
-      amount: json[FieldKeys.saleAmount] as int,
-      generalAmount: json[FieldKeys.saleGeneralAmount] as int,
-      kaparo: json[FieldKeys.saleKaparo] as int,
-      remainingAmount: json[FieldKeys.saleRemainingAmount] as int,
-      hisseNum: json[FieldKeys.saleHisseNum] as int,
-      hisseRef: json[FieldKeys.saleHisseRef] as String,
-      adet: json[FieldKeys.saleAdet] as int,
-      aciklama: json[FieldKeys.aciklama] as String?,
-    );
+        customerRef: json[FieldKeys.saleCustomerRef] as String,
+        kurbanTip: json[FieldKeys.saleKurbanTip] as int,
+        buyukKurbanTip: json[FieldKeys.saleBuyukKurbanTip] as int,
+        kurbanSubTip: json[FieldKeys.saleKurbanSubTip] as int,
+        kurbanNo: json[FieldKeys.saleKurbanNo] as int,
+        kg: json[FieldKeys.saleKg] as int,
+        kgAmount: json[FieldKeys.saleKgAmount] as int,
+        amount: json[FieldKeys.saleAmount] as int,
+        generalAmount: json[FieldKeys.saleGeneralAmount] as int,
+        kaparo: json[FieldKeys.saleKaparo] as int,
+        remainingAmount: json[FieldKeys.saleRemainingAmount] as int,
+        hisseNum: json[FieldKeys.saleHisseNum] as int,
+        hisseRef: json[FieldKeys.saleHisseRef] as String,
+        adet: json[FieldKeys.saleAdet] as int,
+        aciklama: json[FieldKeys.aciklama] as String?,
+        createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
+        createUser: json[FieldKeys.createUser] as String,
+        customer: CustomerModel.fromJson(json[FieldKeys.customer]));
   }
 
   HashMap<String, dynamic> toMap() {
@@ -110,6 +117,7 @@ class SaleModel implements GenericModel {
     sale[FieldKeys.saleHisseRef] = this.hisseRef;
     sale[FieldKeys.saleAdet] = this.adet;
     sale[FieldKeys.aciklama] = this.aciklama;
+    sale[FieldKeys.customer] = this.customer.toMap();
     return sale;
   }
 }
