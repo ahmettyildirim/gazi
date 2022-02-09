@@ -104,6 +104,7 @@ class _CustomerListState extends State<CustomerList> {
                           },
                           child: Card(
                             child: ListTile(
+                                dense: true,
                                 title: Text(customer.name),
                                 subtitle: Text(customer.phone),
                                 leading: const Icon(Icons.account_box_rounded)),

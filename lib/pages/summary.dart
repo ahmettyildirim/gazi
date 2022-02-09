@@ -84,6 +84,7 @@ class _SummaryPageState extends State<SummaryPage> {
                       .where((element) => element.kurbanSubTip == index + 1)
                       .toList();
                   return ListTile(
+                    dense: true,
                     leading: CircleAvatar(
                       backgroundImage: AssetImage(getImagePath(index + 1)),
                     ),
