@@ -4,6 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/general_model.dart';
 
+String getBuyukKurbanCins(int typeId) {
+  return typeId == 1 ? "Dana" : "Düve";
+}
+
 String getKurbanTypeName(int typeId) {
   return typeId == 1 ? "Büyükbaş" : "Küçükbaş";
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/sale.dart';
+import 'package:gazi_app/pages/sales_detail.dart';
 
 class SalesList extends StatefulWidget {
   late bool selectable;
@@ -300,7 +301,14 @@ class _SalesListState extends State<SalesList> {
                       return Dismissible(
                         key: ObjectKey(sale),
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      // BubbleScreen()
+                                      SaleDetails(
+                                        sale: sale,
+                                      ))),
                           child: Card(
                               child: ListTile(
                             title: Text(getKurbanTypeName(sale.kurbanTip) +
