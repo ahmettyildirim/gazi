@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SaleDetails extends StatefulWidget {
   SaleDetails({Key? key, required this.sale}) : super(key: key);
@@ -36,6 +37,46 @@ class _SaleDetailsState extends State<SaleDetails> {
     );
   }
 
+  Widget getRowInfoForPhone(String value) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Müşteri Telefonu"),
+              TextButton(
+                child: Text(
+                  value,
+                  overflow: TextOverflow.visible,
+                  textAlign: TextAlign.end,
+                ),
+                onPressed: () {
+                  _makePhoneCall(value);
+                },
+              )
+            ],
+          ),
+        ),
+        Divider(height: 2.0),
+      ],
+    );
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    // Use `Uri` to ensure that `phoneNumber` is properly URL-encoded.
+    // Just using 'tel:$phoneNumber' would create invalid URLs in some cases,
+    // such as spaces in the input, which would cause `launch` to fail on some
+    // platforms.
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launch(launchUri.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -52,7 +93,7 @@ class _SaleDetailsState extends State<SaleDetails> {
               children: [
                 getRowInfo("No", widget.sale.kurbanNo.toString()),
                 getRowInfo("Müşteri Adı", widget.sale.customer.name),
-                getRowInfo("Müşteri Telefonu", widget.sale.customer.phone),
+                getRowInfoForPhone(widget.sale.customer.phone),
                 getRowInfo("Tip", getKurbanTypeName(widget.sale.kurbanTip)),
                 getRowInfo(
                     "Alt Tip", getKurbanSubTypeName(widget.sale.kurbanSubTip)),
