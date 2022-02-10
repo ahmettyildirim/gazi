@@ -206,6 +206,7 @@ class _SaleDetailsState extends State<SaleDetails> {
   }
 
   showPaymentDialog(BuildContext context) async {
+    print(width);
     return await showDialog(
         context: context,
         builder: (context) {
@@ -213,117 +214,86 @@ class _SaleDetailsState extends State<SaleDetails> {
               TextEditingController();
           final TextEditingController _aciklamaController =
               TextEditingController();
-          String _chosenValue = "Nakit";
-          bool isChecked = false;
-          return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
-              title: Text('Yeni Ödeme Ekle'),
-              content: Expanded(
-                child: Container(
-                  child: ListView(
-                    children: [
-                      Divider(
-                        height: 5.0,
+          return AlertDialog(
+            title: Text('Yeni Ödeme Ekle'),
+            content: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Divider(
+                      height: 5.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Kalan Tutar"),
+                          Container(
+                              child: Text(
+                            widget.sale.remainingAmount.toString(),
+                            overflow: TextOverflow.visible,
+                            textAlign: TextAlign.end,
+                          )),
+                          TextButton.icon(
+                              onPressed: () {
+                                _paymentController.text =
+                                    widget.sale.remainingAmount.toString();
+                              },
+                              icon: Icon(Icons.arrow_downward),
+                              label: Text(""))
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Kalan Tutar"),
-                            Container(
-                                child: Text(
-                              widget.sale.remainingAmount.toString(),
-                              overflow: TextOverflow.visible,
-                              textAlign: TextAlign.end,
-                            )),
-                            TextButton.icon(
-                                onPressed: () {
-                                  _paymentController.text =
-                                      widget.sale.remainingAmount.toString();
-                                },
-                                icon: Icon(Icons.arrow_downward),
-                                label: Text(""))
-                          ],
-                        ),
+                    ),
+                    Divider(
+                      height: 8.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: _paymentController,
+                        decoration: InputDecoration(labelText: "Ödeme Tutarı"),
                       ),
-                      Divider(
-                        height: 8.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        keyboardType: TextInputType.name,
+                        controller: _aciklamaController,
+                        maxLines: null,
+                        minLines: 2,
+                        decoration: InputDecoration(
+                            labelText: 'Açıklama (İsteğe bağlı)'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          controller: _paymentController,
-                          decoration:
-                              InputDecoration(labelText: "Ödeme Tutarı"),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: TextFormField(
-                          keyboardType: TextInputType.multiline,
-                          controller: _aciklamaController,
-                          maxLines: null,
-                          minLines: 2,
-                          decoration: InputDecoration(
-                              labelText: 'Açıklama (İsteğe bağlı)'),
-                        ),
-                      ),
-                      DropdownButton<String>(
-                        focusColor: Colors.white,
-                        value: _chosenValue,
-                        //elevation: 5,
-                        style: TextStyle(color: Colors.white),
-                        iconEnabledColor: Colors.black,
-                        items: <String>[
-                          'Nakit',
-                          'Kredi Kartı',
-                          'Senet',
-                          'Havale',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          );
-                        }).toList(),
-                        hint: Text(
-                          "Ödeme Tipi Seçiniz",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        onChanged: (String? value) {
-                          setState(() {
-                            _chosenValue = value!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              actions: [
-                ElevatedButton(
-                    child: Text("Filtreleri Temizle"),
-                    onPressed: () {
-                      setState(() {
-                        // filterModel.clear();
-                      });
-                      // your code
-                    }),
-                ElevatedButton(
-                    child: Text("Onayla"),
-                    onPressed: () {
+            ),
+            actions: [
+              ButtonBar(
+                alignment : MainAxisAlignment.spaceBetween,
+                children: [
+
+              ElevatedButton(
+                  child: Text("İptal"),
+                  onPressed: () {
+                    setState(() {
                       Navigator.of(context).pop();
-                    })
-              ],
-            );
-          });
+                    });
+                    // your code
+                  }),
+              ElevatedButton(
+                  child: Text("Onayla"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+                ]
+              )
+
+            ],
+          );
         });
   }
 }

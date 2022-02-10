@@ -321,7 +321,7 @@ class _SalesListState extends State<SalesList> {
                               backgroundImage:
                                   AssetImage(getImagePath(sale.kurbanTip)),
                             ),
-                            dense: true,
+                            dense: false,
                             trailing: Text(
                               sale.kurbanNo.toString(),
                               style: TextStyle(fontSize: 22),
