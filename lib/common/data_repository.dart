@@ -221,7 +221,12 @@ class DataRepository {
     int newKaparo = kaparo + payment.amount;
     int remainingAmount = 0;
     if (data[FieldKeys.saleKurbanSubTip].toString() != "2") {
-      remainingAmount = (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+      if (data[FieldKeys.saleKurbanSubTip].toString() == "3") {
+        remainingAmount = (data[FieldKeys.saleAmount] as int) - newKaparo;
+      } else {
+        remainingAmount =
+            (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+      }
     }
     await reference.update({
       FieldKeys.saleKaparo: newKaparo,

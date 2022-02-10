@@ -316,7 +316,7 @@ class _SalesListState extends State<SalesList> {
                                 "-" +
                                 getKurbanSubTypeName(sale.kurbanSubTip)),
                             subtitle: Text(
-                                "Toplam tutar :${sale.generalAmount} \nÖdenen tutar : ${sale.kaparo}"),
+                                "Toplam tutar :${sale.kurbanSubTip == 3 ? sale.amount : sale.generalAmount} \nÖdenen tutar : ${sale.kaparo}"),
                             leading: CircleAvatar(
                               backgroundImage:
                                   AssetImage(getImagePath(sale.kurbanTip)),
