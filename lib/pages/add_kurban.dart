@@ -15,108 +15,108 @@ class _AddKurbanState extends State<AddKurban> {
   final _hisseAmountController = TextEditingController();
   final _totalAmountController = TextEditingController();
   final _aciklamaController = TextEditingController();
+  bool _isVekalet = false;
   @override
   Widget build(BuildContext context) {
     var screenInfo = MediaQuery.of(context);
-    bool isVekalet = false;
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
-    return StatefulBuilder(builder: (context, setState){
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Yeni Kurban Ekle"),
-      ),
-      body: Container(
-        padding: EdgeInsets.only(top:20,left:10,right:10),
-          child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _saleNoController,
-                    decoration: InputDecoration(labelText: 'Kurban No')),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _kotraNoController,
-                    decoration: InputDecoration(labelText: 'Kotra No')),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _hisseNumController,
-                    onChanged: calculateTotal,
-                    decoration: InputDecoration(labelText: 'Hisse Sayısı')),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _hisseAmountController,
-                    onChanged: calculateTotal,
-                    decoration: InputDecoration(labelText: 'Hisse Tutarı')),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _totalAmountController,
-                    readOnly: true,
-                    decoration: InputDecoration(labelText: 'Toplam Tutar')),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: TextFormField(
-                  keyboardType: TextInputType.multiline,
-                  controller: _aciklamaController,
-                  maxLines: null,
-                  minLines: 3,
-                  decoration:
-                      InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
+    return StatefulBuilder(builder: (context, setState) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Yeni Kurban Ekle"),
+        ),
+        body: Container(
+            padding: EdgeInsets.only(top: 20, left: 10, right: 10),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: _saleNoController,
+                          decoration: InputDecoration(labelText: 'Kurban No')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: _kotraNoController,
+                          decoration: InputDecoration(labelText: 'Kotra No')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: _hisseNumController,
+                          onChanged: calculateTotal,
+                          decoration:
+                              InputDecoration(labelText: 'Hisse Sayısı')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: _hisseAmountController,
+                          onChanged: calculateTotal,
+                          decoration:
+                              InputDecoration(labelText: 'Hisse Tutarı')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: _totalAmountController,
+                          readOnly: true,
+                          decoration:
+                              InputDecoration(labelText: 'Toplam Tutar')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        controller: _aciklamaController,
+                        maxLines: null,
+                        minLines: 3,
+                        decoration: InputDecoration(
+                            labelText: 'Açıklama (İsteğe bağlı)'),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Vekaletli Hisse",
+                                style: TextStyle(fontSize: 15),
+                                textAlign: TextAlign.center),
+                            Switch(
+                              value: _isVekalet,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isVekalet = value;
+                                });
+                              },
+                              activeTrackColor: Colors.lightBlueAccent,
+                              activeColor: Colors.blueAccent,
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: 15, left: 10, right: 10),
+                        child: ElevatedButton(
+                            onPressed: addKurban, child: Text("Ekle"))),
+                  ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Vekaletli Hisse",
-                      style: TextStyle(fontSize: 15),
-                      textAlign: TextAlign.center),
-                  Switch(
-                    value: isVekalet,
-                    onChanged: (value) {
-                      setState(() {
-                        isVekalet = value;
-                      });
-                    },
-                    activeTrackColor: Colors.lightBlueAccent,
-                    activeColor: Colors.blueAccent,
-                  ),
-                ],
-              )
-              ),
-              Padding(
-                  padding: EdgeInsets.only(top: 15, left: 10, right: 10),
-                  child: ElevatedButton(
-                      onPressed: addKurban, child: Text("Ekle"))),
-            ],
-          ),
-        ),
-      )),
-    );
+            )),
+      );
     });
-
   }
 
   Future<void> addKurban() async {
@@ -126,7 +126,9 @@ class _AddKurbanState extends State<AddKurban> {
         int.parse(_hisseNumController.text),
         int.parse(_hisseAmountController.text),
         aciklama: _aciklamaController.text,
-        remainingHisse: int.parse(_hisseNumController.text));
+        remainingHisse: int.parse(_hisseNumController.text),
+        isVekalet: _isVekalet);
+
     await DataRepository.instance.addItem(hisseKurban);
     Navigator.pop(context);
   }

@@ -10,6 +10,7 @@ class HisseKurbanModel implements GenericModel {
   int kotraNo;
   int hisseNo;
   int hisseAmount;
+  bool? isVekalet;
   int remainingHisse = 0;
   late String? aciklama;
   late CollectionReference<Map<String, dynamic>> colRef;
@@ -18,7 +19,10 @@ class HisseKurbanModel implements GenericModel {
   String collectionReferenceName = CollectionKeys.hisseKurban;
 
   HisseKurbanModel(this.kurbanNo, this.kotraNo, this.hisseNo, this.hisseAmount,
-      {this.remainingHisse = 0, this.id = "", this.aciklama = ""}) {
+      {this.remainingHisse = 0,
+      this.id = "",
+      this.aciklama = "",
+      this.isVekalet = false}) {
     this.collectionReferenceName = CollectionKeys.hisseKurban;
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.hisseKurban);
@@ -33,6 +37,7 @@ class HisseKurbanModel implements GenericModel {
         json[FieldKeys.hisseKurbanHisseAmount] as int,
         aciklama: (json[FieldKeys.aciklama] ?? "") as String,
         remainingHisse: json[FieldKeys.hisseKurbanRemainingHisse] as int,
+        isVekalet: (json[FieldKeys.isVekalet] ?? false) as bool,
         id: id);
   }
   HashMap<String, dynamic> toMap() {
@@ -43,6 +48,7 @@ class HisseKurbanModel implements GenericModel {
     hisseKurban[FieldKeys.hisseKurbanHisseAmount] = this.hisseAmount;
     hisseKurban[FieldKeys.hisseKurbanRemainingHisse] = this.remainingHisse;
     hisseKurban[FieldKeys.aciklama] = this.aciklama;
+    hisseKurban[FieldKeys.isVekalet] = this.isVekalet ?? false;
     return hisseKurban;
   }
 }

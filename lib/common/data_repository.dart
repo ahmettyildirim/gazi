@@ -66,6 +66,7 @@ class FieldKeys {
   static final paymentAmount = "amount";
   static final paymentType = "type";
   static final customer = "customer";
+  static final isVekalet = "is_vekalet";
 }
 
 var refKotra =

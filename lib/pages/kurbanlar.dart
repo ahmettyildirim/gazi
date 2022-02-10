@@ -20,8 +20,8 @@ var _repositoryInstance = DataRepository.instance;
 
 class _KurbanPageState extends State<KurbanPage> {
   final _nameController = TextEditingController();
-  bool isAllSelected = true;
-  bool isVekaletSelected = true;
+  bool isOnlyEmpty = true;
+  bool isVekaletSelected = false;
   String _searchText = "";
   @override
   void initState() {
@@ -37,6 +37,21 @@ class _KurbanPageState extends State<KurbanPage> {
         });
       }
     });
+  }
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> getFilteredResults(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> saleList,
+      String filter,
+      dynamic filterValue,
+      {bool notEqual = false}) {
+    if (notEqual) {
+      return saleList
+          .where((element) => (element.data()[filter] != filterValue))
+          .toList();
+    }
+    return saleList
+        .where((element) => (element.data()[filter] == filterValue))
+        .toList();
   }
 
   @override
@@ -91,10 +106,10 @@ class _KurbanPageState extends State<KurbanPage> {
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),
                   Switch(
-                    value: isAllSelected,
+                    value: isOnlyEmpty,
                     onChanged: (value) {
                       setState(() {
-                        isAllSelected = value;
+                        isOnlyEmpty = value;
                       });
                     },
                     activeTrackColor: Colors.lightBlueAccent,
@@ -126,12 +141,31 @@ class _KurbanPageState extends State<KurbanPage> {
                   orderBy: FieldKeys.hisseKurbanKurbanNo),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  var kurbanValues = snapshot.data!.docs
-                      .where((element) => element
-                          .data()[FieldKeys.hisseKurbanKurbanNo]
-                          .toString()
-                          .contains(_searchText))
-                      .toList(); //.snapshot.value;
+                  var kurbanValues = snapshot.data!.docs.toList();
+                  if (_searchText.isNotEmpty &&
+                      int.tryParse(_searchText) != null) {
+                    kurbanValues = getFilteredResults(
+                        kurbanValues,
+                        FieldKeys.hisseKurbanKurbanNo,
+                        int.tryParse(_searchText));
+                  } else {
+                    if (isVekaletSelected) {
+                      kurbanValues = getFilteredResults(
+                          kurbanValues, FieldKeys.isVekalet, true);
+                    }
+                    if (isOnlyEmpty) {
+                      kurbanValues = getFilteredResults(
+                          kurbanValues, FieldKeys.hisseKurbanRemainingHisse, 0,
+                          notEqual: true);
+                    }
+                  }
+                  // var kurbanValues = snapshot.data!.docs
+                  //     .where((element) => element
+                  //         .data()[FieldKeys.hisseKurbanKurbanNo]
+                  //         .toString()
+                  //         .contains(_searchText))
+                  //     .toList(); //.snapshot.value;
+
                   return ListView.builder(
                     itemCount: kurbanValues.length,
                     itemBuilder: (context, index) {
@@ -140,21 +174,37 @@ class _KurbanPageState extends State<KurbanPage> {
                           id: kurbanValues[index].id);
                       return GestureDetector(
                         onTap: () {
-                          if (widget.onHisseSelected == null) {
+                          if (widget.onHisseSelected != null) {
                             widget.onHisseSelected!(hisseKurban);
                             print("Kurban Selected");
                             Navigator.pop(context);
                           }
                         },
                         child: Card(
+                          color: hisseKurban.remainingHisse == 0
+                              ? Colors.red
+                              : Colors.white,
                           child: ListTile(
                               subtitle: Text(
-                                  "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}"),
+                                "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}",
+                                style: TextStyle(
+                                    color: hisseKurban.remainingHisse == 0
+                                        ? Colors.white60
+                                        : Colors.grey),
+                              ),
                               title: Text(
-                                  "Kalan Hisse Sayısı :${hisseKurban.remainingHisse}"),
+                                  "Kalan Hisse Sayısı :${hisseKurban.remainingHisse}",
+                                  style: TextStyle(
+                                      color: hisseKurban.remainingHisse == 0
+                                          ? Colors.white
+                                          : Colors.black54)),
                               leading: Text(
                                 hisseKurban.kurbanNo.toString(),
-                                style: TextStyle(fontSize: 30),
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    color: hisseKurban.isVekalet == true
+                                        ? Colors.blueAccent[100]
+                                        : Colors.black),
                               )),
                         ),
                       );
