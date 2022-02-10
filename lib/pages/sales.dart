@@ -223,20 +223,14 @@ class _SalesListState extends State<SalesList> {
                   icon: Icon(Icons.filter_alt),
                   label: Text("Filtrele")),
               TextButton.icon(
-                  onPressed: () async {
-                    var val = await showFilterDialog(context);
-                    setState(() {
-                      filterModel = val;
-                    });
-                    print(val.toString());
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text("Yeni Satış")),
-              TextButton.icon(
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => AddSale()));
                   },
+                  icon: Icon(Icons.add),
+                  label: Text("Yeni Satış")),
+              TextButton.icon(
+                  onPressed: () {},
                   icon: Icon(Icons.sort),
                   label: Text("Sırala")),
             ],
