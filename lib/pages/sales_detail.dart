@@ -119,12 +119,15 @@ class _SaleDetailsState extends State<SaleDetails> {
                     child: TextButton.icon(
                         onPressed: () async {
                           var val = await showPaymentDialog(context);
-                          setState(() {
-                            widget.sale.kaparo = val + widget.sale.kaparo;
-                            widget.sale.remainingAmount =
-                                widget.sale.remainingAmount - val;
-                          });
-                          print(val.toString());
+                          if (val != null) {
+                            setState(() {
+                              widget.sale.kaparo = val + widget.sale.kaparo;
+                              if (widget.sale.kurbanSubTip != 2) {
+                                widget.sale.remainingAmount =
+                                    widget.sale.remainingAmount - val;
+                              }
+                            });
+                          }
                         },
                         icon: Icon(Icons.payment),
                         label: Text("Yeni Ödeme Ekle")),
@@ -208,7 +211,7 @@ class _SaleDetailsState extends State<SaleDetails> {
         ));
   }
 
-  Future<int> showPaymentDialog(BuildContext context) async {
+  Future<int?> showPaymentDialog(BuildContext context) async {
     print(width);
     return await showDialog(
         context: context,

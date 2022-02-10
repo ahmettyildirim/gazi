@@ -219,8 +219,10 @@ class DataRepository {
     var data = values.data() as Map<String, dynamic>;
     int kaparo = data[FieldKeys.saleKaparo];
     int newKaparo = kaparo + payment.amount;
-    int remainingAmount =
-        (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+    int remainingAmount = 0;
+    if (data[FieldKeys.saleKurbanSubTip].toString() != "2") {
+      remainingAmount = (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+    }
     await reference.update({
       FieldKeys.saleKaparo: newKaparo,
       FieldKeys.saleRemainingAmount: remainingAmount
