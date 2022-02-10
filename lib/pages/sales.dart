@@ -29,12 +29,10 @@ String getImagePath(int index) {
 class _SalesListState extends State<SalesList> {
   final _nameController = TextEditingController();
   String _searchText = "";
-  bool _tip1 = true;
   FilterModel filterModel = new FilterModel();
   @override
   void initState() {
     super.initState();
-    _tip1 = false;
     _nameController.addListener(() {
       if (_nameController.text.isEmpty) {
         setState(() {
@@ -201,7 +199,8 @@ class _SalesListState extends State<SalesList> {
         children: [
           //
           Padding(
-            padding: EdgeInsets.only(top: 40, bottom: 0, left: 10, right: 10),
+            padding:
+                EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0, bottom: 0),
             child: TextField(
               keyboardType:
                   TextInputType.numberWithOptions(decimal: true, signed: true),

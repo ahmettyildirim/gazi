@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
-import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
-import 'package:gazi_app/pages/add_customer.dart';
 import 'package:gazi_app/pages/add_kurban.dart';
 
 class KurbanPage extends StatefulWidget {
@@ -22,59 +19,105 @@ class KurbanPage extends StatefulWidget {
 var _repositoryInstance = DataRepository.instance;
 
 class _KurbanPageState extends State<KurbanPage> {
+  final _nameController = TextEditingController();
+  bool isSwitched = true;
+  String _searchText = "";
   @override
   void initState() {
     super.initState();
+    _nameController.addListener(() {
+      if (_nameController.text.isEmpty) {
+        setState(() {
+          _searchText = "";
+        });
+      } else {
+        setState(() {
+          _searchText = _nameController.text;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final _nameController = TextEditingController();
-    String _searchText = "";
-
-    @override
-    void initState() {
-      super.initState();
-      _nameController.addListener(() {
-        if (_nameController.text.isEmpty) {
-          setState(() {
-            _searchText = "";
-          });
-        } else {
-          setState(() {
-            _searchText = _nameController.text;
-          });
-        }
-      });
-    }
-
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding:
-                EdgeInsets.only(top: 50.0, left: 10.0, right: 10.0, bottom: 30),
+                EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0, bottom: 0),
             child: TextField(
+              keyboardType:
+                  TextInputType.numberWithOptions(decimal: true, signed: true),
               controller: _nameController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                  hintText: "Kurban No ile Filtrele",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+              decoration:
+                  InputDecoration(labelText: "Kurban numarası ile ara "),
             ),
           ),
-          TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddKurban()));
-              },
-              child: Text(
-                "Yeni Hisseli Kurban Ekle",
-                style: TextStyle(fontSize: 30),
-              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Sadece Vekaletliler",
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.blue,
+                          overflow: TextOverflow.visible),
+                      textAlign: TextAlign.center),
+                  Switch(
+                    value: isSwitched,
+                    onChanged: (value) {
+                      setState(() {
+                        isSwitched = value;
+                      });
+                    },
+                    activeTrackColor: Colors.lightBlueAccent,
+                    activeColor: Colors.blueAccent,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("Dolu Hisseleri\nGösterme",
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.blue,
+                          overflow: TextOverflow.visible),
+                      textAlign: TextAlign.center),
+                  Switch(
+                    value: isSwitched,
+                    onChanged: (value) {
+                      setState(() {
+                        isSwitched = value;
+                      });
+                    },
+                    activeTrackColor: Colors.lightBlueAccent,
+                    activeColor: Colors.blueAccent,
+                  ),
+                ],
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton.icon(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddKurban()));
+                    setState(() {
+                      // filterModel = val;
+                    });
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text("Yeni Hisse ekle")),
+            ],
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _repositoryInstance.getAllItems(
