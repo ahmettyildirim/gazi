@@ -56,12 +56,13 @@ class _CustomerListState extends State<CustomerList> {
                       borderRadius: BorderRadius.all(Radius.circular(10.0)))),
             ),
           ),
-          TextButton(
+          TextButton.icon(
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AddCustomer()));
               },
-              child: Text("Yeni Müşteri Ekle")),
+              icon: Icon(Icons.add),
+              label: Text("Yeni Müşteri Ekle")),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _repositoryInstance.getAllItems(CollectionKeys.customers,
