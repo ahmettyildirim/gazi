@@ -186,7 +186,7 @@ class _KurbanPageState extends State<KurbanPage> {
                               : Colors.white,
                           child: ListTile(
                               subtitle: Text(
-                                "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}",
+                                "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}\nAçıklama: :${hisseKurban.aciklama}",
                                 style: TextStyle(
                                     color: hisseKurban.remainingHisse == 0
                                         ? Colors.white60
