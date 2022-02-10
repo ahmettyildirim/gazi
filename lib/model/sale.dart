@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
+import 'package:gazi_app/model/payment.dart';
 
 String getBuyukKurbanCins(int typeId) {
   return typeId == 1 ? "Dana" : "Düve";
@@ -54,6 +55,7 @@ class SaleModel implements GenericModel {
   late DateTime? createTime;
   late String? createUser;
   late CustomerModel customer;
+  late List<PaymentModel> paymentList;
 
   SaleModel(
       {required this.customerRef,
@@ -73,12 +75,13 @@ class SaleModel implements GenericModel {
       required this.aciklama,
       this.createTime,
       this.createUser,
-      required this.customer}) {
+      required this.customer,
+      this.id = ""}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.sales);
   }
 
-  factory SaleModel.fromJson(Map<dynamic, dynamic> json) {
+  factory SaleModel.fromJson(Map<dynamic, dynamic> json, {String id = ""}) {
     return SaleModel(
         customerRef: json[FieldKeys.saleCustomerRef] as String,
         kurbanTip: json[FieldKeys.saleKurbanTip] as int,
@@ -97,7 +100,8 @@ class SaleModel implements GenericModel {
         aciklama: json[FieldKeys.aciklama] as String?,
         createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: json[FieldKeys.createUser] as String,
-        customer: CustomerModel.fromJson(json[FieldKeys.customer]));
+        customer: CustomerModel.fromJson(json[FieldKeys.customer]),
+        id: id);
   }
 
   HashMap<String, dynamic> toMap() {

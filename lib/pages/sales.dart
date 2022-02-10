@@ -297,7 +297,8 @@ class _SalesListState extends State<SalesList> {
                   return ListView.builder(
                     itemCount: saleValues.length,
                     itemBuilder: (context, index) {
-                      var sale = SaleModel.fromJson(saleValues[index].data());
+                      var sale = SaleModel.fromJson(saleValues[index].data(),
+                          id: saleValues[index].id);
                       return Dismissible(
                         key: ObjectKey(sale),
                         child: GestureDetector(

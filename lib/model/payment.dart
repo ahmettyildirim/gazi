@@ -6,16 +6,10 @@ import 'package:gazi_app/model/general_model.dart';
 
 enum PaymentType { Nakit, KrediKarti, Senet, Havale }
 
-extension ParseToString on PaymentType {
-  String toShortString() {
-    return this.toString().split('.').last;
-  }
-}
-
 class PaymentModel implements GenericModel {
   String id = "";
   int amount;
-  PaymentType paymentType;
+  String paymentType;
   late String collectionReferenceName;
   late DateTime? createTime;
   late String? createUser;
@@ -28,7 +22,7 @@ class PaymentModel implements GenericModel {
   factory PaymentModel.fromJson(Map<dynamic, dynamic> json) {
     return PaymentModel(
       amount: json["amount"] as int,
-      paymentType: json["count"] as PaymentType,
+      paymentType: json["type"] as String,
     );
   }
 
@@ -36,7 +30,7 @@ class PaymentModel implements GenericModel {
   HashMap<String, dynamic> toMap() {
     var item = HashMap<String, dynamic>();
     item[FieldKeys.paymentAmount] = this.amount;
-    item[FieldKeys.paymentType] = this.paymentType.toShortString();
+    item[FieldKeys.paymentType] = this.paymentType;
     return item;
   }
 

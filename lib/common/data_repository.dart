@@ -222,6 +222,14 @@ class DataRepository {
     return await addNewItemToCollection(
         reference.collection(CollectionKeys.payment), payment);
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSalePaymentList(
+      String referenceId) {
+    return getCollectionReference(CollectionKeys.sales)
+        .doc(referenceId)
+        .collection(CollectionKeys.payment)
+        .snapshots();
+  }
 }
 
 Future<void> addNewKotra(int kotraNo, int capacity) async {

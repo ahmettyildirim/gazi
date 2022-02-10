@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
+import 'package:gazi_app/pages/add_sale.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,6 +13,8 @@ class SaleDetails extends StatefulWidget {
   @override
   State<SaleDetails> createState() => _SaleDetailsState();
 }
+
+var _repositoryInstance = DataRepository.instance;
 
 class _SaleDetailsState extends State<SaleDetails> {
   double width = 0;
@@ -36,7 +42,7 @@ class _SaleDetailsState extends State<SaleDetails> {
     );
   }
 
-  Widget getRowInfoForPhone(String value) {
+  Widget getRowInfoForPhone() {
     return Column(
       children: [
         Padding(
@@ -47,12 +53,12 @@ class _SaleDetailsState extends State<SaleDetails> {
               Text("Müşteri Telefonu"),
               TextButton(
                 child: Text(
-                  value,
+                  widget.sale.customer.phone,
                   overflow: TextOverflow.visible,
                   textAlign: TextAlign.end,
                 ),
                 onPressed: () {
-                  _makePhoneCall("0" + value);
+                  _makePhoneCall("0" + widget.sale.customer.phone);
                 },
               )
             ],
@@ -61,6 +67,53 @@ class _SaleDetailsState extends State<SaleDetails> {
         Divider(height: 2.0),
       ],
     );
+  }
+
+  Widget _getPayments() {
+    return Column(children: [
+      Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Yapılan Ödemeler"),
+              Container(
+                alignment: AlignmentDirectional.centerEnd,
+                width: width / 2,
+                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream:
+                        _repositoryInstance.getSalePaymentList(widget.sale.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var paymentValues = snapshot.data!.docs.toList();
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: paymentValues.length,
+                          itemBuilder: (context, index) {
+                            var payment = PaymentModel.fromJson(
+                                paymentValues[index].data());
+                            return TextButton(
+                              style:
+                                  ButtonStyle(alignment: Alignment.centerRight),
+                              child: Text(
+                                payment.amount.toString() + " TL",
+                                overflow: TextOverflow.visible,
+                                textAlign: TextAlign.end,
+                              ),
+                              onPressed: () {},
+                            );
+                          },
+                        );
+                      } else {
+                        return Center();
+                      }
+                    }),
+              ),
+              Divider(height: 2.0),
+            ],
+          ))
+    ]);
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
@@ -91,7 +144,7 @@ class _SaleDetailsState extends State<SaleDetails> {
               children: [
                 getRowInfo("No", widget.sale.kurbanNo.toString()),
                 getRowInfo("Müşteri Adı", widget.sale.customer.name),
-                getRowInfoForPhone(widget.sale.customer.phone),
+                getRowInfoForPhone(),
                 getRowInfo("Tip", getKurbanTypeName(widget.sale.kurbanTip)),
                 getRowInfo(
                     "Alt Tip", getKurbanSubTypeName(widget.sale.kurbanSubTip)),
@@ -125,6 +178,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                     : getRowInfo("Kalan Tutar",
                         widget.sale.remainingAmount.toString() + " TL"),
                 getRowInfo("Açıklama", widget.sale.aciklama!),
+                _getPayments(),
                 getRowInfo("Satış Tarihi", formattedDate),
                 getRowInfo("Satışı Yapan", widget.sale.createUser!),
               ],
