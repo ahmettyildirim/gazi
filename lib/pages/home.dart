@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
       //   elevation: 2.0,
       // ),
       floatingActionButton: Visibility(
-        visible: true,
+        visible: false,
         child: FloatingActionButton(
           onPressed: () {
             Navigator.push(

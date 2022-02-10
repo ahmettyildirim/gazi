@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/sale.dart';
+import 'package:gazi_app/pages/add_sale.dart';
 import 'package:gazi_app/pages/sales_detail.dart';
 
 class SalesList extends StatefulWidget {
@@ -228,6 +229,13 @@ class _SalesListState extends State<SalesList> {
                       filterModel = val;
                     });
                     print(val.toString());
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text("Yeni Satış")),
+              TextButton.icon(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddSale()));
                   },
                   icon: Icon(Icons.sort),
                   label: Text("Sırala")),
