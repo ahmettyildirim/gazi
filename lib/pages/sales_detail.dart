@@ -93,7 +93,8 @@ class _SaleDetailsState extends State<SaleDetails> {
                               itemCount: paymentValues.length,
                               itemBuilder: (context, index) {
                                 var payment = PaymentModel.fromJson(
-                                    paymentValues[index].data());
+                                    paymentValues[index].data(),
+                                    id: paymentValues[index].id);
                                 return TextButton(
                                   style: ButtonStyle(
                                       alignment: Alignment.centerRight),
@@ -103,7 +104,9 @@ class _SaleDetailsState extends State<SaleDetails> {
                                     textAlign: TextAlign.end,
                                   ),
                                   onPressed: () {
-                                    setState(() {});
+                                    setState(() {
+                                      showPaymentDetail(context, payment);
+                                    });
                                   },
                                 );
                               },
@@ -301,6 +304,130 @@ class _SaleDetailsState extends State<SaleDetails> {
                             widget.sale.id, payment);
 
                         Navigator.of(context).pop(tutar);
+                      })
+                ])
+              ],
+            );
+          });
+        });
+  }
+
+  Future<SaleModel?> showPaymentDetail(
+      BuildContext context, PaymentModel paymentModel) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Ödeme Detayı',
+                  style: TextStyle(fontSize: 12, color: Colors.blueGrey)),
+              content: Container(
+                child: SingleChildScrollView(
+                    child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Tutar", style: TextStyle(fontSize: 10)),
+                          Container(
+                              child: Expanded(
+                            child: Text(paymentModel.amount.toString() + " TL",
+                                overflow: TextOverflow.visible,
+                                textAlign: TextAlign.end,
+                                style: TextStyle(fontSize: 10)),
+                          ))
+                        ],
+                      ),
+                    ),
+                    Divider(height: 2.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("İşlemi Yapan", style: TextStyle(fontSize: 10)),
+                          Container(
+                              child: Text(paymentModel.createUser.toString(),
+                                  overflow: TextOverflow.visible,
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(fontSize: 10)))
+                        ],
+                      ),
+                    ),
+                    Divider(height: 2.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("İşlem Tarihi", style: TextStyle(fontSize: 10)),
+                          Container(
+                              child: Text(
+                                  DateFormat('dd-MM-yyyy kk:mm')
+                                      .format(paymentModel.createTime!),
+                                  overflow: TextOverflow.visible,
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(fontSize: 10)))
+                        ],
+                      ),
+                    ),
+                    Divider(height: 2.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Açıklama", style: TextStyle(fontSize: 10)),
+                          Expanded(
+                              child: Text(paymentModel.aciklama.toString(),
+                                  overflow: TextOverflow.visible,
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(fontSize: 10)))
+                        ],
+                      ),
+                    ),
+                    Divider(height: 2.0),
+                  ],
+                )),
+              ),
+              actions: [
+                ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.redAccent,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          textStyle: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      child: Text(
+                        "Ödemeyi Sil",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).pop();
+                        });
+                        // your code
+                      }),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          textStyle: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      child: Text("Kapat", style: TextStyle(fontSize: 10)),
+                      onPressed: () async {
+                        // int tutar = 0;
+                        // PaymentModel payment = new PaymentModel(
+                        //     amount: tutar,
+                        //     paymentType: "Nakit",
+                        //     aciklama: "_aciklamaController.text");
+                        // await _repositoryInstance.addNewPaymentWithReferenceId(
+                        //     widget.sale.id, payment);
+
+                        Navigator.of(context).pop(null);
                       })
                 ])
               ],

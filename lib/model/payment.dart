@@ -18,16 +18,22 @@ class PaymentModel implements GenericModel {
   PaymentModel(
       {required this.amount,
       required this.paymentType,
-      required this.aciklama}) {
+      required this.aciklama,
+      this.createTime,
+      this.createUser,
+      this.id = ""}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.payment);
   }
 
-  factory PaymentModel.fromJson(Map<dynamic, dynamic> json) {
+  factory PaymentModel.fromJson(Map<dynamic, dynamic> json, {String id = ""}) {
     return PaymentModel(
         amount: json[FieldKeys.paymentAmount] as int,
         paymentType: json[FieldKeys.paymentType] as String,
-        aciklama: json[FieldKeys.aciklama] as String?);
+        aciklama: json[FieldKeys.aciklama] as String?,
+        createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
+        createUser: json[FieldKeys.createUser] as String,
+        id: id);
   }
 
   @override
