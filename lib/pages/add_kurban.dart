@@ -31,21 +31,21 @@ class _AddKurbanState extends State<AddKurban> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _saleNoController,
-                    decoration: InputDecoration(labelText: 'Kurban No')),
+                    decoration: InputDecoration(labelText: 'Kurbann No')),
               ),
               Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _kotraNoController,
                     decoration: InputDecoration(labelText: 'Kotra No')),
               ),
               Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _hisseNumController,
@@ -53,7 +53,7 @@ class _AddKurbanState extends State<AddKurban> {
                     decoration: InputDecoration(labelText: 'Hisse Sayısı')),
               ),
               Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _hisseAmountController,
@@ -61,7 +61,7 @@ class _AddKurbanState extends State<AddKurban> {
                     decoration: InputDecoration(labelText: 'Hisse Tutarı')),
               ),
               Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _totalAmountController,
@@ -69,8 +69,7 @@ class _AddKurbanState extends State<AddKurban> {
                     decoration: InputDecoration(labelText: 'Toplam Tutar')),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    left: screenHeight / 30, right: screenHeight / 30, top: 10),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                   keyboardType: TextInputType.multiline,
                   controller: _aciklamaController,
@@ -81,7 +80,7 @@ class _AddKurbanState extends State<AddKurban> {
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.all(screenHeight / 30),
+                  padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                   child: ElevatedButton(
                       onPressed: addKurban, child: Text("Ekle"))),
             ],

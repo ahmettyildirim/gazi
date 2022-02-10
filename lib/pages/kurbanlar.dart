@@ -20,7 +20,8 @@ var _repositoryInstance = DataRepository.instance;
 
 class _KurbanPageState extends State<KurbanPage> {
   final _nameController = TextEditingController();
-  bool isSwitched = true;
+  bool isAllSelected = true;
+  bool isVekaletSelected = true;
   String _searchText = "";
   @override
   void initState() {
@@ -69,10 +70,10 @@ class _KurbanPageState extends State<KurbanPage> {
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),
                   Switch(
-                    value: isSwitched,
+                    value: isVekaletSelected,
                     onChanged: (value) {
                       setState(() {
-                        isSwitched = value;
+                        isVekaletSelected = value;
                       });
                     },
                     activeTrackColor: Colors.lightBlueAccent,
@@ -90,10 +91,10 @@ class _KurbanPageState extends State<KurbanPage> {
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),
                   Switch(
-                    value: isSwitched,
+                    value: isAllSelected,
                     onChanged: (value) {
                       setState(() {
-                        isSwitched = value;
+                        isAllSelected = value;
                       });
                     },
                     activeTrackColor: Colors.lightBlueAccent,
