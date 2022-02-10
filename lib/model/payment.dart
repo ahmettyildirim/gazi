@@ -10,20 +10,24 @@ class PaymentModel implements GenericModel {
   String id = "";
   int amount;
   String paymentType;
+  late String? aciklama;
   late String collectionReferenceName;
   late DateTime? createTime;
   late String? createUser;
 
-  PaymentModel({required this.amount, required this.paymentType}) {
+  PaymentModel(
+      {required this.amount,
+      required this.paymentType,
+      required this.aciklama}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.payment);
   }
 
   factory PaymentModel.fromJson(Map<dynamic, dynamic> json) {
     return PaymentModel(
-      amount: json["amount"] as int,
-      paymentType: json["type"] as String,
-    );
+        amount: json[FieldKeys.paymentAmount] as int,
+        paymentType: json[FieldKeys.paymentType] as String,
+        aciklama: json[FieldKeys.aciklama] as String?);
   }
 
   @override
@@ -31,6 +35,7 @@ class PaymentModel implements GenericModel {
     var item = HashMap<String, dynamic>();
     item[FieldKeys.paymentAmount] = this.amount;
     item[FieldKeys.paymentType] = this.paymentType;
+    item[FieldKeys.aciklama] = this.aciklama ?? "";
     return item;
   }
 

@@ -218,9 +218,22 @@ class DataRepository {
     var values = await reference.get();
     var data = values.data() as Map<String, dynamic>;
     int kaparo = data[FieldKeys.saleKaparo];
-    await reference.update({FieldKeys.saleKaparo: kaparo + payment.amount});
+    int newKaparo = kaparo + payment.amount;
+    int remainingAmount =
+        (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+    await reference.update({
+      FieldKeys.saleKaparo: newKaparo,
+      FieldKeys.saleRemainingAmount: remainingAmount
+    });
     return await addNewItemToCollection(
         reference.collection(CollectionKeys.payment), payment);
+  }
+
+  Future<DocumentReference> addNewPaymentWithReferenceId(
+      String referenceId, PaymentModel payment) async {
+    var colReference =
+        getCollectionReference(CollectionKeys.sales).doc(referenceId);
+    return await addNewPayment(colReference, payment);
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getSalePaymentList(
@@ -228,6 +241,7 @@ class DataRepository {
     return getCollectionReference(CollectionKeys.sales)
         .doc(referenceId)
         .collection(CollectionKeys.payment)
+        .orderBy(FieldKeys.createTime)
         .snapshots();
   }
 }

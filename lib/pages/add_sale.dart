@@ -801,7 +801,9 @@ class _AddSaleState extends State<AddSale> {
     var addedItem = await DataRepository.instance.addNewItem(sale);
     if (_kaparoController.text.isNotEmpty) {
       PaymentModel payment = new PaymentModel(
-          amount: int.parse(_kaparoController.text), paymentType: "Nakit");
+          amount: int.parse(_kaparoController.text),
+          paymentType: "Nakit",
+          aciklama: "İlk ödeme");
       var result =
           await DataRepository.instance.addNewPayment(addedItem, payment);
     }

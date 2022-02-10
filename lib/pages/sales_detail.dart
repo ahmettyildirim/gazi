@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
-import 'package:gazi_app/pages/add_sale.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -103,7 +102,9 @@ class _SaleDetailsState extends State<SaleDetails> {
                                     overflow: TextOverflow.visible,
                                     textAlign: TextAlign.end,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {});
+                                  },
                                 );
                               },
                             );
@@ -119,7 +120,9 @@ class _SaleDetailsState extends State<SaleDetails> {
                         onPressed: () async {
                           var val = await showPaymentDialog(context);
                           setState(() {
-                            // filterModel = val;
+                            widget.sale.kaparo = val + widget.sale.kaparo;
+                            widget.sale.remainingAmount =
+                                widget.sale.remainingAmount - val;
                           });
                           print(val.toString());
                         },
@@ -205,7 +208,7 @@ class _SaleDetailsState extends State<SaleDetails> {
         ));
   }
 
-  showPaymentDialog(BuildContext context) async {
+  Future<int> showPaymentDialog(BuildContext context) async {
     print(width);
     return await showDialog(
         context: context,
@@ -214,86 +217,92 @@ class _SaleDetailsState extends State<SaleDetails> {
               TextEditingController();
           final TextEditingController _aciklamaController =
               TextEditingController();
-          return AlertDialog(
-            title: Text('Yeni Ödeme Ekle'),
-            content: Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Divider(
-                      height: 5.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Kalan Tutar"),
-                          Container(
-                              child: Text(
-                            widget.sale.remainingAmount.toString(),
-                            overflow: TextOverflow.visible,
-                            textAlign: TextAlign.end,
-                          )),
-                          TextButton.icon(
-                              onPressed: () {
-                                _paymentController.text =
-                                    widget.sale.remainingAmount.toString();
-                              },
-                              icon: Icon(Icons.arrow_downward),
-                              label: Text(""))
-                        ],
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Yeni Ödeme Ekle'),
+              content: Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Divider(
+                        height: 5.0,
                       ),
-                    ),
-                    Divider(
-                      height: 8.0,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        controller: _paymentController,
-                        decoration: InputDecoration(labelText: "Ödeme Tutarı"),
+                      Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Kalan Tutar"),
+                            Container(
+                                child: Text(
+                              widget.sale.remainingAmount.toString(),
+                              overflow: TextOverflow.visible,
+                              textAlign: TextAlign.end,
+                            )),
+                            TextButton.icon(
+                                onPressed: () {
+                                  _paymentController.text =
+                                      widget.sale.remainingAmount.toString();
+                                },
+                                icon: Icon(Icons.arrow_downward),
+                                label: Text(""))
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: TextFormField(
-                        keyboardType: TextInputType.name,
-                        controller: _aciklamaController,
-                        maxLines: null,
-                        minLines: 2,
-                        decoration: InputDecoration(
-                            labelText: 'Açıklama (İsteğe bağlı)'),
+                      Divider(
+                        height: 8.0,
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: _paymentController,
+                          decoration:
+                              InputDecoration(labelText: "Ödeme Tutarı"),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: TextFormField(
+                          keyboardType: TextInputType.name,
+                          controller: _aciklamaController,
+                          maxLines: null,
+                          minLines: 2,
+                          decoration: InputDecoration(
+                              labelText: 'Açıklama (İsteğe bağlı)'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            actions: [
-              ButtonBar(
-                alignment : MainAxisAlignment.spaceBetween,
-                children: [
+              actions: [
+                ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: [
+                  ElevatedButton(
+                      child: Text("İptal"),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).pop();
+                        });
+                        // your code
+                      }),
+                  ElevatedButton(
+                      child: Text("Onayla"),
+                      onPressed: () async {
+                        int tutar = int.parse(_paymentController.text);
+                        PaymentModel payment = new PaymentModel(
+                            amount: tutar,
+                            paymentType: "Nakit",
+                            aciklama: _aciklamaController.text);
+                        await _repositoryInstance.addNewPaymentWithReferenceId(
+                            widget.sale.id, payment);
 
-              ElevatedButton(
-                  child: Text("İptal"),
-                  onPressed: () {
-                    setState(() {
-                      Navigator.of(context).pop();
-                    });
-                    // your code
-                  }),
-              ElevatedButton(
-                  child: Text("Onayla"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-                ]
-              )
-
-            ],
-          );
+                        Navigator.of(context).pop(tutar);
+                      })
+                ])
+              ],
+            );
+          });
         });
   }
 }
