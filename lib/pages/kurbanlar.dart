@@ -138,25 +138,24 @@ class _KurbanPageState extends State<KurbanPage> {
                       var hisseKurban = HisseKurbanModel.fromJson(
                           kurbanValues[index].data(),
                           id: kurbanValues[index].id);
-                      return Dismissible(
-                        key: ObjectKey(hisseKurban),
-                        child: GestureDetector(
-                          onTap: () {
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.onHisseSelected == null) {
                             widget.onHisseSelected!(hisseKurban);
                             print("Kurban Selected");
                             Navigator.pop(context);
-                          },
-                          child: Card(
-                            child: ListTile(
-                                subtitle: Text(
-                                    "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}"),
-                                title: Text(
-                                    "Kalan Hisse Sayısı :${hisseKurban.remainingHisse}"),
-                                leading: Text(
-                                  hisseKurban.kurbanNo.toString(),
-                                  style: TextStyle(fontSize: 30),
-                                )),
-                          ),
+                          }
+                        },
+                        child: Card(
+                          child: ListTile(
+                              subtitle: Text(
+                                  "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}"),
+                              title: Text(
+                                  "Kalan Hisse Sayısı :${hisseKurban.remainingHisse}"),
+                              leading: Text(
+                                hisseKurban.kurbanNo.toString(),
+                                style: TextStyle(fontSize: 30),
+                              )),
                         ),
                       );
                     },

@@ -18,24 +18,29 @@ class _AddKurbanState extends State<AddKurban> {
   @override
   Widget build(BuildContext context) {
     var screenInfo = MediaQuery.of(context);
+    bool isVekalet = false;
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
+    return StatefulBuilder(builder: (context, setState){
     return Scaffold(
       appBar: AppBar(
         title: Text("Yeni Kurban Ekle"),
       ),
-      body: Center(
+      body: Container(
+        padding: EdgeInsets.only(top:20,left:10,right:10),
           child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _saleNoController,
-                    decoration: InputDecoration(labelText: 'Kurbann No')),
+                    decoration: InputDecoration(labelText: 'Kurban No')),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -74,13 +79,35 @@ class _AddKurbanState extends State<AddKurban> {
                   keyboardType: TextInputType.multiline,
                   controller: _aciklamaController,
                   maxLines: null,
-                  minLines: 2,
+                  minLines: 3,
                   decoration:
                       InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                child: 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Vekaletli Hisse",
+                      style: TextStyle(fontSize: 15),
+                      textAlign: TextAlign.center),
+                  Switch(
+                    value: isVekalet,
+                    onChanged: (value) {
+                      setState(() {
+                        isVekalet = value;
+                      });
+                    },
+                    activeTrackColor: Colors.lightBlueAccent,
+                    activeColor: Colors.blueAccent,
+                  ),
+                ],
+              )
+              ),
+              Padding(
+                  padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                   child: ElevatedButton(
                       onPressed: addKurban, child: Text("Ekle"))),
             ],
@@ -88,6 +115,8 @@ class _AddKurbanState extends State<AddKurban> {
         ),
       )),
     );
+    });
+
   }
 
   Future<void> addKurban() async {
