@@ -100,9 +100,6 @@ class _AddSaleState extends State<AddSale> {
                     : _kurbanTip == 2
                         ? _getKucukbasSubmenu(screenWidth)
                         : Center(),
-                SizedBox(height: 10),
-                Divider(height: 3),
-                SizedBox(height: 10),
                 _kurbanTip == 1
                     ? _buyukKurbanTip != 0
                         ? _getBuyukbasSubmenu(screenWidth)
@@ -188,126 +185,91 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getBuyukbasTypeMenu(double screenWidth) {
-    return CustomRadioButton(
-      enableButtonWrap: true,
-      shapeRadius: 14.0,
-      radius: 14.0,
-      enableShape: false,
-      unSelectedColor: Theme.of(context).canvasColor,
-      buttonLables: [
-        "Dana",
-        "Düve",
+    return Column(
+      children: [
+        CustomRadioButton(
+          enableButtonWrap: true,
+          shapeRadius: 14.0,
+          radius: 14.0,
+          enableShape: false,
+          unSelectedColor: Theme.of(context).canvasColor,
+          buttonLables: [
+            "Dana",
+            "Düve",
+          ],
+          buttonValues: [
+            1,
+            2,
+          ],
+          radioButtonValue: (value) => {
+            setState(() {
+              _buyukKurbanTip = int.parse(value.toString());
+            })
+          },
+          selectedColor: Theme.of(context).colorScheme.secondary,
+        ),
+        SizedBox(height: 10),
+        Divider(height: 3),
+        SizedBox(height: 10),
       ],
-      buttonValues: [
-        1,
-        2,
-      ],
-      radioButtonValue: (value) => {
-        setState(() {
-          _buyukKurbanTip = int.parse(value.toString());
-        })
-      },
-      selectedColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
   Widget _getBuyukbasSubmenu(double screenWidth) {
-    return CustomRadioButton(
-      enableButtonWrap: true,
-      shapeRadius: 14.0,
-      radius: 14.0,
-      enableShape: false,
-      unSelectedColor: Theme.of(context).canvasColor,
-      buttonLables: ["Ayaktan(Kilo)", "Karkas", "Ayaktan", "Hisse"],
-      buttonValues: [1, 2, 3, 4],
-      buttonTextStyle: ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
-      width: screenWidth / 3,
-      radioButtonValue: (value) => {
-        setState(() {
-          _kurbanSubTip = int.parse(value.toString());
-          refreshFields();
-        })
-      },
-      selectedColor: Theme.of(context).colorScheme.secondary,
+    return Column(
+      children: [
+        CustomRadioButton(
+          enableButtonWrap: true,
+          shapeRadius: 14.0,
+          radius: 14.0,
+          enableShape: false,
+          unSelectedColor: Theme.of(context).canvasColor,
+          buttonLables: ["Ayaktan(Kilo)", "Karkas", "Ayaktan", "Hisse"],
+          buttonValues: [1, 2, 3, 4],
+          buttonTextStyle:
+              ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
+          width: screenWidth / 3,
+          radioButtonValue: (value) => {
+            setState(() {
+              _kurbanSubTip = int.parse(value.toString());
+              refreshFields();
+            })
+          },
+          selectedColor: Theme.of(context).colorScheme.secondary,
+        ),
+        SizedBox(height: 10),
+        Divider(height: 3),
+        SizedBox(height: 10),
+      ],
     );
   }
 
   Widget _getKucukbasSubmenu(double screenWidth) {
-    return CustomRadioButton(
-      enableButtonWrap: true,
-      shapeRadius: 14.0,
-      radius: 14.0,
-      enableShape: false,
-      unSelectedColor: Theme.of(context).canvasColor,
-      buttonLables: ["Ayaktan(Kilo)", "Ayaktan"],
-      buttonValues: [5, 6],
-      buttonTextStyle: ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
-      width: screenWidth / 3,
-      radioButtonValue: (value) => {
-        setState(() {
-          _kurbanSubTip = int.parse(value.toString());
-          refreshFields();
-        })
-      },
-      selectedColor: Theme.of(context).colorScheme.secondary,
-    );
-    return Padding(
-      padding: EdgeInsets.only(top: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _kurbanSubTip = _kurbanSubTip == 5 ? 0 : 5;
-                refreshFields();
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 4,
-              height: 35,
-              child: Container(
-                alignment: Alignment.center,
-                color: _kurbanSubTip == 5 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Ayaktan(Kilo)",
-                  style: TextStyle(
-                      color: _kurbanSubTip == 5
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 33,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _kurbanSubTip = _kurbanSubTip == 6 ? 0 : 6;
-                refreshFields();
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 4,
-              height: 35,
-              child: Container(
-                alignment: Alignment.center,
-                color: _kurbanSubTip == 6 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Ayaktan",
-                  style: TextStyle(
-                      color: _kurbanSubTip == 6
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 27,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        CustomRadioButton(
+          enableButtonWrap: true,
+          shapeRadius: 14.0,
+          radius: 14.0,
+          enableShape: false,
+          unSelectedColor: Theme.of(context).canvasColor,
+          buttonLables: ["Ayaktan(Kilo)", "Ayaktan"],
+          buttonValues: [5, 6],
+          buttonTextStyle:
+              ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
+          width: screenWidth / 3,
+          radioButtonValue: (value) => {
+            setState(() {
+              _kurbanSubTip = int.parse(value.toString());
+              refreshFields();
+            })
+          },
+          selectedColor: Theme.of(context).colorScheme.secondary,
+        ),
+        SizedBox(height: 10),
+        Divider(height: 3),
+        SizedBox(height: 10),
+      ],
     );
   }
 
