@@ -71,7 +71,7 @@ class _AddSaleState extends State<AddSale> {
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Padding(
                 //   padding: EdgeInsets.all(screenHeight / 30),
