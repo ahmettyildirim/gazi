@@ -94,22 +94,19 @@ class _CustomerListState extends State<CustomerList> {
                     itemBuilder: (context, index) {
                       var customer =
                           CustomerModel.fromJson(customerValues[index].data());
-                      return Dismissible(
-                        key: ObjectKey(customer),
-                        child: GestureDetector(
-                          onTap: () {
-                            print(widget.selectable);
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.onCustomerSelected != null) {
                             widget.onCustomerSelected!(customer);
-                            print("Customer Selected");
                             Navigator.pop(context);
-                          },
-                          child: Card(
-                            child: ListTile(
-                                dense: true,
-                                title: Text(customer.name),
-                                subtitle: Text(customer.phone),
-                                leading: const Icon(Icons.account_box_rounded)),
-                          ),
+                          }
+                        },
+                        child: Card(
+                          child: ListTile(
+                              dense: true,
+                              title: Text(customer.name),
+                              subtitle: Text(customer.phone),
+                              leading: const Icon(Icons.account_box_rounded)),
                         ),
                       );
                     },

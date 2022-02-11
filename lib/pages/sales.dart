@@ -300,35 +300,32 @@ class _SalesListState extends State<SalesList> {
                     itemBuilder: (context, index) {
                       var sale = SaleModel.fromJson(saleValues[index].data(),
                           id: saleValues[index].id);
-                      return Dismissible(
-                        key: ObjectKey(sale),
-                        child: GestureDetector(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      // BubbleScreen()
-                                      SaleDetails(
-                                        sale: sale,
-                                      ))),
-                          child: Card(
-                              child: ListTile(
-                            title: Text(getKurbanTypeName(sale.kurbanTip) +
-                                "-" +
-                                getKurbanSubTypeName(sale.kurbanSubTip)),
-                            subtitle: Text(
-                                "Toplam tutar :${sale.kurbanSubTip == 3 ? sale.amount : sale.generalAmount} \nÖdenen tutar : ${sale.kaparo}"),
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  AssetImage(getImagePath(sale.kurbanTip)),
-                            ),
-                            dense: false,
-                            trailing: Text(
-                              sale.kurbanNo.toString(),
-                              style: TextStyle(fontSize: 22),
-                            ),
-                          )),
-                        ),
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    // BubbleScreen()
+                                    SaleDetails(
+                                      sale: sale,
+                                    ))),
+                        child: Card(
+                            child: ListTile(
+                          title: Text(getKurbanTypeName(sale.kurbanTip) +
+                              "-" +
+                              getKurbanSubTypeName(sale.kurbanSubTip)),
+                          subtitle: Text(
+                              "Toplam tutar :${sale.kurbanSubTip == 3 ? sale.amount : sale.generalAmount} \nÖdenen tutar : ${sale.kaparo}"),
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                AssetImage(getImagePath(sale.kurbanTip)),
+                          ),
+                          dense: false,
+                          trailing: Text(
+                            sale.kurbanNo.toString(),
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        )),
                       );
                     },
                   );
