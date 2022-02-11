@@ -73,24 +73,6 @@ class _AddSaleState extends State<AddSale> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Padding(
-                //   padding: EdgeInsets.all(screenHeight / 30),
-                //   child: TextFormField(
-                //     onTap: () {
-                //       Navigator.push(
-                //           context,
-                //           MaterialPageRoute(
-                //               builder: (context) => CustomerSelect(
-                //                     onCustomerSelected: _selectCustomer,
-                //                   )));
-                //     },
-                //     keyboardType: TextInputType.number,
-                //     controller: _customerController,
-                //     decoration: InputDecoration(
-                //         hintText: 'Müşteri Seçmek İçin Buraya Tıklayın'),
-                //     readOnly: true,
-                //   ),
-                // ),
                 _getTypeMenu(screenWidth),
                 SizedBox(height: 10),
                 Divider(height: 3),
@@ -276,7 +258,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getNum(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _saleNoController,
@@ -288,7 +270,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getNumForHisse(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -318,7 +300,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getPhone(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
           keyboardType: TextInputType.phone,
           controller: _phoneController,
@@ -365,7 +347,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getName(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         controller: _nameController,
         decoration: InputDecoration(labelText: 'Müşteri Adı Soyadı'),
@@ -376,7 +358,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getKg(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
           keyboardType: TextInputType.number,
           controller: _kgController,
@@ -388,7 +370,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getAdet(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
           keyboardType: TextInputType.number,
           controller: _adetController,
@@ -400,7 +382,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getKgAmount(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
           keyboardType: TextInputType.number,
           controller: _kgAmountController,
@@ -412,7 +394,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getAmount(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
           readOnly: _kurbanSubTip == 4,
           keyboardType: TextInputType.number,
@@ -425,7 +407,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getTotal(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.number,
         readOnly: true,
@@ -438,7 +420,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getKaparo(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _kaparoController,
@@ -451,7 +433,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getKalanTutar(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _kalanTutarController,
@@ -465,7 +447,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getHisse(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _hisseCountController,
@@ -478,7 +460,7 @@ class _AddSaleState extends State<AddSale> {
   Widget _getAciklama(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
-          left: screenHeight / 30, right: screenHeight / 30, top: 10),
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.multiline,
         controller: _aciklamaController,
