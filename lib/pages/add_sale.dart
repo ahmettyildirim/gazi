@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'hisse_select.dart';
 
-class AddSale extends StatefulWidget {
+class AddSale extends StatefulWidget {  
   @override
   _AddSaleState createState() => _AddSaleState();
 }

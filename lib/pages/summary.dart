@@ -66,43 +66,76 @@ class _SummaryPageState extends State<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 40, left: 20, right: 10, bottom: 10),
-      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _repositoryInstance.getAllItems(CollectionKeys.sales),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var saleValues = snapshot.data!.docs;
-            var length = saleValues.length;
-            List<SaleModel> salelist = List.empty(growable: true);
-            for (int i = 0; i < length; i++) {
-              salelist.add(SaleModel.fromJson(saleValues[i].data()));
-            }
+      padding: EdgeInsets.only(top:40, left:10, right:10, bottom:10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+            padding: EdgeInsets.only(bottom: 10),
+              child: Text(
+            "Satış Özet Ekranı",
+            style: TextStyle(
+              color: Colors.blueAccent,
+              fontSize: 23,
+            ),
+          )),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: _repositoryInstance.getAllItems(CollectionKeys.sales),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var saleValues = snapshot.data!.docs;
+                  var length = saleValues.length;
+                  List<SaleModel> salelist = List.empty(growable: true);
+                  for (int i = 0; i < length; i++) {
+                    salelist.add(SaleModel.fromJson(saleValues[i].data()));
+                  }
 
-            return ListView.separated(
-                itemBuilder: (context, index) {
-                  var currentList = salelist
-                      .where((element) => element.kurbanSubTip == index + 1)
-                      .toList();
-                  return ListTile(
-                    dense: true,
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage(getImagePath(index + 1)),
-                    ),
-                    title: Text(getTitle(index + 1)),
-                    subtitle: Text(getMainText(currentList, index + 1)),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return Divider(height: 15);
-                },
-                itemCount: 6,
-                padding: EdgeInsets.all(5),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical);
-          } else {
-            return Center();
-          }
-        },
+                  return ListView.separated(
+                      separatorBuilder: (context, index) {
+                        return Divider(height: 15);
+                      },
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var currentList = salelist
+                            .where((element) => element.kurbanSubTip == index + 1)
+                            .toList();
+                        if (index > 5) {
+                          return ListTile(
+                            dense: false,
+                            leading: CircleAvatar(
+                              backgroundImage: AssetImage(getImagePath(3 + 1)),
+                            ),
+                            title: Text(getTitle(3 + 1)),
+                            subtitle: Text(getMainText(currentList, 3 + 1)),
+                          );
+                        } else {
+                          return ListTile(
+                            dense: false,
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage(getImagePath(index + 1)),
+                            ),
+                            title: Text(getTitle(index + 1)),
+                            subtitle: Text(getMainText(currentList, index + 1)),
+                          );
+                        }
+                      },
+                      itemCount: 6,
+                      padding: EdgeInsets.all(5),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical);
+                } else {
+                  return Center();
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
