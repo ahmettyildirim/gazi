@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
@@ -9,6 +8,7 @@ import 'package:gazi_app/model/sale.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'hisse_select.dart';
 
 class AddSale extends StatefulWidget {
@@ -59,327 +59,198 @@ class _AddSaleState extends State<AddSale> {
     var screenInfo = MediaQuery.of(context);
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(
         title: Text("Yeni Satış"),
       ),
-      body: Center(
-          child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Padding(
-              //   padding: EdgeInsets.all(screenHeight / 30),
-              //   child: TextFormField(
-              //     onTap: () {
-              //       Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //               builder: (context) => CustomerSelect(
-              //                     onCustomerSelected: _selectCustomer,
-              //                   )));
-              //     },
-              //     keyboardType: TextInputType.number,
-              //     controller: _customerController,
-              //     decoration: InputDecoration(
-              //         hintText: 'Müşteri Seçmek İçin Buraya Tıklayın'),
-              //     readOnly: true,
-              //   ),
-              // ),
-              _getTypeMenu(screenWidth),
-              _kurbanTip == 1
-                  ? _getBuyukbasTypeMenu(screenWidth)
-                  : _kurbanTip == 2
-                      ? _getKucukbasSubmenu(screenWidth)
-                      : Center(),
-              _kurbanTip == 1
-                  ? _buyukKurbanTip != 0
-                      ? _getBuyukbasSubmenu(screenWidth)
-                      : Center()
-                  : Center(),
-              _kurbanSubTip != 0
-                  ? _getPhone(screenWidth, screenHeight)
-                  : Center(),
-              _kurbanSubTip != 0
-                  ? _getName(screenWidth, screenHeight)
-                  : Center(),
-              [0, 4].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getNum(screenWidth, screenHeight),
-              ![6].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getAdet(screenWidth, screenHeight),
-              ![4].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getNumForHisse(screenWidth, screenHeight),
-              ![4].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getHisse(screenWidth, screenHeight),
-              [0, 2, 3, 4, 6].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getKg(screenWidth, screenHeight),
-              [0, 3, 4, 6].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getKgAmount(screenWidth, screenHeight),
-              ![3, 4, 6].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getAmount(screenWidth, screenHeight),
-              [0, 2, 3].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getTotal(screenWidth, screenHeight),
-              [0].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getKaparo(screenWidth, screenHeight),
-              [0, 2].contains(_kurbanSubTip)
-                  ? Center()
-                  : _getKalanTutar(screenWidth, screenHeight),
-              _kurbanSubTip != 0
-                  ? _getAciklama(screenWidth, screenHeight)
-                  : Center(),
-              _kurbanSubTip != 0
-                  ? Padding(
-                      padding: EdgeInsets.all(screenHeight / 30),
-                      child: ElevatedButton(
-                          onPressed: addSale, child: Text("Ekle")))
-                  : Center()
-            ],
+      body: Container(
+        padding: EdgeInsets.only(top: 30),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Padding(
+                //   padding: EdgeInsets.all(screenHeight / 30),
+                //   child: TextFormField(
+                //     onTap: () {
+                //       Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => CustomerSelect(
+                //                     onCustomerSelected: _selectCustomer,
+                //                   )));
+                //     },
+                //     keyboardType: TextInputType.number,
+                //     controller: _customerController,
+                //     decoration: InputDecoration(
+                //         hintText: 'Müşteri Seçmek İçin Buraya Tıklayın'),
+                //     readOnly: true,
+                //   ),
+                // ),
+                _getTypeMenu(screenWidth),
+                SizedBox(height: 10),
+                Divider(height: 3),
+                SizedBox(height: 10),
+                _kurbanTip == 1
+                    ? _getBuyukbasTypeMenu(screenWidth)
+                    : _kurbanTip == 2
+                        ? _getKucukbasSubmenu(screenWidth)
+                        : Center(),
+                SizedBox(height: 10),
+                Divider(height: 3),
+                SizedBox(height: 10),
+                _kurbanTip == 1
+                    ? _buyukKurbanTip != 0
+                        ? _getBuyukbasSubmenu(screenWidth)
+                        : Center()
+                    : Center(),
+                _kurbanSubTip != 0
+                    ? _getPhone(screenWidth, screenHeight)
+                    : Center(),
+                _kurbanSubTip != 0
+                    ? _getName(screenWidth, screenHeight)
+                    : Center(),
+                [0, 4].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getNum(screenWidth, screenHeight),
+                ![6].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getAdet(screenWidth, screenHeight),
+                ![4].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getNumForHisse(screenWidth, screenHeight),
+                ![4].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getHisse(screenWidth, screenHeight),
+                [0, 2, 3, 4, 6].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getKg(screenWidth, screenHeight),
+                [0, 3, 4, 6].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getKgAmount(screenWidth, screenHeight),
+                ![3, 4, 6].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getAmount(screenWidth, screenHeight),
+                [0, 2, 3].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getTotal(screenWidth, screenHeight),
+                [0].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getKaparo(screenWidth, screenHeight),
+                [0, 2].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getKalanTutar(screenWidth, screenHeight),
+                _kurbanSubTip != 0
+                    ? _getAciklama(screenWidth, screenHeight)
+                    : Center(),
+                _kurbanSubTip != 0
+                    ? Padding(
+                        padding: EdgeInsets.all(screenHeight / 30),
+                        child: ElevatedButton(
+                            onPressed: addSale, child: Text("Ekle")))
+                    : Center()
+              ],
+            ),
           ),
         ),
-      )),
-    );
+      ),
+    ));
   }
 
   Widget _getTypeMenu(double screenWidth) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _kurbanTip = _kurbanTip == 1 ? 0 : 1;
-              _kurbanSubTip = 0;
-            });
-          },
-          child: SizedBox(
-            width: screenWidth / 3,
-            height: 40,
-            child: Container(
-              alignment: Alignment.center,
-              color: _kurbanTip == 1 ? _activeColor : _inActiveColor,
-              child: Text(
-                "Büyükbaş",
-                style: TextStyle(
-                    color:
-                        _kurbanTip == 1 ? _activeFontColor : _inActiveFontColor,
-                    fontSize: screenWidth / 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _kurbanTip = _kurbanTip == 2 ? 0 : 2;
-              _kurbanSubTip = 0;
-            });
-          },
-          child: SizedBox(
-            width: screenWidth / 3,
-            height: 40,
-            child: Container(
-              alignment: Alignment.center,
-              color: _kurbanTip == 2 ? _activeColor : _inActiveColor,
-              child: Text(
-                "Küçükbaş",
-                style: TextStyle(
-                    color:
-                        _kurbanTip == 2 ? _activeFontColor : _inActiveFontColor,
-                    fontSize: screenWidth / 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        )
+    return CustomRadioButton(
+      enableButtonWrap: true,
+      shapeRadius: 14.0,
+      radius: 14.0,
+      enableShape: false,
+      unSelectedColor: Theme.of(context).canvasColor,
+      buttonLables: [
+        "Büyükbaş",
+        "Küçükbaş",
       ],
+      buttonValues: [
+        1,
+        2,
+      ],
+      radioButtonValue: (value) => {
+        setState(() {
+          _kurbanTip = int.parse(value.toString());
+          _kurbanSubTip = 0;
+          _buyukKurbanTip = 0;
+        })
+      },
+      selectedColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
   Widget _getBuyukbasTypeMenu(double screenWidth) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _buyukKurbanTip = _buyukKurbanTip == 1 ? 0 : 1;
-                _kurbanSubTip = 0;
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 4,
-              height: 30,
-              child: Container(
-                alignment: Alignment.center,
-                color: _buyukKurbanTip == 1 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Dana",
-                  style: TextStyle(
-                      color: _buyukKurbanTip == 1
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _buyukKurbanTip = _buyukKurbanTip == 2 ? 0 : 2;
-                _kurbanSubTip = 0;
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 4,
-              height: 30,
-              child: Container(
-                alignment: Alignment.center,
-                color: _buyukKurbanTip == 2 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Düve",
-                  style: TextStyle(
-                      color: _buyukKurbanTip == 2
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
+    return CustomRadioButton(
+      enableButtonWrap: true,
+      shapeRadius: 14.0,
+      radius: 14.0,
+      enableShape: false,
+      unSelectedColor: Theme.of(context).canvasColor,
+      buttonLables: [
+        "Dana",
+        "Düve",
+      ],
+      buttonValues: [
+        1,
+        2,
+      ],
+      radioButtonValue: (value) => {
+        setState(() {
+          _buyukKurbanTip = int.parse(value.toString());
+        })
+      },
+      selectedColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
   Widget _getBuyukbasSubmenu(double screenWidth) {
-    return Padding(
-      padding: EdgeInsets.only(top: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _kurbanSubTip = _kurbanSubTip == 1 ? 0 : 1;
-                refreshFields();
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 5,
-              height: 35,
-              child: Container(
-                alignment: Alignment.center,
-                color: _kurbanSubTip == 1 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Ayaktan\n(Kilo)",
-                  style: TextStyle(
-                      color: _kurbanSubTip == 1
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 33,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _kurbanSubTip = _kurbanSubTip == 2 ? 0 : 2;
-                refreshFields();
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 5,
-              height: 35,
-              child: Container(
-                alignment: Alignment.center,
-                color: _kurbanSubTip == 2 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Karkas",
-                  style: TextStyle(
-                      color: _kurbanSubTip == 2
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 27,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _kurbanSubTip = _kurbanSubTip == 3 ? 0 : 3;
-                refreshFields();
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 5,
-              height: 35,
-              child: Container(
-                alignment: Alignment.center,
-                color: _kurbanSubTip == 3 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Ayaktan",
-                  style: TextStyle(
-                      color: _kurbanSubTip == 3
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 27,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _kurbanSubTip = _kurbanSubTip == 4 ? 0 : 4;
-                refreshFields();
-              });
-            },
-            child: SizedBox(
-              width: screenWidth / 5,
-              height: 35,
-              child: Container(
-                alignment: Alignment.center,
-                color: _kurbanSubTip == 4 ? _activeColor : _inActiveColor,
-                child: Text(
-                  "Hisse",
-                  style: TextStyle(
-                      color: _kurbanSubTip == 4
-                          ? _activeFontColor
-                          : _inActiveFontColor,
-                      fontSize: screenWidth / 27,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return CustomRadioButton(
+      enableButtonWrap: true,
+      shapeRadius: 14.0,
+      radius: 14.0,
+      enableShape: false,
+      unSelectedColor: Theme.of(context).canvasColor,
+      buttonLables: ["Ayaktan(Kilo)", "Karkas", "Ayaktan", "Hisse"],
+      buttonValues: [1, 2, 3, 4],
+      buttonTextStyle: ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
+      width: screenWidth / 3,
+      radioButtonValue: (value) => {
+        setState(() {
+          _kurbanSubTip = int.parse(value.toString());
+          refreshFields();
+        })
+      },
+      selectedColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
   Widget _getKucukbasSubmenu(double screenWidth) {
+    return CustomRadioButton(
+      enableButtonWrap: true,
+      shapeRadius: 14.0,
+      radius: 14.0,
+      enableShape: false,
+      unSelectedColor: Theme.of(context).canvasColor,
+      buttonLables: ["Ayaktan(Kilo)", "Ayaktan"],
+      buttonValues: [5, 6],
+      buttonTextStyle: ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
+      width: screenWidth / 3,
+      radioButtonValue: (value) => {
+        setState(() {
+          _kurbanSubTip = int.parse(value.toString());
+          refreshFields();
+        })
+      },
+      selectedColor: Theme.of(context).colorScheme.secondary,
+    );
     return Padding(
       padding: EdgeInsets.only(top: 10.0),
       child: Row(
