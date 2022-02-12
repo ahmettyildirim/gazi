@@ -336,7 +336,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                             child: Text(paymentModel.amount.toString() + " TL",
                                 overflow: TextOverflow.visible,
                                 textAlign: TextAlign.end,
-                                style: TextStyle(fontSize: 10)),
+                                style: TextStyle(fontSize: 12)),
                           ))
                         ],
                       ),

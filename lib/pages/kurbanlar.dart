@@ -185,7 +185,6 @@ class _KurbanPageState extends State<KurbanPage> {
                           //           )));
                           if (widget.onHisseSelected != null) {
                             widget.onHisseSelected!(hisseKurban);
-                            print("Kurban Selected");
                             Navigator.pop(context);
                           }else{
                             Navigator.push(
@@ -197,6 +196,16 @@ class _KurbanPageState extends State<KurbanPage> {
                                       hisse: hisseKurban,
                                     )));
                           }
+                        },
+                        onLongPress: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    // BubbleScreen()
+                                    HisseDetail(
+                                      hisse: hisseKurban,
+                                    )));
                         },
                         child: Card(
                           color: hisseKurban.remainingHisse == 0

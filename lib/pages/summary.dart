@@ -77,7 +77,7 @@ class _SummaryPageState extends State<SummaryPage> {
           Container(
             padding: EdgeInsets.only(bottom: 10),
               child: Text(
-            "Satış Özet Ekranı",
+            "Satış Özetleri",
             style: TextStyle(
               color: Colors.blueAccent,
               fontSize: 23,

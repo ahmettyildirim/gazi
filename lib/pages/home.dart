@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late PageController _pageController;
-  int _page = 1;
+  int _page = 0;
   Duration pageChanging =
       Duration(milliseconds: 300); //this is for page animation-not necessary
   Curve animationCurve =
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 1);
+    _pageController = PageController(initialPage: 0);
   }
 
   @override
