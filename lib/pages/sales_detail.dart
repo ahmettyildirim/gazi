@@ -79,6 +79,25 @@ class _SaleDetailsState extends State<SaleDetails> {
               Column(
                 children: [
                   Container(
+                    width: width / 2,
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: TextButton.icon(
+                        onPressed: () async {
+                          var val = await showPaymentDialog(context);
+                          if (val != null) {
+                            setState(() {
+                              widget.sale.kaparo = val + widget.sale.kaparo;
+                              if (widget.sale.kurbanSubTip != 2) {
+                                widget.sale.remainingAmount =
+                                    widget.sale.remainingAmount - val;
+                              }
+                            });
+                          }
+                        },
+                        icon: Icon(Icons.payment),
+                        label: Text("Yeni Ödeme Ekle")),
+                  ),
+                  Container(
                     alignment: AlignmentDirectional.centerEnd,
                     width: width / 2,
                     child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -116,30 +135,11 @@ class _SaleDetailsState extends State<SaleDetails> {
                           }
                         }),
                   ),
-                  Container(
-                    width: width / 2,
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: TextButton.icon(
-                        onPressed: () async {
-                          var val = await showPaymentDialog(context);
-                          if (val != null) {
-                            setState(() {
-                              widget.sale.kaparo = val + widget.sale.kaparo;
-                              if (widget.sale.kurbanSubTip != 2) {
-                                widget.sale.remainingAmount =
-                                    widget.sale.remainingAmount - val;
-                              }
-                            });
-                          }
-                        },
-                        icon: Icon(Icons.payment),
-                        label: Text("Yeni Ödeme Ekle")),
-                  )
                 ],
-              ),
-              Divider(height: 2.0),
+              )
             ],
-          ))
+          )),
+      Divider(height: 2.0),
     ]);
   }
 
@@ -320,7 +320,7 @@ class _SaleDetailsState extends State<SaleDetails> {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Text('Ödeme Detayı',
-                  style: TextStyle(fontSize: 12, color: Colors.blueGrey)),
+                  style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
               content: Container(
                 child: SingleChildScrollView(
                     child: Column(
@@ -330,7 +330,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Tutar", style: TextStyle(fontSize: 10)),
+                          Text("Tutar", style: TextStyle(fontSize: 12)),
                           Container(
                               child: Expanded(
                             child: Text(paymentModel.amount.toString() + " TL",
@@ -347,12 +347,12 @@ class _SaleDetailsState extends State<SaleDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("İşlemi Yapan", style: TextStyle(fontSize: 10)),
+                          Text("İşlemi Yapan", style: TextStyle(fontSize: 12)),
                           Container(
                               child: Text(paymentModel.createUser.toString(),
                                   overflow: TextOverflow.visible,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(fontSize: 10)))
+                                  style: TextStyle(fontSize: 11)))
                         ],
                       ),
                     ),
@@ -362,14 +362,14 @@ class _SaleDetailsState extends State<SaleDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("İşlem Tarihi", style: TextStyle(fontSize: 10)),
+                          Text("İşlem Tarihi", style: TextStyle(fontSize: 12)),
                           Container(
                               child: Text(
                                   DateFormat('dd-MM-yyyy kk:mm')
                                       .format(paymentModel.createTime!),
                                   overflow: TextOverflow.visible,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(fontSize: 10)))
+                                  style: TextStyle(fontSize: 12)))
                         ],
                       ),
                     ),
@@ -379,12 +379,12 @@ class _SaleDetailsState extends State<SaleDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Açıklama", style: TextStyle(fontSize: 10)),
+                          Text("Açıklama", style: TextStyle(fontSize: 12)),
                           Expanded(
                               child: Text(paymentModel.aciklama.toString(),
                                   overflow: TextOverflow.visible,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(fontSize: 10)))
+                                  style: TextStyle(fontSize: 12)))
                         ],
                       ),
                     ),
@@ -403,7 +403,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                               fontSize: 15, fontWeight: FontWeight.bold)),
                       child: Text(
                         "Ödemeyi Sil",
-                        style: TextStyle(fontSize: 10),
+                        style: TextStyle(fontSize: 12),
                       ),
                       onPressed: () {
                         setState(() {
@@ -417,7 +417,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                               EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                           textStyle: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold)),
-                      child: Text("Kapat", style: TextStyle(fontSize: 10)),
+                      child: Text("Kapat", style: TextStyle(fontSize: 12)),
                       onPressed: () async {
                         // int tutar = 0;
                         // PaymentModel payment = new PaymentModel(

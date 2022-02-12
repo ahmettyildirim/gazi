@@ -252,6 +252,7 @@ class DataRepository {
         .orderBy(FieldKeys.createTime)
         .snapshots();
   }
+
 }
 
 Future<void> addNewKotra(int kotraNo, int capacity) async {

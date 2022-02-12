@@ -22,6 +22,8 @@ class HisseKurbanModel implements GenericModel {
       {this.remainingHisse = 0,
       this.id = "",
       this.aciklama = "",
+      this.createTime,
+      this.createUser,
       this.isVekalet = false}) {
     this.collectionReferenceName = CollectionKeys.hisseKurban;
     this.colRef = DataRepository.instance
@@ -36,6 +38,8 @@ class HisseKurbanModel implements GenericModel {
         json[FieldKeys.hisseKurbanHisseNum] as int,
         json[FieldKeys.hisseKurbanHisseAmount] as int,
         aciklama: (json[FieldKeys.aciklama] ?? "") as String,
+        createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
+        createUser: json[FieldKeys.createUser] as String,
         remainingHisse: json[FieldKeys.hisseKurbanRemainingHisse] as int,
         isVekalet: (json[FieldKeys.isVekalet] ?? false) as bool,
         id: id);

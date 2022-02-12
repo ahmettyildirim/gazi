@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/pages/add_kurban.dart';
+import 'package:gazi_app/pages/hisse_detail.dart';
 
 class KurbanPage extends StatefulWidget {
   late bool selectable;
@@ -174,10 +175,27 @@ class _KurbanPageState extends State<KurbanPage> {
                           id: kurbanValues[index].id);
                       return GestureDetector(
                         onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           // BubbleScreen()
+                          //           HisseDetail(
+                          //             hisse: hisseKurban,
+                          //           )));
                           if (widget.onHisseSelected != null) {
                             widget.onHisseSelected!(hisseKurban);
                             print("Kurban Selected");
                             Navigator.pop(context);
+                          }else{
+                            Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    // BubbleScreen()
+                                    HisseDetail(
+                                      hisse: hisseKurban,
+                                    )));
                           }
                         },
                         child: Card(

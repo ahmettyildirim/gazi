@@ -53,12 +53,12 @@ class _SalesListState extends State<SalesList> {
         builder: (context) {
           final TextEditingController _textEditingController =
               TextEditingController();
-          bool isChecked = false;
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Text('Filtreleme'),
               content: Container(
-                child: ListView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     CheckboxListTile(
                       dense: true,
