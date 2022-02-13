@@ -52,6 +52,7 @@ class FieldKeys {
   static final saleRemainingAmount = "remaining_amount";
   static final saleHisseRef = "hisse_ref";
   static final saleHisseNum = "hisse_num";
+  static final saleKotraNo = "kotra_no";
   static final saleAdet = "adet";
   static final aciklama = "aciklama";
   static final kotraNo = "no";
@@ -252,7 +253,6 @@ class DataRepository {
         .orderBy(FieldKeys.createTime)
         .snapshots();
   }
-
 }
 
 Future<void> addNewKotra(int kotraNo, int capacity) async {

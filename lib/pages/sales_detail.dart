@@ -180,6 +180,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                         "Cins", getBuyukKurbanCins(widget.sale.buyukKurbanTip))
                     : Center(),
                 widget.sale.kurbanTip == 1 ? Divider(height: 2.0) : Center(),
+                getRowInfo("Kotra No", widget.sale.kotraNo.toString()),
                 widget.sale.kurbanSubTip == 6
                     ? getRowInfo("Adet", widget.sale.adet.toString())
                     : Center(),
@@ -198,7 +199,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                     ? Center()
                     : getRowInfo(
                         "Hisse Adedi", widget.sale.hisseNum.toString()),
-                        
                 [0, 2, 3].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Genel Toplam",

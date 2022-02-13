@@ -50,6 +50,7 @@ class SaleModel implements GenericModel {
   late int hisseNum;
   late int adet;
   late String? aciklama;
+  late int? kotraNo;
   late CollectionReference<Map<String, dynamic>> colRef;
   late String collectionReferenceName = CollectionKeys.sales;
   late DateTime? createTime;
@@ -76,7 +77,8 @@ class SaleModel implements GenericModel {
       this.createTime,
       this.createUser,
       required this.customer,
-      this.id = ""}) {
+      this.id = "",
+      this.kotraNo = 0}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.sales);
   }
@@ -98,9 +100,11 @@ class SaleModel implements GenericModel {
         hisseRef: json[FieldKeys.saleHisseRef] as String,
         adet: json[FieldKeys.saleAdet] as int,
         aciklama: json[FieldKeys.aciklama] as String?,
+        kotraNo: (json[FieldKeys.saleKotraNo] ?? 0) as int,
         createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: json[FieldKeys.createUser] as String,
-        customer: CustomerModel.fromJson(json[FieldKeys.customer],id:json[FieldKeys.saleCustomerRef] as String),
+        customer: CustomerModel.fromJson(json[FieldKeys.customer],
+            id: json[FieldKeys.saleCustomerRef] as String),
         id: id);
   }
 
@@ -122,6 +126,7 @@ class SaleModel implements GenericModel {
     sale[FieldKeys.saleAdet] = this.adet;
     sale[FieldKeys.aciklama] = this.aciklama;
     sale[FieldKeys.customer] = this.customer.toMap();
+    sale[FieldKeys.saleKotraNo] = this.kotraNo;
     return sale;
   }
 }

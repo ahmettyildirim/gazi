@@ -69,27 +69,32 @@ class _CustomerDetailState extends State<CustomerDetail> {
       ],
     );
   }
-String getKurbanSubTypeName(int typeId) {
-  switch (typeId) {
-    case 1:
-      return "Ayaktan(Kilo)";
-    case 2:
-      return "Karkas";
-    case 3:
-      return "Ayaktan";
-    case 4:
-      return "Hisse";
-    case 5:
-      return "Ayaktan(Kilo)";
-    case 6:
-      return "Ayaktan";
-    default:
-      return "";
+
+  String getKurbanTypeName(int typeId) {
+    return typeId == 1 ? "Büyükbaş" : "Küçükbaş";
   }
-}
+
+  String getKurbanSubTypeName(int typeId) {
+    switch (typeId) {
+      case 1:
+        return "Ayaktan(Kilo)";
+      case 2:
+        return "Karkas";
+      case 3:
+        return "Ayaktan";
+      case 4:
+        return "Hisse";
+      case 5:
+        return "Ayaktan(Kilo)";
+      case 6:
+        return "Ayaktan";
+      default:
+        return "";
+    }
+  }
+
   Widget _getSales() {
-    return Column(
-      children: [
+    return Column(children: [
       Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -97,14 +102,19 @@ String getKurbanSubTypeName(int typeId) {
             children: [
               Text("Yapılan Satışlar"),
               Container(
-                alignment: AlignmentDirectional.centerStart,
                 width: width / 2,
                 child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: _repositoryInstance
-                        .getAllItems(CollectionKeys.sales),
+                    stream:
+                        _repositoryInstance.getAllItems(CollectionKeys.sales),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        var saleValues = snapshot.data!.docs.where((element) => element.data()[FieldKeys.saleCustomerRef].toString() == widget.customer.id).toList();
+                        var saleValues = snapshot.data!.docs
+                            .where((element) =>
+                                element
+                                    .data()[FieldKeys.saleCustomerRef]
+                                    .toString() ==
+                                widget.customer.id)
+                            .toList();
                         return ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
@@ -114,22 +124,27 @@ String getKurbanSubTypeName(int typeId) {
                                 saleValues[index].data(),
                                 id: saleValues[index].id);
                             return TextButton(
-                              style: ButtonStyle(
-                                  alignment: Alignment.centerRight),
+                              style:
+                                  ButtonStyle(alignment: Alignment.centerRight),
                               child: Text(
-                                "Tip :" + getKurbanSubTypeName(sale.kurbanSubTip) + " \nKurban No :" + sale.kurbanNo.toString() + " " ,
+                                getKurbanTypeName(sale.kurbanTip) +
+                                    "\n" +
+                                    getKurbanSubTypeName(sale.kurbanSubTip) +
+                                    " \nNo :" +
+                                    sale.kurbanNo.toString() +
+                                    " ",
                                 overflow: TextOverflow.visible,
-                                textAlign: TextAlign.start,
+                                textAlign: TextAlign.end,
                               ),
                               onPressed: () {
                                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                // BubbleScreen()
-                                SaleDetails(
-                                  sale: sale,
-                                )));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            // BubbleScreen()
+                                            SaleDetails(
+                                              sale: sale,
+                                            )));
                               },
                             );
                           },
@@ -139,10 +154,9 @@ String getKurbanSubTypeName(int typeId) {
                       }
                     }),
               ),
-              
             ],
           )),
-        Divider(height: 2.0),
+      Divider(height: 2.0),
     ]);
   }
 
@@ -161,25 +175,23 @@ String getKurbanSubTypeName(int typeId) {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    String formattedDate =
-    widget.customer.createTime == null ? "" :
-        DateFormat('dd-MM-yyyy kk:mm').format(widget.customer.createTime!);
+    String formattedDate = widget.customer.createTime == null
+        ? ""
+        : DateFormat('dd-MM-yyyy kk:mm').format(widget.customer.createTime!);
     return Scaffold(
         appBar: AppBar(
           title: Text("Müşteri Detayı"),
         ),
-        body:SingleChildScrollView(
-        child: Padding(
-            padding: const EdgeInsets.all(20.0), child: Column(children: [
-
-                getRowInfo("Müşteri Adı", widget.customer.name.toString()),
-                getRowInfoForPhone(),
-                getRowInfo("Açıklama", widget.customer.aciklama.toString()),
-                getRowInfo("Kayıt Tarihi", formattedDate),
-                getRowInfo("Kaydı Yapan", widget.customer.createUser!),
-                _getSales()
-
-            ])))
-    );
+        body: SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(children: [
+                  getRowInfo("Müşteri Adı", widget.customer.name.toString()),
+                  getRowInfoForPhone(),
+                  getRowInfo("Açıklama", widget.customer.aciklama.toString()),
+                  getRowInfo("Kayıt Tarihi", formattedDate),
+                  getRowInfo("Kaydı Yapan", widget.customer.createUser!),
+                  _getSales()
+                ]))));
   }
 }

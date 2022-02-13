@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'hisse_select.dart';
 
-class AddSale extends StatefulWidget {  
+class AddSale extends StatefulWidget {
   @override
   _AddSaleState createState() => _AddSaleState();
 }
@@ -19,8 +19,10 @@ class AddSale extends StatefulWidget {
 var _repositoryInstance = DataRepository.instance;
 
 class _AddSaleState extends State<AddSale> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_AddHisseFormState');
+  bool isAutoValidate = false;
+  final _formKey = GlobalKey<FormState>(debugLabel: '_AddSaleFormState');
   final _saleNoController = TextEditingController();
+  final _kotraNoController = TextEditingController();
   final _kgController = TextEditingController();
   final _adetController = TextEditingController();
   final _kgAmountController = TextEditingController();
@@ -52,6 +54,14 @@ class _AddSaleState extends State<AddSale> {
       _selectedHisse = kurban;
       _amountController.text = kurban.hisseAmount.toString();
     });
+  }
+
+  String? _requiredValidator(String? text,
+      {String information = "Bu alan boş olamaz"}) {
+    if (text == null || text.isEmpty) {
+      return information;
+    }
+    return null;
   }
 
   @override
@@ -96,12 +106,15 @@ class _AddSaleState extends State<AddSale> {
                 [0, 4].contains(_kurbanSubTip)
                     ? Center()
                     : _getNum(screenWidth, screenHeight),
-                ![6].contains(_kurbanSubTip)
-                    ? Center()
-                    : _getAdet(screenWidth, screenHeight),
                 ![4].contains(_kurbanSubTip)
                     ? Center()
                     : _getNumForHisse(screenWidth, screenHeight),
+                _kurbanSubTip != 0
+                    ? _getKotra(screenWidth, screenHeight)
+                    : Center(),
+                ![6].contains(_kurbanSubTip)
+                    ? Center()
+                    : _getAdet(screenWidth, screenHeight),
                 ![4].contains(_kurbanSubTip)
                     ? Center()
                     : _getHisse(screenWidth, screenHeight),
@@ -206,8 +219,8 @@ class _AddSaleState extends State<AddSale> {
           radius: 14.0,
           enableShape: false,
           unSelectedColor: Theme.of(context).canvasColor,
-          buttonLables: ["Ayaktan(Kilo)", "Karkas", "Ayaktan", "Hisse"],
-          buttonValues: [1, 2, 3, 4],
+          buttonLables: ["Ayaktan", "Hisse", "Ayaktan(Kilo)", "Karkas"],
+          buttonValues: [3, 4, 1, 2],
           buttonTextStyle:
               ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
           width: screenWidth / 3,
@@ -255,6 +268,18 @@ class _AddSaleState extends State<AddSale> {
     );
   }
 
+  Widget _getKotra(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        controller: _kotraNoController,
+        decoration: InputDecoration(labelText: 'Kotra No (İsteğe bağlı)'),
+      ),
+    );
+  }
+
   Widget _getNum(double screenWidth, double screenHeight) {
     return Padding(
       padding: EdgeInsets.only(
@@ -263,6 +288,7 @@ class _AddSaleState extends State<AddSale> {
         keyboardType: TextInputType.number,
         controller: _saleNoController,
         decoration: InputDecoration(labelText: 'Kurban No'),
+        validator: _requiredValidator,
       ),
     );
   }
@@ -281,6 +307,7 @@ class _AddSaleState extends State<AddSale> {
               decoration: InputDecoration(labelText: "Kurban No"),
               onChanged: searchForHisse,
               enabled: false,
+              validator: _requiredValidator,
             ),
           ),
           TextButton(
@@ -306,14 +333,13 @@ class _AddSaleState extends State<AddSale> {
           keyboardType: TextInputType.phone,
           controller: _phoneController,
           inputFormatters: [maskFormatter],
+          validator: _requiredValidator,
           decoration: InputDecoration(labelText: 'Cep Telefonu'),
           onChanged: getCustomerByPhone),
     );
   }
 
   Future<void> getCustomerByPhone(phone) async {
-    print("başladı");
-    print(phone.length);
     if (phone.length != 15) {
       setState(() {
         _nameController.text = "";
@@ -325,9 +351,6 @@ class _AddSaleState extends State<AddSale> {
         CollectionKeys.customers,
         filterName: FieldKeys.customerPhone,
         filterValue: _phoneController.text);
-    // if(phone!=_phoneController.text){
-    //   getCustomerByPhone(_phoneController.text);
-    // }
     if (value.docs.isNotEmpty) {
       print('girdi');
       var customer = CustomerModel.fromJson(value.docs.first.data(),
@@ -337,7 +360,6 @@ class _AddSaleState extends State<AddSale> {
         _nameController.text = customer.name;
       });
     } else {
-      print('girmedi');
       setState(() {
         _nameController.text = "";
         selectedCustomer = null;
@@ -350,6 +372,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+        validator: _requiredValidator,
         controller: _nameController,
         decoration: InputDecoration(labelText: 'Müşteri Adı Soyadı'),
       ),
@@ -361,6 +384,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+          validator: _requiredValidator,
           keyboardType: TextInputType.number,
           controller: _kgController,
           decoration: InputDecoration(labelText: 'KG'),
@@ -373,6 +397,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+          validator: _requiredValidator,
           keyboardType: TextInputType.number,
           controller: _adetController,
           decoration: InputDecoration(labelText: 'Adet'),
@@ -385,6 +410,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+          validator: _requiredValidator,
           keyboardType: TextInputType.number,
           controller: _kgAmountController,
           decoration: InputDecoration(labelText: 'KG Birim Biyatı'),
@@ -397,6 +423,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+          validator: _requiredValidator,
           readOnly: _kurbanSubTip == 4,
           keyboardType: TextInputType.number,
           controller: _amountController,
@@ -423,6 +450,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+        validator: _requiredValidator,
         keyboardType: TextInputType.number,
         controller: _kaparoController,
         decoration: InputDecoration(labelText: 'Alınan Kaparo'),
@@ -450,6 +478,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+        validator: _requiredValidator,
         keyboardType: TextInputType.number,
         controller: _hisseCountController,
         onChanged: calculateTotal,
@@ -552,6 +581,7 @@ class _AddSaleState extends State<AddSale> {
     _kalanTutarController.text = "";
     _amountController.text = "";
     _saleNoController.text = "";
+    _kotraNoController.text = "";
     _hisseCountController.text = "";
     _kaparoController.text = "";
     _kgAmountController.text = "";
@@ -562,75 +592,81 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> addSale() async {
-    if (selectedCustomer == null) {
-      CustomerModel customer =
-          new CustomerModel(_nameController.text, _phoneController.text);
-      var customerref = await DataRepository.instance.addNewItem(customer);
-      // await getCustomerByPhone(_phoneController.text);
-      var value = await _repositoryInstance.getAllItemsByFilter(
-          CollectionKeys.customers,
-          filterName: FieldKeys.customerPhone,
-          filterValue: _phoneController.text);
-      if (value.docs.isNotEmpty) {
-        var customer = CustomerModel.fromJson(value.docs.first.data(),
-            id: value.docs.first.id);
-        setState(() {
-          selectedCustomer = customer;
-          _nameController.text = customer.name;
-        });
+    if (_formKey.currentState!.validate()) {
+      if (selectedCustomer == null) {
+        CustomerModel customer =
+            new CustomerModel(_nameController.text, _phoneController.text);
+        var customerref = await DataRepository.instance.addNewItem(customer);
+        // await getCustomerByPhone(_phoneController.text);
+        var value = await _repositoryInstance.getAllItemsByFilter(
+            CollectionKeys.customers,
+            filterName: FieldKeys.customerPhone,
+            filterValue: _phoneController.text);
+        if (value.docs.isNotEmpty) {
+          var customer = CustomerModel.fromJson(value.docs.first.data(),
+              id: value.docs.first.id);
+          setState(() {
+            selectedCustomer = customer;
+            _nameController.text = customer.name;
+          });
+        }
       }
+      if (selectedCustomer!.name != _nameController.text) {
+        selectedCustomer!.name = _nameController.text;
+        await _repositoryInstance.updateItem(selectedCustomer!);
+      }
+      SaleModel sale = new SaleModel(
+          customer: selectedCustomer!,
+          customerRef: selectedCustomer!.id,
+          kurbanTip: _kurbanTip,
+          buyukKurbanTip: _buyukKurbanTip,
+          kurbanSubTip: _kurbanSubTip,
+          kurbanNo: _saleNoController.text.isEmpty
+              ? 0
+              : int.parse(_saleNoController.text),
+          kotraNo: _kotraNoController.text.isEmpty
+              ? 0
+              : int.parse(_kotraNoController.text),
+          kg: _kgController.text.isEmpty ? 0 : int.parse(_kgController.text),
+          kgAmount: _kgAmountController.text.isEmpty
+              ? 0
+              : int.parse(_kgAmountController.text),
+          amount: _amountController.text.isEmpty
+              ? 0
+              : int.parse(_amountController.text),
+          generalAmount: _totalAmountController.text.isEmpty
+              ? 0
+              : int.parse(_totalAmountController.text),
+          kaparo: 0,
+          remainingAmount: _kalanTutarController.text.isEmpty
+              ? 0
+              : int.parse(_kalanTutarController.text),
+          hisseNum: _hisseCountController.text.isEmpty
+              ? 0
+              : int.parse(_hisseCountController.text),
+          hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id,
+          adet: _adetController.text.isEmpty
+              ? 0
+              : int.parse(_adetController.text),
+          aciklama:
+              _aciklamaController.text.isEmpty ? "" : _aciklamaController.text);
+      var addedItem = await DataRepository.instance.addNewItem(sale);
+      if (_kaparoController.text.isNotEmpty) {
+        PaymentModel payment = new PaymentModel(
+            amount: int.parse(_kaparoController.text),
+            paymentType: "Nakit",
+            aciklama: "İlk ödeme");
+        var result =
+            await DataRepository.instance.addNewPayment(addedItem, payment);
+      }
+      if (_kurbanSubTip == 4) {
+        _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
+            int.parse(_hisseCountController.text);
+        await _repositoryInstance.updateItem(_selectedHisse!);
+      }
+      await _showMyDialog();
+      Navigator.pop(context);
     }
-    if (selectedCustomer!.name != _nameController.text) {
-      selectedCustomer!.name = _nameController.text;
-      await _repositoryInstance.updateItem(selectedCustomer!);
-    }
-    SaleModel sale = new SaleModel(
-        customer: selectedCustomer!,
-        customerRef: selectedCustomer!.id,
-        kurbanTip: _kurbanTip,
-        buyukKurbanTip: _buyukKurbanTip,
-        kurbanSubTip: _kurbanSubTip,
-        kurbanNo: _saleNoController.text.isEmpty
-            ? 0
-            : int.parse(_saleNoController.text),
-        kg: _kgController.text.isEmpty ? 0 : int.parse(_kgController.text),
-        kgAmount: _kgAmountController.text.isEmpty
-            ? 0
-            : int.parse(_kgAmountController.text),
-        amount: _amountController.text.isEmpty
-            ? 0
-            : int.parse(_amountController.text),
-        generalAmount: _totalAmountController.text.isEmpty
-            ? 0
-            : int.parse(_totalAmountController.text),
-        kaparo: 0,
-        remainingAmount: _kalanTutarController.text.isEmpty
-            ? 0
-            : int.parse(_kalanTutarController.text),
-        hisseNum: _hisseCountController.text.isEmpty
-            ? 0
-            : int.parse(_hisseCountController.text),
-        hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id,
-        adet:
-            _adetController.text.isEmpty ? 0 : int.parse(_adetController.text),
-        aciklama:
-            _aciklamaController.text.isEmpty ? "" : _aciklamaController.text);
-    var addedItem = await DataRepository.instance.addNewItem(sale);
-    if (_kaparoController.text.isNotEmpty) {
-      PaymentModel payment = new PaymentModel(
-          amount: int.parse(_kaparoController.text),
-          paymentType: "Nakit",
-          aciklama: "İlk ödeme");
-      var result =
-          await DataRepository.instance.addNewPayment(addedItem, payment);
-    }
-    if (_kurbanSubTip == 4) {
-      _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
-          int.parse(_hisseCountController.text);
-      await _repositoryInstance.updateItem(_selectedHisse!);
-    }
-    await _showMyDialog();
-    Navigator.pop(context);
   }
 
   Future<void> _showMyDialog() async {
