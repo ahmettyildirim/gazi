@@ -51,8 +51,6 @@ class _SalesListState extends State<SalesList> {
     return await showDialog(
         context: context,
         builder: (context) {
-          final TextEditingController _textEditingController =
-              TextEditingController();
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Text('Filtreleme'),

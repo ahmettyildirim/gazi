@@ -11,13 +11,14 @@ class _AddCustomerState extends State<AddCustomer> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_AddCustomerFormState');
   final _phoneController = TextEditingController();
   final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _aciklamaController = TextEditingController();
   var maskFormatter = new MaskTextInputFormatter(
       mask: '(###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
 
   Future<void> addCustomer() async {
     CustomerModel customer = new CustomerModel(
-        _nameController.text,  _phoneController.text);
+        _nameController.text, _phoneController.text,
+        aciklama: _aciklamaController.text);
     await DataRepository.instance.addItem(customer);
     Navigator.pop(context);
   }
@@ -54,11 +55,15 @@ class _AddCustomerState extends State<AddCustomer> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(screenHeight / 30),
+                padding: EdgeInsets.only(
+                    left: screenHeight / 30, right: screenHeight / 30, top: 5),
                 child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  decoration: InputDecoration(hintText: 'Mail Adresi'),
+                  keyboardType: TextInputType.multiline,
+                  controller: _aciklamaController,
+                  maxLines: null,
+                  minLines: 2,
+                  decoration:
+                      InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
                 ),
               ),
               Padding(

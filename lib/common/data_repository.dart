@@ -179,21 +179,10 @@ class DataRepository {
   DocumentReference<Map<String, dynamic>> _customerDocRef() =>
       _getNewDocumentReference(CollectionKeys.customers);
 
-  DocumentReference<Map<String, dynamic>> _customerDocRefWithId(
-          String documentId) =>
-      _getCurrentDocumentReference(CollectionKeys.customers, documentId);
-
 //kotra document references
 
   CollectionReference<Map<String, dynamic>> _kotraCollRef() =>
       getCollectionReference(CollectionKeys.kotra);
-
-  DocumentReference<Map<String, dynamic>> _kotraDocRef() =>
-      _getNewDocumentReference(CollectionKeys.kotra);
-
-  DocumentReference<Map<String, dynamic>> _kotraDocRefWithId(
-          String documentId) =>
-      _getCurrentDocumentReference(CollectionKeys.kotra, documentId);
 
   //customer operations
   Future<void> addCustomer(CustomerModel customerModel) async {
@@ -241,7 +230,7 @@ class DataRepository {
   Future<DocumentReference> addNewPaymentWithReferenceId(
       String referenceId, PaymentModel payment) async {
     var colReference =
-        getCollectionReference(CollectionKeys.sales).doc(referenceId);
+        _getCurrentDocumentReference(CollectionKeys.sales, referenceId);
     return await addNewPayment(colReference, payment);
   }
 
@@ -261,18 +250,6 @@ Future<void> addNewKotra(int kotraNo, int capacity) async {
   customer["capacity"] = capacity;
   customer["numOfItems"] = 0;
   await refKotra.push().set(customer);
-}
-
-Future<int?> getKotraNums() async {
-  DataSnapshot snapshot = await refKotra.once();
-  int count = 0;
-  var comingValues = snapshot.value;
-  if (comingValues != null) {
-    comingValues.forEach((key, value) {
-      count++;
-    });
-    return count;
-  }
 }
 
 var refHisse =
@@ -295,4 +272,5 @@ Future<int?> getHisseNums() async {
     });
     return count;
   }
+  return 0;
 }

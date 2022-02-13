@@ -39,10 +39,6 @@ class _AddSaleState extends State<AddSale> {
   int _kurbanTip = 0;
   int _buyukKurbanTip = 0;
   int _kurbanSubTip = 0;
-  Color _inActiveColor = Colors.blue.shade100;
-  Color _activeColor = Colors.blue.shade700;
-  Color _inActiveFontColor = Colors.grey.shade700;
-  Color _activeFontColor = Colors.grey.shade50;
   CustomerModel? selectedCustomer;
   HisseKurbanModel? _selectedHisse;
   String _remainingHisseLabelText = 'Hisse Sayısı';
@@ -745,26 +741,25 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> wasup(String num) async {
-    var whatsapp = "905309383594";
     // FirebaseAuth.instance.signOut();
-    var whatsappURl_android = "whatsapp://send?phone=" + num + "&text=hello";
-    var whatappURL_ios =
+    var whatsappURlAndroid = "whatsapp://send?phone=" + num + "&text=hello";
+    var whatappURLIos =
         "https://wa.me/$num?text=${Uri.parse("Kurban satış işlemi gerçekleşti")}";
     if (Platform.isIOS) {
       // for iOS phone only
-      if (await canLaunch(whatappURL_ios)) {
-        await launch(whatappURL_ios, forceSafariVC: false);
-        whatappURL_ios =
+      if (await canLaunch(whatappURLIos)) {
+        await launch(whatappURLIos, forceSafariVC: false);
+        whatappURLIos =
             "https://wa.me/$num?text=${Uri.parse("Kurban satış işlemi gerçekleşti")}";
-        await launch(whatappURL_ios, forceSafariVC: false);
+        await launch(whatappURLIos, forceSafariVC: false);
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: new Text("whatsapp no installed")));
       }
     } else {
       // android , web
-      if (await canLaunch(whatsappURl_android)) {
-        await launch(whatsappURl_android);
+      if (await canLaunch(whatsappURlAndroid)) {
+        await launch(whatsappURlAndroid);
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: new Text("whatsapp no installed")));

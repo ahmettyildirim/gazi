@@ -19,19 +19,19 @@ class CustomerModel implements GenericModel {
     this.phone, {
     this.id = "",
     this.aciklama = "",
-      this.createTime,
-      this.createUser,
+    this.createTime,
+    this.createUser,
   }) {
-    
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.customers);
   }
 
   factory CustomerModel.fromJson(Map<dynamic, dynamic> json, {String id = ""}) {
-    return CustomerModel(
-        json["name"] as String, json["phone_number"] as String,
-        aciklama: (json[FieldKeys.aciklama] ?? ""), 
-        createTime: json[FieldKeys.createTime] == null ? DateTime.now() : (json[FieldKeys.createTime] as Timestamp).toDate(),
+    return CustomerModel(json["name"] as String, json["phone_number"] as String,
+        aciklama: (json[FieldKeys.aciklama] ?? ""),
+        createTime: json[FieldKeys.createTime] == null
+            ? DateTime.now()
+            : (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: (json[FieldKeys.createUser] ?? "") as String,
         id: id);
   }
