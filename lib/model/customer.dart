@@ -10,16 +10,29 @@ class CustomerModel implements GenericModel {
   String phone;
   late CollectionReference<Map<String, dynamic>> colRef;
   String collectionReferenceName = CollectionKeys.customers;
+  late String? aciklama;
   late DateTime? createTime;
   late String? createUser;
 
-  CustomerModel(this.name, this.phone, {this.id = ""}) {
+  CustomerModel(
+    this.name,
+    this.phone, {
+    this.id = "",
+    this.aciklama = "",
+      this.createTime,
+      this.createUser,
+  }) {
+    
     this.colRef = DataRepository.instance
         .getCollectionReference(CollectionKeys.customers);
   }
 
   factory CustomerModel.fromJson(Map<dynamic, dynamic> json, {String id = ""}) {
-    return CustomerModel(json["name"] as String, json["phone_number"] as String,
+    return CustomerModel(
+        json["name"] as String, json["phone_number"] as String,
+        aciklama: (json[FieldKeys.aciklama] ?? ""), 
+        createTime: json[FieldKeys.createTime] == null ? DateTime.now() : (json[FieldKeys.createTime] as Timestamp).toDate(),
+        createUser: (json[FieldKeys.createUser] ?? "") as String,
         id: id);
   }
   // CustomerModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -29,6 +42,7 @@ class CustomerModel implements GenericModel {
     var customer = HashMap<String, dynamic>();
     customer[FieldKeys.customerName] = this.name;
     customer[FieldKeys.customerPhone] = this.phone;
+    customer[FieldKeys.aciklama] = this.aciklama;
     return customer;
   }
 

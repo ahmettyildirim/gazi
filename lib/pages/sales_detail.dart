@@ -194,6 +194,11 @@ class _SaleDetailsState extends State<SaleDetails> {
                     ? Center()
                     : getRowInfo(
                         "Birim Fiyatı", widget.sale.amount.toString() + " TL"),
+                ![4].contains(widget.sale.kurbanSubTip)
+                    ? Center()
+                    : getRowInfo(
+                        "Hisse Adedi", widget.sale.hisseNum.toString()),
+                        
                 [0, 2, 3].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Genel Toplam",

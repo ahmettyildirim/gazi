@@ -280,6 +280,7 @@ class _AddSaleState extends State<AddSale> {
               controller: _saleNoController,
               decoration: InputDecoration(labelText: "Kurban No"),
               onChanged: searchForHisse,
+              enabled: false,
             ),
           ),
           TextButton(
@@ -557,6 +558,7 @@ class _AddSaleState extends State<AddSale> {
     _totalAmountController.text = "";
     _adetController.text = "";
     _aciklamaController.text = "";
+    _remainingHisseLabelText = "Hisse Sayısı";
   }
 
   Future<void> addSale() async {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/pages/add_customer.dart';
+import 'package:gazi_app/pages/customer_detail.dart';
 
 class CustomerList extends StatefulWidget {
   late bool selectable;
@@ -45,15 +46,14 @@ class _CustomerListState extends State<CustomerList> {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 50.0, left: 10.0, right: 10.0),
+            padding:
+                EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0, bottom: 0),
             child: TextField(
+              keyboardType:
+                  TextInputType.numberWithOptions(decimal: true, signed: true),
               controller: _nameController,
-              decoration: InputDecoration(
-                  hintText: "Müşteri Adı ya da cep telefonu ile filtrele",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+              decoration:
+                  InputDecoration(labelText: "Müşteri Adı ya da cep telefonu ile filtrele"),
             ),
           ),
           TextButton.icon(
@@ -93,12 +93,21 @@ class _CustomerListState extends State<CustomerList> {
                     itemCount: customerValues.length,
                     itemBuilder: (context, index) {
                       var customer =
-                          CustomerModel.fromJson(customerValues[index].data());
+                          CustomerModel.fromJson(customerValues[index].data(),id: customerValues[index].id);
                       return GestureDetector(
                         onTap: () {
                           if (widget.onCustomerSelected != null) {
                             widget.onCustomerSelected!(customer);
                             Navigator.pop(context);
+                          }else{
+                            Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    // BubbleScreen()
+                                    CustomerDetail(
+                                      customer: customer,
+                                    )));
                           }
                         },
                         child: Card(

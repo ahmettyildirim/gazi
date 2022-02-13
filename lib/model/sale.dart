@@ -100,7 +100,7 @@ class SaleModel implements GenericModel {
         aciklama: json[FieldKeys.aciklama] as String?,
         createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: json[FieldKeys.createUser] as String,
-        customer: CustomerModel.fromJson(json[FieldKeys.customer]),
+        customer: CustomerModel.fromJson(json[FieldKeys.customer],id:json[FieldKeys.saleCustomerRef] as String),
         id: id);
   }
 
