@@ -17,7 +17,7 @@ String getMaliyetName(int typeId) {
     case 5:
       return "Yıllık Elektrik Faturası Toplamı";
     case 6:
-      return "Kasaplara Ödenen Kasaplara Ödenen Kasaplara ÖdenenKasaplara Ödenen Kasaplara Ödenen Kasaplara Ödenen Kasaplara Ödenen Kasaplara Ödenen Toplam Tutar";
+      return "Kasaplara Ödenen Toplam Tutar";
     case 7:
       return "Ambalajcıya Ödenen Toplam Tutar";
     case 8:
