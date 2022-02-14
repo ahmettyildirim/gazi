@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/maliyet.dart';
 
 class MaliyetDetay extends StatefulWidget {
@@ -107,7 +108,7 @@ class _MaliyetDetayState extends State<MaliyetDetay> {
                   icon: Icon(
                       widget.maliyet.id.isEmpty ? Icons.add : Icons.refresh),
                   label: Text(widget.maliyet.id.isEmpty ? "Ekle" : "Güncelle"),
-                  onPressed: () {},
+                  onPressed: addOrUpdateMaliyet,
                 ),
               ],
             )
@@ -134,5 +135,27 @@ class _MaliyetDetayState extends State<MaliyetDetay> {
     } else {
       _toplamTutarController.text = "0";
     }
+  }
+
+  Future<void> addOrUpdateMaliyet() async {
+    widget.maliyet.toplamSayi = [1, 2].contains(widget.maliyet.maliyetTip)
+        ? int.parse(_toplamSayiController.text)
+        : 0;
+    widget.maliyet.adetSayisi =
+        [1, 2, 3, 4, 5, 6, 7, 8].contains(widget.maliyet.maliyetTip)
+            ? int.parse(_toplamAdetController.text)
+            : 0;
+    widget.maliyet.adetTutari =
+        [1, 2, 3, 4, 5, 6, 7, 8].contains(widget.maliyet.maliyetTip)
+            ? int.parse(_toplamAdetTutariController.text)
+            : 0;
+    widget.maliyet.toplamTutar = int.parse(_toplamTutarController.text);
+    widget.maliyet.aciklama = _aciklamaController.text;
+    if (widget.maliyet.id.isEmpty) {
+      await DataRepository.instance.addNewItem(widget.maliyet);
+    } else {
+      await DataRepository.instance.updateItem(widget.maliyet);
+    }
+    Navigator.pop(context);
   }
 }
