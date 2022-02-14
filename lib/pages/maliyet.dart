@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/maliyet.dart';
+import 'package:gazi_app/pages/maliyet_detay.dart';
 
 class MaliyetPage extends StatefulWidget {
   MaliyetPage({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _MaliyetPageState extends State<MaliyetPage> {
         minimum: EdgeInsets.only(top: 20, bottom: 20, left: 8, right: 8),
         child: ListView.separated(
             itemBuilder: (context, index) {
-              return index == 10
+              return index == 18
                   ? SizedBox(
                       height: height / 25,
                     )
@@ -36,15 +37,31 @@ class _MaliyetPageState extends State<MaliyetPage> {
                           child: Text(getMaliyetName(index + 1),
                               style: TextStyle(
                                   fontSize:
-                                      index == 9 ? width / 17 : width / 25))),
+                                      index == 17 ? width / 17 : width / 25))),
                       dense: true,
-                      trailing: index == 9
+                      trailing: index == 17
                           ? Text(
                               getMoneyString((index + 1) * 120050),
                               style: TextStyle(fontSize: width / 17),
                             )
                           : TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                MaliyetModel maliyet = MaliyetModel(
+                                    maliyetTip: index + 1,
+                                    altMaliyetTip: 1,
+                                    toplamTutar: 1000,
+                                    toplamSayi: 4,
+                                    adetSayisi: 2,
+                                    adetTutari: 200);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            // BubbleScreen()
+                                            MaliyetDetay(
+                                              maliyet: maliyet,
+                                            )));
+                              },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -78,7 +95,7 @@ class _MaliyetPageState extends State<MaliyetPage> {
                 thickness: 2,
               );
             },
-            itemCount: 11),
+            itemCount: 19),
       ),
     );
   }

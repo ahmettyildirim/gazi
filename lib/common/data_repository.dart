@@ -15,6 +15,7 @@ class CollectionKeys {
   static final kotra = "kotra";
   static final hisse = "hisse";
   static final payment = "payment";
+  static final maliyet = "maliyet";
 }
 
 class FieldKeys {
@@ -68,6 +69,12 @@ class FieldKeys {
   static final paymentType = "type";
   static final customer = "customer";
   static final isVekalet = "is_vekalet";
+  static final maliyetTip = "tip";
+  static final maliyetAltTip = "alt_tip";
+  static final maliyetToplamTutar = "toplam_tutar";
+  static final maliyetToplamSayi = "toplam_sayi";
+  static final maliyetAdetSayisi = "adet_sayisi";
+  static final maliyetAdetTutari = "adet_tutari";
 }
 
 var refKotra =

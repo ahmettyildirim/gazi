@@ -65,13 +65,16 @@ class _AddSaleState extends State<AddSale> {
     var screenInfo = MediaQuery.of(context);
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text("Yeni Satış"),
       ),
-      body: Container(
-        padding: EdgeInsets.only(top: 30),
+      body: SafeArea(
+        bottom: true,
+        top: true,
+        left: true,
+        right: true,
+        minimum: EdgeInsets.only(top: 30),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -146,7 +149,7 @@ class _AddSaleState extends State<AddSale> {
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _getTypeMenu(double screenWidth) {
