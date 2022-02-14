@@ -123,26 +123,15 @@ class _SummaryPageState extends State<SummaryPage> {
                             .where(
                                 (element) => element.kurbanSubTip == index + 1)
                             .toList();
-                        if (index > 5) {
-                          return ListTile(
-                            dense: false,
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(getImagePath(3 + 1)),
-                            ),
-                            title: Text(getTitle(3 + 1)),
-                            subtitle: Text(getMainText(currentList, 3 + 1)),
-                          );
-                        } else {
-                          return ListTile(
-                            dense: false,
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  AssetImage(getImagePath(index + 1)),
-                            ),
-                            title: Text(getTitle(index + 1)),
-                            subtitle: Text(getMainText(currentList, index + 1)),
-                          );
-                        }
+                        return ListTile(
+                          dense: false,
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                AssetImage(getImagePath(index + 1)),
+                          ),
+                          title: Text(getTitle(index + 1)),
+                          subtitle: Text(getMainText(currentList, index + 1)),
+                        );
                       },
                       itemCount: 6,
                       padding: EdgeInsets.all(5),

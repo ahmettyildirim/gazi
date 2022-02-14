@@ -42,6 +42,12 @@ String getMaliyetName(int typeId) {
       return "Ekstra Maliyetler";
     case 18:
       return "Toplam Tutar";
+    case 19:
+      return "Dana Satış";
+    case 20:
+      return "Kuzu Satış";
+    case 21:
+      return "Toplam Kar";
     default:
       return "";
   }
