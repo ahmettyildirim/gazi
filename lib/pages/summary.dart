@@ -10,6 +10,7 @@ class SummaryPage extends StatefulWidget {
 }
 
 var _repositoryInstance = DataRepository.instance;
+final _formKey = GlobalKey<FormState>(debugLabel: '_AddSaleFormState');
 String getTitle(int index) {
   switch (index) {
     case 1:
@@ -167,11 +168,15 @@ Future<bool> showPassword(BuildContext context) async {
           return AlertDialog(
             title: Text('Kısıtlı Alan',
                 style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
-            content: Container(
-              child: TextField(
-                controller: _textPasswordController,
-                obscureText: true,
-                decoration: InputDecoration(label: Text("Şifre")),
+            content: Form(
+              key: _formKey,
+              child: Container(
+                child: TextFormField(
+                  validator: _passwordValidator,
+                  controller: _textPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(label: Text("Şifre")),
+                ),
               ),
             ),
             actions: [
@@ -201,9 +206,11 @@ Future<bool> showPassword(BuildContext context) async {
                             fontSize: 15, fontWeight: FontWeight.bold)),
                     child: Text("Giriş", style: TextStyle(fontSize: 12)),
                     onPressed: () async {
-                      if (_textPasswordController.text == "1234") {
-                        Navigator.of(context)
-                            .pop(_textPasswordController.text == "1234");
+                      if (_formKey.currentState!.validate()) {
+                        if (_textPasswordController.text == "1234") {
+                          Navigator.of(context)
+                              .pop(_textPasswordController.text == "1234");
+                        }
                       }
                     })
               ])
@@ -211,6 +218,13 @@ Future<bool> showPassword(BuildContext context) async {
           );
         });
       });
+}
+
+String? _passwordValidator(String? text) {
+  if (text != "1234") {
+    return "Hatalı Şifre";
+  }
+  return null;
 }
 
 int getKucukKurbanAdet(List<SaleModel> list) {
