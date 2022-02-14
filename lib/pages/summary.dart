@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/sale.dart';
+import 'package:gazi_app/pages/maliyet.dart';
 
 class SummaryPage extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _SummaryPageState extends State<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top:40, left:10, right:10, bottom:10),
+      padding: EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,15 +75,32 @@ class _SummaryPageState extends State<SummaryPage> {
           SizedBox(
             height: 30,
           ),
-          Container(
-            padding: EdgeInsets.only(bottom: 10),
-              child: Text(
-            "Satış Özetleri",
-            style: TextStyle(
-              color: Colors.blueAccent,
-              fontSize: 23,
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(
+              "Satış Özetleri",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18,
+              ),
             ),
-          )),
+            TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              // BubbleScreen()
+                              MaliyetPage()));
+                },
+                icon: Icon(Icons.analytics_outlined),
+                label: Text("Maliyet Tablosu"))
+          ]),
+          Divider(
+            height: 3,
+          ),
+          SizedBox(
+            height: 5,
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _repositoryInstance.getAllItems(CollectionKeys.sales),
@@ -102,7 +120,8 @@ class _SummaryPageState extends State<SummaryPage> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         var currentList = salelist
-                            .where((element) => element.kurbanSubTip == index + 1)
+                            .where(
+                                (element) => element.kurbanSubTip == index + 1)
                             .toList();
                         if (index > 5) {
                           return ListTile(
