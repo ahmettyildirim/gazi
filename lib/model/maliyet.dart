@@ -159,6 +159,12 @@ String getMaliyetDetayTitle(int typeId, {int subTypeId = 0}) {
     case 17:
       return "Ekstra Maliyetler";
     case 18:
+      return "Toplam Maliyet";
+    case 18:
+      return "Toplam Tutar";
+    case 18:
+      return "Toplam Tutar";
+    case 18:
       return "Toplam Tutar";
     default:
       return "";

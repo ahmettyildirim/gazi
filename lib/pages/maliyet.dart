@@ -29,104 +29,172 @@ class _MaliyetPageState extends State<MaliyetPage> {
           left: true,
           right: true,
           minimum: EdgeInsets.only(top: 20, bottom: 20, left: 8, right: 8),
-          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _repositoryInstance.getAllItems(CollectionKeys.maliyet),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var maliyetValues = snapshot.data!.docs;
-                  var length = maliyetValues.length;
-                  List<MaliyetModel> maliyetlist = List.empty(growable: true);
-                  for (int i = 0; i < length; i++) {
-                    maliyetlist.add(MaliyetModel.fromJson(
-                        maliyetValues[i].data(),
-                        id: maliyetValues[i].id));
-                  }
-                  int total = maliyetlist.fold(
-                      0,
-                      (previousValue, element) =>
-                          previousValue + element.toplamTutar);
+          child: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream:
+                        _repositoryInstance.getAllItems(CollectionKeys.maliyet),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var maliyetValues = snapshot.data!.docs;
+                        var length = maliyetValues.length;
+                        List<MaliyetModel> maliyetlist =
+                            List.empty(growable: true);
+                        for (int i = 0; i < length; i++) {
+                          maliyetlist.add(MaliyetModel.fromJson(
+                              maliyetValues[i].data(),
+                              id: maliyetValues[i].id));
+                        }
+                        int total = maliyetlist.fold(
+                            0,
+                            (previousValue, element) =>
+                                previousValue + element.toplamTutar);
 
-                  return ListView.separated(
-                      itemBuilder: (context, index) {
-                        var filterMaliyet = maliyetlist.where(
-                            (element) => element.maliyetTip == index + 1);
-                        MaliyetModel maliyet = filterMaliyet.isNotEmpty
-                            ? filterMaliyet.first
-                            : MaliyetModel(
-                                maliyetTip: index + 1,
-                                altMaliyetTip: 0,
-                                toplamTutar: 0,
-                                toplamSayi: 0);
+                        return ListView.separated(
+                            itemBuilder: (context, index) {
+                              var filterMaliyet = maliyetlist.where(
+                                  (element) => element.maliyetTip == index + 1);
+                              MaliyetModel maliyet = filterMaliyet.isNotEmpty
+                                  ? filterMaliyet.first
+                                  : MaliyetModel(
+                                      maliyetTip: index + 1,
+                                      altMaliyetTip: 0,
+                                      toplamTutar: 0,
+                                      toplamSayi: 0);
 
-                        return index == 18
-                            ? SizedBox(
-                                height: height / 25,
-                              )
-                            : ListTile(
-                                title: Container(
-                                    width: width / 4,
-                                    child: Text(getMaliyetName(index + 1),
-                                        style: TextStyle(
-                                            fontSize: index == 17
-                                                ? width / 17
-                                                : width / 25))),
-                                dense: true,
-                                trailing: index == 17
-                                    ? Text(
-                                        getMoneyString(total),
-                                        style: TextStyle(fontSize: width / 17),
-                                      )
-                                    : TextButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      // BubbleScreen()
-                                                      MaliyetDetay(
-                                                        maliyet: maliyet,
-                                                      )));
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              getMoneyString(
-                                                  maliyet.toplamTutar),
+                              return index == 18
+                                  ? SizedBox(
+                                      height: height / 25,
+                                    )
+                                  : ListTile(
+                                      title: Container(
+                                          width: width / 4,
+                                          child: Text(getMaliyetName(index + 1),
                                               style: TextStyle(
-                                                  fontSize: width / 25),
-                                            ),
-                                            SizedBox(
-                                              width: width / 100,
-                                            ), // <-- Text
+                                                  fontSize: index == 17
+                                                      ? width / 17
+                                                      : width / 25))),
+                                      dense: true,
+                                      trailing: index == 17
+                                          ? Text(
+                                              getMoneyString(total),
+                                              style: TextStyle(
+                                                  fontSize: width / 17),
+                                            )
+                                          : TextButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            // BubbleScreen()
+                                                            MaliyetDetay(
+                                                              maliyet: maliyet,
+                                                            )));
+                                              },
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    getMoneyString(
+                                                        maliyet.toplamTutar),
+                                                    style: TextStyle(
+                                                        fontSize: width / 25),
+                                                  ),
+                                                  SizedBox(
+                                                    width: width / 100,
+                                                  ), // <-- Text
 
-                                            Icon(
-                                              // <-- Icon
-                                              Icons.arrow_forward_ios,
-                                              size: width / 25,
+                                                  Icon(
+                                                    // <-- Icon
+                                                    Icons.arrow_forward_ios,
+                                                    size: width / 25,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        ),
-                                      ),
 
-                                // onPressed: () {},
-                                // icon: Icon(Icons.arrow_forward_ios,
-                                //     textDirection: TextDirection.ltr),
-                                // label: Text((index * 12500).toString() + " TL"))
+                                      // onPressed: () {},
+                                      // icon: Icon(Icons.arrow_forward_ios,
+                                      //     textDirection: TextDirection.ltr),
+                                      // label: Text((index * 12500).toString() + " TL"))
+                                    );
+                            },
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            separatorBuilder: (context, index) {
+                              return Divider(
+                                height: 15,
+                                thickness: 2,
                               );
-                      },
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) {
-                        return Divider(
-                          height: 15,
-                          thickness: 2,
-                        );
-                      },
-                      itemCount: 19);
-                } else {
-                  return Center();
-                }
-              })),
+                            },
+                            itemCount: 19);
+                      } else {
+                        return Center();
+                      }
+                    }),
+              ),
+              Divider(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(color: Colors.amberAccent),
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Maliyet ve Masraflar",
+                        style: TextStyle(fontSize: width / 20)),
+                    Text("1.000.000 TL"),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(color: Colors.greenAccent),
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Dana Satış Fiyatları",
+                        style: TextStyle(fontSize: width / 20)),
+                    Text("1.000.000 TL"),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(color: Colors.greenAccent),
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Kuzu Satış Fiyatları",
+                        style: TextStyle(fontSize: width / 20)),
+                    Text("1.000.000 TL"),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(color: Colors.redAccent),
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Yapılan Kar", style: TextStyle(fontSize: width / 15)),
+                    Text("1.000.000 TL"),
+                  ],
+                ),
+              ),
+            ],
+          )),
     );
   }
 }
