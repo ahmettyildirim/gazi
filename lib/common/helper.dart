@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+
 String validateName(String value) {
   String pattern = r'(^[a-zA-Z ]*$)';
   RegExp regExp = new RegExp(pattern);
@@ -64,4 +66,9 @@ pushAndRemoveUntil(BuildContext context, Widget destination, bool predict) {
   Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => destination),
       (Route<dynamic> route) => predict);
+}
+
+String getMoneyString(int money) {
+  return NumberFormat.currency(locale: 'eu', symbol: "TL", decimalDigits: 0)
+      .format(money);
 }
