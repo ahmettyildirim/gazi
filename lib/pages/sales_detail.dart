@@ -220,7 +220,6 @@ class _SaleDetailsState extends State<SaleDetails> {
   }
 
   Future<int?> showPaymentDialog(BuildContext context) async {
-    print(width);
     return await showDialog(
         context: context,
         builder: (context) {

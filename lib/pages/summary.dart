@@ -84,13 +84,22 @@ class _SummaryPageState extends State<SummaryPage> {
               ),
             ),
             TextButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              // BubbleScreen()
-                              MaliyetPage()));
+                onPressed: () async {
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             // BubbleScreen()
+                  //             MaliyetPage()));
+                  var success = await showPassword(context);
+                  if (success) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                // BubbleScreen()
+                                MaliyetPage()));
+                  }
                 },
                 icon: Icon(Icons.analytics_outlined),
                 label: Text("Maliyet Tablosu"))
@@ -147,6 +156,61 @@ class _SummaryPageState extends State<SummaryPage> {
       ),
     );
   }
+}
+
+Future<bool> showPassword(BuildContext context) async {
+  var _textPasswordController = TextEditingController();
+  return await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Kısıtlı Alan',
+                style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
+            content: Container(
+              child: TextField(
+                controller: _textPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(label: Text("Şifre")),
+              ),
+            ),
+            actions: [
+              ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.redAccent,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        textStyle: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "İptal",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(context).pop(false);
+                      });
+                      // your code
+                    }),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        textStyle: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold)),
+                    child: Text("Giriş", style: TextStyle(fontSize: 12)),
+                    onPressed: () async {
+                      if (_textPasswordController.text == "1234") {
+                        Navigator.of(context)
+                            .pop(_textPasswordController.text == "1234");
+                      }
+                    })
+              ])
+            ],
+          );
+        });
+      });
 }
 
 int getKucukKurbanAdet(List<SaleModel> list) {
