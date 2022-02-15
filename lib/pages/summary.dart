@@ -77,26 +77,13 @@ class _SummaryPageState extends State<SummaryPage> {
             height: 30,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            TextButton.icon(
-                onPressed: () async {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             // BubbleScreen()
-                  //             MaliyetPage()));
-                  var success = await showPassword(context);
-                  if (success) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                // BubbleScreen()
-                                MaliyetPage()));
-                  }
-                },
-                icon: Icon(Icons.analytics_outlined),
-                label: Text("Maliyet Tablosu")),
+            Text(
+              "Satış Özetleri",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18,
+              ),
+            ),
             TextButton.icon(
                 onPressed: () {
                   Scaffold.of(context).openDrawer();

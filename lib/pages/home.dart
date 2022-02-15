@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/pages/add_sale.dart';
 import 'package:gazi_app/pages/customers.dart';
 import 'package:gazi_app/pages/kurbanlar.dart';
+import 'package:gazi_app/pages/maliyet.dart';
 import 'package:gazi_app/pages/sales.dart';
 import 'package:gazi_app/pages/summary.dart';
 
@@ -18,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   Curve animationCurve =
       Curves.linear; //this is for page animation-not necessary
   _HomePageState();
+  final _formKey = GlobalKey<FormState>(debugLabel: '_AddSaleFormState');
   @override
   void initState() {
     super.initState();
@@ -57,6 +60,74 @@ class _HomePageState extends State<HomePage> {
       default:
         return Text("Anasayfa");
     }
+  }
+
+  String? _passwordValidator(String? text) {
+    if (text != "1234") {
+      return "Hatalı Şifre";
+    }
+    return null;
+  }
+
+  Future<bool> showPassword(BuildContext context) async {
+    var _textPasswordController = TextEditingController();
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Kısıtlı Alan',
+                  style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
+              content: Form(
+                key: _formKey,
+                child: Container(
+                  child: TextFormField(
+                    validator: _passwordValidator,
+                    controller: _textPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(label: Text("Şifre")),
+                  ),
+                ),
+              ),
+              actions: [
+                ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.redAccent,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          textStyle: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      child: Text(
+                        "İptal",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).pop(false);
+                        });
+                        // your code
+                      }),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          textStyle: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      child: Text("Giriş", style: TextStyle(fontSize: 12)),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          if (_textPasswordController.text == "1234") {
+                            Navigator.of(context)
+                                .pop(_textPasswordController.text == "1234");
+                          }
+                        }
+                      })
+                ])
+              ],
+            );
+          });
+        });
   }
 
   @override
@@ -119,17 +190,33 @@ class _HomePageState extends State<HomePage> {
                 }),
             Divider(),
             ListTile(
-              title: Text("Hesap Detayları"),
-              trailing: Icon(Icons.account_circle),
-              onTap: () {
-                Navigator.pop(context);
+              title: Text("Maliyet Tablosu"),
+              trailing: Icon(Icons.analytics_outlined),
+              onTap: () async {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) =>
+                //             // BubbleScreen()
+                //             MaliyetPage()));
+                var success = await showPassword(context);
+                if (success) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              // BubbleScreen()
+                              MaliyetPage()));
+                }
               },
             ),
             Divider(),
             ListTile(
-                title: Text("Logout"),
+                title: Text("Çıkış"),
                 trailing: Icon(Icons.exit_to_app),
                 onTap: () {
+                  FirebaseAuth.instance.signOut();
                   // logOut();
                   // Navigator.pop(context);
                 }),
