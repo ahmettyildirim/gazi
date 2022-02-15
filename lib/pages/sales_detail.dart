@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
+import 'package:gazi_app/pages/add_sale.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SaleDetails extends StatefulWidget {
   SaleDetails({Key? key, required this.sale}) : super(key: key);
-  final SaleModel sale;
+  SaleModel sale;
   @override
   State<SaleDetails> createState() => _SaleDetailsState();
 }
@@ -163,6 +164,29 @@ class _SaleDetailsState extends State<SaleDetails> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Satış Detayı"),
+          actions: [
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    SaleModel result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                // BubbleScreen()
+                                AddSale(
+                                  sale: widget.sale,
+                                )));
+                    setState(() {
+                      widget.sale = result;
+                    });
+                  },
+                  child: Icon(
+                    Icons.edit,
+                    size: 20.0,
+                  ),
+                )),
+          ],
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -396,24 +420,24 @@ class _SaleDetailsState extends State<SaleDetails> {
                 )),
               ),
               actions: [
-                ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                          textStyle: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold)),
-                      child: Text(
-                        "Ödemeyi Sil",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          Navigator.of(context).pop();
-                        });
-                        // your code
-                      }),
+                ButtonBar(alignment: MainAxisAlignment.end, children: [
+                  // ElevatedButton(
+                  //     style: ElevatedButton.styleFrom(
+                  //         primary: Colors.redAccent,
+                  //         padding:
+                  //             EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  //         textStyle: TextStyle(
+                  //             fontSize: 15, fontWeight: FontWeight.bold)),
+                  //     child: Text(
+                  //       "Ödemeyi Sil",
+                  //       style: TextStyle(fontSize: 12),
+                  //     ),
+                  //     onPressed: () {
+                  //       setState(() {
+                  //         Navigator.of(context).pop();
+                  //       });
+                  //       // your code
+                  //     }),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           padding:

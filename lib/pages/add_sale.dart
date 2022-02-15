@@ -12,6 +12,8 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'hisse_select.dart';
 
 class AddSale extends StatefulWidget {
+  AddSale({Key? key, this.sale}) : super(key: key);
+  final SaleModel? sale;
   @override
   _AddSaleState createState() => _AddSaleState();
 }
@@ -19,21 +21,22 @@ class AddSale extends StatefulWidget {
 var _repositoryInstance = DataRepository.instance;
 
 class _AddSaleState extends State<AddSale> {
+  @override
   bool isAutoValidate = false;
-  final _formKey = GlobalKey<FormState>(debugLabel: '_AddSaleFormState');
-  final _saleNoController = TextEditingController();
-  final _kotraNoController = TextEditingController();
-  final _kgController = TextEditingController();
-  final _adetController = TextEditingController();
-  final _kgAmountController = TextEditingController();
-  final _amountController = TextEditingController();
-  final _totalAmountController = TextEditingController();
-  final _kaparoController = TextEditingController();
-  final _kalanTutarController = TextEditingController();
-  final _hisseCountController = TextEditingController();
-  final _aciklamaController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _nameController = TextEditingController();
+  var _formKey = GlobalKey<FormState>(debugLabel: '_AddSaleFormState');
+  var _saleNoController = TextEditingController();
+  var _kotraNoController = TextEditingController();
+  var _kgController = TextEditingController();
+  var _adetController = TextEditingController();
+  var _kgAmountController = TextEditingController();
+  var _amountController = TextEditingController();
+  var _totalAmountController = TextEditingController();
+  var _kaparoController = TextEditingController();
+  var _kalanTutarController = TextEditingController();
+  var _hisseCountController = TextEditingController();
+  var _aciklamaController = TextEditingController();
+  var _phoneController = TextEditingController();
+  var _nameController = TextEditingController();
   var maskFormatter = new MaskTextInputFormatter(
       mask: '(###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
   int _kurbanTip = 0;
@@ -42,6 +45,32 @@ class _AddSaleState extends State<AddSale> {
   CustomerModel? selectedCustomer;
   HisseKurbanModel? _selectedHisse;
   String _remainingHisseLabelText = 'Hisse Sayısı';
+
+  void initState() {
+    super.initState();
+    if (widget.sale != null) {
+      setState(() {
+        _kurbanTip = widget.sale!.kurbanTip;
+        _buyukKurbanTip = widget.sale!.buyukKurbanTip;
+        _kurbanSubTip = widget.sale!.kurbanSubTip;
+        selectedCustomer = widget.sale!.customer;
+        _saleNoController.text = widget.sale!.kurbanNo.toString();
+        _kotraNoController.text = widget.sale!.kotraNo.toString();
+        _kgController.text = widget.sale!.kg.toString();
+        _adetController.text = widget.sale!.adet.toString();
+        _kgAmountController.text = widget.sale!.kgAmount.toString();
+        _amountController.text = widget.sale!.amount.toString();
+        _totalAmountController.text = widget.sale!.generalAmount.toString();
+        _kaparoController.text = widget.sale!.kaparo.toString();
+        _kalanTutarController.text = widget.sale!.remainingAmount.toString();
+        _hisseCountController.text = widget.sale!.hisseNum.toString();
+        _aciklamaController.text = widget.sale!.aciklama.toString();
+        _phoneController.text = widget.sale!.customer.phone.toString();
+        _nameController.text = widget.sale!.customer.name.toString();
+      });
+    }
+  }
+
   void _selectKurban(HisseKurbanModel kurban) {
     setState(() {
       _saleNoController.text = kurban.kurbanNo.toString();
@@ -65,9 +94,14 @@ class _AddSaleState extends State<AddSale> {
     var screenInfo = MediaQuery.of(context);
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
+    print("tipler");
+    print(_kurbanTip);
+    print(_kurbanSubTip);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Yeni Satış"),
+        title: Text(widget.sale == null
+            ? "Yeni Satış"
+            : widget.sale!.kurbanNo.toString() + " Numaralı Satış"),
       ),
       body: SafeArea(
         bottom: true,
@@ -142,7 +176,9 @@ class _AddSaleState extends State<AddSale> {
                     ? Padding(
                         padding: EdgeInsets.all(screenHeight / 30),
                         child: ElevatedButton(
-                            onPressed: addSale, child: Text("Ekle")))
+                            onPressed: addSale,
+                            child: Text(
+                                widget.sale == null ? "Ekle" : "Güncelle")))
                     : Center()
               ],
             ),
@@ -153,6 +189,9 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getTypeMenu(double screenWidth) {
+    if (widget.sale != null) {
+      return Center();
+    }
     return CustomRadioButton(
       enableButtonWrap: true,
       shapeRadius: 14.0,
@@ -179,6 +218,9 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getBuyukbasTypeMenu(double screenWidth) {
+    if (widget.sale != null) {
+      return Center();
+    }
     return Column(
       children: [
         CustomRadioButton(
@@ -210,6 +252,9 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getBuyukbasSubmenu(double screenWidth) {
+    if (widget.sale != null) {
+      return Center();
+    }
     return Column(
       children: [
         CustomRadioButton(
@@ -239,6 +284,9 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getKucukbasSubmenu(double screenWidth) {
+    if (widget.sale != null) {
+      return Center();
+    }
     return Column(
       children: [
         CustomRadioButton(
@@ -332,6 +380,7 @@ class _AddSaleState extends State<AddSale> {
           keyboardType: TextInputType.phone,
           controller: _phoneController,
           inputFormatters: [maskFormatter],
+          enabled: widget.sale == null,
           validator: _requiredValidator,
           decoration: InputDecoration(labelText: 'Cep Telefonu'),
           onChanged: getCustomerByPhone),
@@ -351,7 +400,6 @@ class _AddSaleState extends State<AddSale> {
         filterName: FieldKeys.customerPhone,
         filterValue: _phoneController.text);
     if (value.docs.isNotEmpty) {
-      print('girdi');
       var customer = CustomerModel.fromJson(value.docs.first.data(),
           id: value.docs.first.id);
       setState(() {
@@ -371,6 +419,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+        enabled: widget.sale == null,
         validator: _requiredValidator,
         controller: _nameController,
         decoration: InputDecoration(labelText: 'Müşteri Adı Soyadı'),
@@ -452,6 +501,7 @@ class _AddSaleState extends State<AddSale> {
         validator: _requiredValidator,
         keyboardType: TextInputType.number,
         controller: _kaparoController,
+        enabled: widget.sale == null,
         decoration: InputDecoration(labelText: 'Alınan Kaparo'),
         onChanged: getRemainingAmount,
       ),
@@ -592,83 +642,113 @@ class _AddSaleState extends State<AddSale> {
 
   Future<void> addSale() async {
     if (_formKey.currentState!.validate()) {
-      if (selectedCustomer == null) {
-        CustomerModel customer =
-            new CustomerModel(_nameController.text, _phoneController.text);
-        var customerref = await DataRepository.instance.addNewItem(customer);
-        // await getCustomerByPhone(_phoneController.text);
-        var value = await _repositoryInstance.getAllItemsByFilter(
-            CollectionKeys.customers,
-            filterName: FieldKeys.customerPhone,
-            filterValue: _phoneController.text);
-        if (value.docs.isNotEmpty) {
-          var customer = CustomerModel.fromJson(value.docs.first.data(),
-              id: value.docs.first.id);
-          setState(() {
-            selectedCustomer = customer;
-            _nameController.text = customer.name;
-          });
+      if (widget.sale == null) {
+        if (selectedCustomer == null) {
+          CustomerModel customer =
+              new CustomerModel(_nameController.text, _phoneController.text);
+          var customerref = await DataRepository.instance.addNewItem(customer);
+          // await getCustomerByPhone(_phoneController.text);
+          var value = await _repositoryInstance.getAllItemsByFilter(
+              CollectionKeys.customers,
+              filterName: FieldKeys.customerPhone,
+              filterValue: _phoneController.text);
+          if (value.docs.isNotEmpty) {
+            var customer = CustomerModel.fromJson(value.docs.first.data(),
+                id: value.docs.first.id);
+            setState(() {
+              selectedCustomer = customer;
+              _nameController.text = customer.name;
+            });
+          }
         }
+        if (selectedCustomer!.name != _nameController.text) {
+          selectedCustomer!.name = _nameController.text;
+          await _repositoryInstance.updateItem(selectedCustomer!);
+        }
+        SaleModel sale = new SaleModel(
+            customer: selectedCustomer!,
+            customerRef: selectedCustomer!.id,
+            kurbanTip: _kurbanTip,
+            buyukKurbanTip: _buyukKurbanTip,
+            kurbanSubTip: _kurbanSubTip,
+            kurbanNo: _saleNoController.text.isEmpty
+                ? 0
+                : int.parse(_saleNoController.text),
+            kotraNo: _kotraNoController.text.isEmpty
+                ? 0
+                : int.parse(_kotraNoController.text),
+            kg: _kgController.text.isEmpty ? 0 : int.parse(_kgController.text),
+            kgAmount: _kgAmountController.text.isEmpty
+                ? 0
+                : int.parse(_kgAmountController.text),
+            amount: _amountController.text.isEmpty
+                ? 0
+                : int.parse(_amountController.text),
+            generalAmount: _totalAmountController.text.isEmpty
+                ? 0
+                : int.parse(_totalAmountController.text),
+            kaparo: 0,
+            remainingAmount: _kalanTutarController.text.isEmpty
+                ? 0
+                : int.parse(_kalanTutarController.text),
+            hisseNum: _hisseCountController.text.isEmpty
+                ? 0
+                : int.parse(_hisseCountController.text),
+            hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id,
+            adet: _adetController.text.isEmpty
+                ? 0
+                : int.parse(_adetController.text),
+            aciklama: _aciklamaController.text.isEmpty
+                ? ""
+                : _aciklamaController.text);
+        var addedItem = await DataRepository.instance.addNewItem(sale);
+        if (_kaparoController.text.isNotEmpty) {
+          PaymentModel payment = new PaymentModel(
+              amount: int.parse(_kaparoController.text),
+              paymentType: "Nakit",
+              aciklama: "İlk ödeme");
+          var result =
+              await DataRepository.instance.addNewPayment(addedItem, payment);
+        }
+        if (_kurbanSubTip == 4) {
+          _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
+              int.parse(_hisseCountController.text);
+          await _repositoryInstance.updateItem(_selectedHisse!);
+        }
+        await _showMyDialog(sale);
+        Navigator.pop(context);
+      } else {
+        widget.sale!.kurbanNo = _saleNoController.text.isEmpty
+            ? 0
+            : int.parse(_saleNoController.text);
+        widget.sale!.kotraNo = _kotraNoController.text.isEmpty
+            ? 0
+            : int.parse(_kotraNoController.text);
+        widget.sale!.kg =
+            _kgController.text.isEmpty ? 0 : int.parse(_kgController.text);
+        widget.sale!.adet =
+            _adetController.text.isEmpty ? 0 : int.parse(_adetController.text);
+        widget.sale!.kgAmount = _kgAmountController.text.isEmpty
+            ? 0
+            : int.parse(_kgAmountController.text);
+        widget.sale!.amount = _amountController.text.isEmpty
+            ? 0
+            : int.parse(_amountController.text);
+        widget.sale!.generalAmount = _totalAmountController.text.isEmpty
+            ? 0
+            : int.parse(_totalAmountController.text);
+        widget.sale!.remainingAmount = _kalanTutarController.text.isEmpty
+            ? 0
+            : int.parse(_kalanTutarController.text);
+        widget.sale!.aciklama =
+            _aciklamaController.text.isEmpty ? "" : _aciklamaController.text;
+        await DataRepository.instance.updateItem(widget.sale!);
+        Navigator.pop(context, widget.sale!);
       }
-      if (selectedCustomer!.name != _nameController.text) {
-        selectedCustomer!.name = _nameController.text;
-        await _repositoryInstance.updateItem(selectedCustomer!);
-      }
-      SaleModel sale = new SaleModel(
-          customer: selectedCustomer!,
-          customerRef: selectedCustomer!.id,
-          kurbanTip: _kurbanTip,
-          buyukKurbanTip: _buyukKurbanTip,
-          kurbanSubTip: _kurbanSubTip,
-          kurbanNo: _saleNoController.text.isEmpty
-              ? 0
-              : int.parse(_saleNoController.text),
-          kotraNo: _kotraNoController.text.isEmpty
-              ? 0
-              : int.parse(_kotraNoController.text),
-          kg: _kgController.text.isEmpty ? 0 : int.parse(_kgController.text),
-          kgAmount: _kgAmountController.text.isEmpty
-              ? 0
-              : int.parse(_kgAmountController.text),
-          amount: _amountController.text.isEmpty
-              ? 0
-              : int.parse(_amountController.text),
-          generalAmount: _totalAmountController.text.isEmpty
-              ? 0
-              : int.parse(_totalAmountController.text),
-          kaparo: 0,
-          remainingAmount: _kalanTutarController.text.isEmpty
-              ? 0
-              : int.parse(_kalanTutarController.text),
-          hisseNum: _hisseCountController.text.isEmpty
-              ? 0
-              : int.parse(_hisseCountController.text),
-          hisseRef: _selectedHisse == null ? "" : _selectedHisse!.id,
-          adet: _adetController.text.isEmpty
-              ? 0
-              : int.parse(_adetController.text),
-          aciklama:
-              _aciklamaController.text.isEmpty ? "" : _aciklamaController.text);
-      var addedItem = await DataRepository.instance.addNewItem(sale);
-      if (_kaparoController.text.isNotEmpty) {
-        PaymentModel payment = new PaymentModel(
-            amount: int.parse(_kaparoController.text),
-            paymentType: "Nakit",
-            aciklama: "İlk ödeme");
-        var result =
-            await DataRepository.instance.addNewPayment(addedItem, payment);
-      }
-      if (_kurbanSubTip == 4) {
-        _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
-            int.parse(_hisseCountController.text);
-        await _repositoryInstance.updateItem(_selectedHisse!);
-      }
-      await _showMyDialog();
-      Navigator.pop(context);
     }
   }
 
-  Future<void> _showMyDialog() async {
+  Future<void> _showMyDialog(SaleModel saleModel) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -687,7 +767,6 @@ class _AddSaleState extends State<AddSale> {
             TextButton(
               child: Text('Evet'),
               onPressed: () {
-                print('Confirmed');
                 var phone = selectedCustomer!.phone;
                 phone = phone.replaceAll(' ', '');
                 phone = phone.replaceAll('(', '');
@@ -695,7 +774,7 @@ class _AddSaleState extends State<AddSale> {
                 phone = phone.replaceAll('-', '');
                 phone = "90" + phone;
 
-                wasup(phone);
+                wasup(phone, saleModel);
                 Navigator.of(context).pop();
               },
             ),
@@ -743,17 +822,20 @@ class _AddSaleState extends State<AddSale> {
     }
   }
 
-  Future<void> wasup(String num) async {
+  Future<void> wasup(String num, SaleModel saleModel) async {
+    String text = saleModel.kurbanNo.toString() +
+        " numaralı kurban satış işleminiz gerçekleşti. " +
+        saleModel.kaparo.toString() +
+        " tutarında kapora alındı.";
     // FirebaseAuth.instance.signOut();
-    var whatsappURlAndroid = "whatsapp://send?phone=" + num + "&text=hello";
-    var whatappURLIos =
-        "https://wa.me/$num?text=${Uri.parse("Kurban satış işlemi gerçekleşti")}";
+    var whatsappURlAndroid =
+        "whatsapp://send?phone=" + num + "&text=${Uri.parse(text)}";
+    var whatappURLIos = "https://wa.me/$num?text=${Uri.parse(text)}";
     if (Platform.isIOS) {
       // for iOS phone only
       if (await canLaunch(whatappURLIos)) {
         await launch(whatappURLIos, forceSafariVC: false);
-        whatappURLIos =
-            "https://wa.me/$num?text=${Uri.parse("Kurban satış işlemi gerçekleşti")}";
+        whatappURLIos = "https://wa.me/$num?text=${Uri.parse(text)}";
         await launch(whatappURLIos, forceSafariVC: false);
       } else {
         ScaffoldMessenger.of(context)
