@@ -51,11 +51,11 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               child: const Center(
                 child: Text(
-                  "",
+                  "\nGazi Et\nMangal",
                   style: TextStyle(
                       fontFamily: "Pacifico",
-                      fontSize: 40,
-                      color: Colors.white),
+                      fontSize: 30,
+                      color: Colors.blueGrey),
                 ),
               ),
               width: getBiglDiameter(context),
