@@ -49,11 +49,11 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return SummaryPage();
       case 1:
-        return CustomerList();
+        return SalesList();
       case 2:
         return KurbanPage();
       case 3:
-        return SalesList();
+        return CustomerList();
       default:
         return Text("Anasayfa");
     }
@@ -62,13 +62,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      //   elevation: 2.0,
-      // ),
       floatingActionButton: Visibility(
         visible: true,
         child: FloatingActionButton(
@@ -92,20 +85,57 @@ class _HomePageState extends State<HomePage> {
             label: 'Anasayfa',
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.people),
-            label: 'Müşteriler',
+            icon: new Icon(Icons.animation),
+            label: 'Satışlar',
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.account_tree_outlined),
             label: 'Hisseler',
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.animation),
-            label: 'Satışlar',
+            icon: new Icon(Icons.people),
+            label: 'Müşteriler',
           ),
         ],
       ),
       body: Center(child: currentPage(_page)),
+      drawer: Drawer(
+        child: ListView(
+          // padding: EdgeInsets.only(left: 10.0, top: 30.0, right: 10.0),
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text("Ahmet Yıldırım "),
+              accountEmail: Text("ahmetyildirim3@gmail.com"),
+            ),
+            ListTile(
+                title: Text("Kullanıcı İşlemleri"),
+                trailing: Icon(Icons.supervisor_account),
+                onTap: () {
+                  // Navigator.pop(context);
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => GoogleMapExample()));
+                }),
+            Divider(),
+            ListTile(
+              title: Text("Hesap Detayları"),
+              trailing: Icon(Icons.account_circle),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(),
+            ListTile(
+                title: Text("Logout"),
+                trailing: Icon(Icons.exit_to_app),
+                onTap: () {
+                  // logOut();
+                  // Navigator.pop(context);
+                }),
+          ],
+        ),
+      ),
     );
   }
 }

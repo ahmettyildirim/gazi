@@ -77,13 +77,6 @@ class _SummaryPageState extends State<SummaryPage> {
             height: 30,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
-              "Satış Özetleri",
-              style: TextStyle(
-                color: Colors.blue,
-                fontSize: 18,
-              ),
-            ),
             TextButton.icon(
                 onPressed: () async {
                   // Navigator.push(
@@ -103,7 +96,13 @@ class _SummaryPageState extends State<SummaryPage> {
                   }
                 },
                 icon: Icon(Icons.analytics_outlined),
-                label: Text("Maliyet Tablosu"))
+                label: Text("Maliyet Tablosu")),
+            TextButton.icon(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                icon: Icon(Icons.account_circle_outlined),
+                label: Text("")),
           ]),
           Divider(
             height: 3,
