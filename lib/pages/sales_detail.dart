@@ -179,7 +179,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                     ? getRowInfo(
                         "Cins", getBuyukKurbanCins(widget.sale.buyukKurbanTip))
                     : Center(),
-                widget.sale.kurbanTip == 1 ? Divider(height: 2.0) : Center(),
                 getRowInfo("Kotra No", widget.sale.kotraNo.toString()),
                 widget.sale.kurbanSubTip == 6
                     ? getRowInfo("Adet", widget.sale.adet.toString())
