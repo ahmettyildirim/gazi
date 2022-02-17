@@ -43,9 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print(context);
         FocusScopeNode currentFocus = FocusScope.of(context);
-        print(currentFocus);
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
         }

@@ -10,7 +10,6 @@ class CustomerSelect extends StatefulWidget {
   @override
   _CustomerSelectState createState() => _CustomerSelectState();
   _onCustomerSelected(CustomerModel model) {
-    print(model.name);
     this.onCustomerSelected!(model);
   }
 }

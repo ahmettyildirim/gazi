@@ -97,9 +97,6 @@ class _AddSaleState extends State<AddSale> {
     var screenInfo = MediaQuery.of(context);
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
-    print("tipler");
-    print(_kurbanTip);
-    print(_kurbanSubTip);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.sale == null
@@ -833,30 +830,34 @@ class _AddSaleState extends State<AddSale> {
 
   Future<void> wasup(String num, SaleModel saleModel) async {
     String text =
-        "Kurban satış işleminiz gerçekleşmiştir. Allah Kabul etsin. Bayram sabhı görüşmek dileğiyle... \n Kurban No :${saleModel.kurbanNo}";
+        "Kurban satış işleminiz gerçekleşmiştir. Allah Kabul etsin. Bayram sabahı görüşmek dileğiyle... \nKurban No - ${saleModel.kurbanNo}\n";
     switch (saleModel.kurbanSubTip) {
       case 1:
       case 2:
-        text += "KG Birim Fiyatı :${getMoneyString(saleModel.kgAmount)}\n";
+        text += "KG Birim Fiyatı - ${getMoneyString(saleModel.kgAmount)}\n";
         break;
       case 3:
-        text += "Kurban Fiyatı :${getMoneyString(saleModel.amount)}\n";
+        text += "Kurban Fiyatı - ${getMoneyString(saleModel.amount)}\n";
         break;
       case 4:
         break;
       case 5:
-        text += "KG :${getMoneyString(saleModel.kg)}\n";
-        text += "KG Birim Fiyatı :${getMoneyString(saleModel.kgAmount)}\n";
-        text += "Toplam Fiyat :${getMoneyString(saleModel.generalAmount)}\n";
+        text += "KG - ${getMoneyString(saleModel.kg)}\n";
+        text += "KG Birim Fiyatı - ${getMoneyString(saleModel.kgAmount)}\n";
+        text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
         break;
       case 6:
-        text += "Adet :${getMoneyString(saleModel.adet)}\n";
-        text += "Birim Fiyatı :${getMoneyString(saleModel.amount)}\n";
-        text += "Toplam Fiyatı :${getMoneyString(saleModel.generalAmount)}\n";
+        text += "Adet - ${getMoneyString(saleModel.adet)}\n";
+        text += "Adet Fiyatı - ${getMoneyString(saleModel.amount)}\n";
+        text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
         break;
       default:
     }
-    text += "Ödenen Kaparo :${getMoneyString(saleModel.kaparo)}\n";
+    if(_kaparoController.text.isNotEmpty  && _kaparoController.text != "0" ){
+      int kaparo =  int.parse(_kaparoController.text);
+      text += "Ödenen Kaparo - ${getMoneyString(kaparo)}\n";
+    }
+    
 
     // FirebaseAuth.instance.signOut();
     var whatsappURlAndroid =

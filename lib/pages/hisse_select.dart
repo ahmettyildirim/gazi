@@ -11,7 +11,6 @@ class HisseKurbanSelect extends StatefulWidget {
   @override
   _HisseKurbanSelectState createState() => _HisseKurbanSelectState();
   _onHisseSelected(HisseKurbanModel model) {
-    print(model.kurbanNo);
     this.onHisseSelected!(model);
   }
 }

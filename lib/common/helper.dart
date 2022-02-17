@@ -42,7 +42,6 @@ String validateEmail(String value) {
 }
 
 String validateConfirmPassword(String password, String confirmPassword) {
-  print("$password $confirmPassword");
   if (password != confirmPassword) {
     return 'Password doesn\'t match';
   } else if (confirmPassword.length == 0) {
