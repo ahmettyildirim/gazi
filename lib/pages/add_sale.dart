@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/model/payment.dart';
@@ -80,6 +81,7 @@ class _AddSaleState extends State<AddSale> {
       _selectedHisse = kurban;
       _amountController.text = kurban.hisseAmount.toString();
     });
+    calculateTotal(_amountController.text);
   }
 
   String? _requiredValidator(String? text,
@@ -152,7 +154,7 @@ class _AddSaleState extends State<AddSale> {
                 ![4].contains(_kurbanSubTip)
                     ? Center()
                     : _getHisse(screenWidth, screenHeight),
-                [0, 2, 3, 4, 6].contains(_kurbanSubTip)
+                [0, 3, 4, 6].contains(_kurbanSubTip)
                     ? Center()
                     : _getKg(screenWidth, screenHeight),
                 [0, 3, 4, 6].contains(_kurbanSubTip)
@@ -161,7 +163,7 @@ class _AddSaleState extends State<AddSale> {
                 ![3, 4, 6].contains(_kurbanSubTip)
                     ? Center()
                     : _getAmount(screenWidth, screenHeight),
-                [0, 2, 3].contains(_kurbanSubTip)
+                [0, 3].contains(_kurbanSubTip)
                     ? Center()
                     : _getTotal(screenWidth, screenHeight),
                 [0].contains(_kurbanSubTip)
@@ -429,6 +431,11 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getKg(double screenWidth, double screenHeight) {
+    if (_kurbanSubTip == 2) {
+      if (widget.sale == null) {
+        return Center();
+      }
+    }
     return Padding(
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
@@ -481,6 +488,11 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getTotal(double screenWidth, double screenHeight) {
+    if (_kurbanSubTip == 2) {
+      if (widget.sale == null) {
+        return Center();
+      }
+    }
     return Padding(
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
@@ -586,42 +598,34 @@ class _AddSaleState extends State<AddSale> {
   }
 
   void calculateTotal(val) {
+    int kg = _kgController.text.isEmpty ? 0 : int.parse(_kgController.text);
+    int kgAmount = _kgAmountController.text.isEmpty
+        ? 0
+        : int.parse(_kgAmountController.text);
+    int hisseCount = _hisseCountController.text.isEmpty
+        ? 0
+        : int.parse(_hisseCountController.text);
+    int adet =
+        _adetController.text.isEmpty ? 0 : int.parse(_adetController.text);
+
+    int amount =
+        _amountController.text.isEmpty ? 0 : int.parse(_amountController.text);
+
     if (_kurbanSubTip == 4) {
-      if (_hisseCountController.text.isNotEmpty &&
-          _amountController.text.isNotEmpty) {
-        setState(() {
-          _totalAmountController.text = (int.parse(_hisseCountController.text) *
-                  int.parse(_amountController.text))
-              .toString();
-        });
-        getRemainingAmount(val);
-      } else {
-        _totalAmountController.text = "";
-      }
+      setState(() {
+        _totalAmountController.text = (hisseCount * amount).toString();
+      });
+      getRemainingAmount(val);
     } else if (_kurbanSubTip == 6) {
-      if (_adetController.text.isNotEmpty &&
-          _amountController.text.isNotEmpty) {
-        setState(() {
-          _totalAmountController.text = (int.parse(_adetController.text) *
-                  int.parse(_amountController.text))
-              .toString();
-        });
-        getRemainingAmount(val);
-      } else {
-        _totalAmountController.text = "";
-      }
+      setState(() {
+        _totalAmountController.text = (adet * amount).toString();
+      });
+      getRemainingAmount(val);
     } else {
-      if (_kgController.text.isNotEmpty &&
-          _kgAmountController.text.isNotEmpty) {
-        setState(() {
-          _totalAmountController.text = (int.parse(_kgController.text) *
-                  int.parse(_kgAmountController.text))
-              .toString();
-        });
-        getRemainingAmount(val);
-      } else {
-        _totalAmountController.text = "";
-      }
+      setState(() {
+        _totalAmountController.text = (kg * kgAmount).toString();
+      });
+      getRemainingAmount(val);
     }
   }
 
@@ -802,6 +806,7 @@ class _AddSaleState extends State<AddSale> {
         _selectedHisse = null;
         _amountController.text = "";
       });
+      calculateTotal(val);
       return;
     }
     var value = await _repositoryInstance.getAllItemsByFilter(
@@ -827,10 +832,32 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> wasup(String num, SaleModel saleModel) async {
-    String text = saleModel.kurbanNo.toString() +
-        " numaralı kurban satış işleminiz gerçekleşti. " +
-        saleModel.kaparo.toString() +
-        " tutarında kapora alındı.";
+    String text =
+        "Kurban satış işleminiz gerçekleşmiştir. Allah Kabul etsin. Bayram sabhı görüşmek dileğiyle... \n Kurban No :${saleModel.kurbanNo}";
+    switch (saleModel.kurbanSubTip) {
+      case 1:
+      case 2:
+        text += "KG Birim Fiyatı :${getMoneyString(saleModel.kgAmount)}\n";
+        break;
+      case 3:
+        text += "Kurban Fiyatı :${getMoneyString(saleModel.amount)}\n";
+        break;
+      case 4:
+        break;
+      case 5:
+        text += "KG :${getMoneyString(saleModel.kg)}\n";
+        text += "KG Birim Fiyatı :${getMoneyString(saleModel.kgAmount)}\n";
+        text += "Toplam Fiyat :${getMoneyString(saleModel.generalAmount)}\n";
+        break;
+      case 6:
+        text += "Adet :${getMoneyString(saleModel.adet)}\n";
+        text += "Birim Fiyatı :${getMoneyString(saleModel.amount)}\n";
+        text += "Toplam Fiyatı :${getMoneyString(saleModel.generalAmount)}\n";
+        break;
+      default:
+    }
+    text += "Ödenen Kaparo :${getMoneyString(saleModel.kaparo)}\n";
+
     // FirebaseAuth.instance.signOut();
     var whatsappURlAndroid =
         "whatsapp://send?phone=" + num + "&text=${Uri.parse(text)}";

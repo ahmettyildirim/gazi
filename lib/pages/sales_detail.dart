@@ -208,10 +208,10 @@ class _SaleDetailsState extends State<SaleDetails> {
                 widget.sale.kurbanSubTip == 6
                     ? getRowInfo("Adet", widget.sale.adet.toString())
                     : Center(),
-                [0, 2, 3, 4, 6].contains(widget.sale.kurbanSubTip)
+                [0, 3, 4, 6].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Kg", widget.sale.kg.toString() + " kg"),
-                [0, 2, 3, 4, 6].contains(widget.sale.kurbanSubTip)
+                [0, 3, 4, 6].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Kg Birim Fiyatı",
                         widget.sale.kgAmount.toString() + " TL"),
@@ -223,13 +223,13 @@ class _SaleDetailsState extends State<SaleDetails> {
                     ? Center()
                     : getRowInfo(
                         "Hisse Adedi", widget.sale.hisseNum.toString()),
-                [0, 2, 3].contains(widget.sale.kurbanSubTip)
+                [0, 3].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Genel Toplam",
                         widget.sale.generalAmount.toString() + " TL"),
                 getRowInfo(
-                    "Alınan Kaparo", widget.sale.kaparo.toString() + " TL"),
-                [0, 2].contains(widget.sale.kurbanSubTip)
+                    "Toplam Ödenen", widget.sale.kaparo.toString() + " TL"),
+                [0].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo("Kalan Tutar",
                         widget.sale.remainingAmount.toString() + " TL"),
