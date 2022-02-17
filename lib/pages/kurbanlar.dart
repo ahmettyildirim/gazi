@@ -25,6 +25,7 @@ class _KurbanPageState extends State<KurbanPage> {
   bool isOnlyEmpty = true;
   bool isVekaletSelected = false;
   String _searchText = "";
+  String _searchAmountText = "";
   @override
   void initState() {
     super.initState();
@@ -36,6 +37,17 @@ class _KurbanPageState extends State<KurbanPage> {
       } else {
         setState(() {
           _searchText = _nameController.text;
+        });
+      }
+    });
+    _amountController.addListener(() {
+      if (_amountController.text.isEmpty) {
+        setState(() {
+          _searchAmountText = "";
+        });
+      } else {
+        setState(() {
+          _searchAmountText = _amountController.text;
         });
       }
     });
@@ -76,23 +88,22 @@ class _KurbanPageState extends State<KurbanPage> {
                 decoration:
                     InputDecoration(labelText: "Kurban numarası ile ara "),
                 style: TextStyle(
-                    fontSize: screenHeight / 55,
+                    fontSize: screenHeight / 50,
                     height: screenHeight / 1000,
                     color: Colors.black)),
           ),
           Padding(
             padding:
-                EdgeInsets.only(top: 00.0, left: 10.0, right: 10.0, bottom: 0),
+                EdgeInsets.only(top: 0, left: 10.0, right: 10.0, bottom: 0),
             child: TextField(
-              keyboardType:
-                  TextInputType.numberWithOptions(decimal: true, signed: true),
-              controller: _amountController,
-              decoration: InputDecoration(labelText: "Hisse tutarı ile ara "),
+                keyboardType: TextInputType.numberWithOptions(
+                    decimal: true, signed: true),
+                controller: _amountController,
+                decoration: InputDecoration(labelText: "Hisse tutarı ile ara "),
                 style: TextStyle(
-                    fontSize: screenHeight / 55,
+                    fontSize: screenHeight / 50,
                     height: screenHeight / 1000,
-                    color: Colors.black)
-            ),
+                    color: Colors.black)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,20 +152,17 @@ class _KurbanPageState extends State<KurbanPage> {
               )
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddKurban()));
-                    setState(() {
-                      // filterModel = val;
-                    });
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text("Yeni Hisse ekle")),
-            ],
+          Center(
+            child: TextButton.icon(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddKurban()));
+                  setState(() {
+                    // filterModel = val;
+                  });
+                },
+                icon: Icon(Icons.add),
+                label: Text("Yeni Hisse eskle")),
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -180,6 +188,13 @@ class _KurbanPageState extends State<KurbanPage> {
                           kurbanValues, FieldKeys.hisseKurbanRemainingHisse, 0,
                           notEqual: true);
                     }
+                  }
+                  if (_searchAmountText.isNotEmpty &&
+                      int.tryParse(_searchAmountText) != null) {
+                    kurbanValues = getFilteredResults(
+                        kurbanValues,
+                        FieldKeys.hisseKurbanHisseAmount,
+                        int.tryParse(_searchAmountText));
                   }
                   // var kurbanValues = snapshot.data!.docs
                   //     .where((element) => element
@@ -234,25 +249,25 @@ class _KurbanPageState extends State<KurbanPage> {
                               : Colors.white,
                           child: ListTile(
                               subtitle: Text(
-                                "Toplam Hisse: :${hisseKurban.hisseNo} ,Hisse Tutarı: :${hisseKurban.hisseAmount}\nKotra Numarası: :${hisseKurban.kotraNo}\nAçıklama: :${hisseKurban.aciklama}",
+                                "Toplam Hisse :${hisseKurban.hisseNo}, Hisse Tutarı :${hisseKurban.hisseAmount}\nAçıklama :${hisseKurban.aciklama}",
                                 style: TextStyle(
                                     color: hisseKurban.remainingHisse == 0
                                         ? Colors.white60
-                                        : Colors.grey),
+                                        : Color.fromARGB(255, 45, 82, 104)),
                               ),
                               title: Text(
                                   "Kalan Hisse Sayısı :${hisseKurban.remainingHisse}",
                                   style: TextStyle(
                                       color: hisseKurban.remainingHisse == 0
                                           ? Colors.white
-                                          : Colors.black54)),
+                                          : Color.fromARGB(236, 9, 13, 49))),
                               leading: Text(
                                 hisseKurban.kurbanNo.toString(),
                                 style: TextStyle(
                                     fontSize: 30,
                                     color: hisseKurban.isVekalet == true
                                         ? Colors.blueAccent[100]
-                                        : Colors.black),
+                                        : Color.fromARGB(255, 3, 2, 51)),
                               )),
                         ),
                       );

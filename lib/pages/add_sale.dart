@@ -80,6 +80,7 @@ class _AddSaleState extends State<AddSale> {
           "Hisse Sayısı (Kalan Hisse ${kurban.remainingHisse.toString()})";
       _selectedHisse = kurban;
       _amountController.text = kurban.hisseAmount.toString();
+      _kotraNoController.text = kurban.kotraNo.toString();
     });
     calculateTotal(_amountController.text);
   }
@@ -320,6 +321,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
+        enabled: _kurbanSubTip != 4,
         keyboardType: TextInputType.number,
         controller: _kotraNoController,
         decoration: InputDecoration(labelText: 'Kotra No (İsteğe bağlı)'),
@@ -818,6 +820,7 @@ class _AddSaleState extends State<AddSale> {
             "Hisse Sayısı (Kalan Hisse ${kurban.remainingHisse.toString()})";
         _selectedHisse = kurban;
         _amountController.text = kurban.hisseAmount.toString();
+        _kotraNoController.text = kurban.kotraNo.toString();
       });
     } else {
       setState(() {
@@ -853,11 +856,10 @@ class _AddSaleState extends State<AddSale> {
         break;
       default:
     }
-    if(_kaparoController.text.isNotEmpty  && _kaparoController.text != "0" ){
-      int kaparo =  int.parse(_kaparoController.text);
+    if (_kaparoController.text.isNotEmpty && _kaparoController.text != "0") {
+      int kaparo = int.parse(_kaparoController.text);
       text += "Ödenen Kaparo - ${getMoneyString(kaparo)}\n";
     }
-    
 
     // FirebaseAuth.instance.signOut();
     var whatsappURlAndroid =
