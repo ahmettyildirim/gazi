@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gazi_app/common/custom_animation.dart';
@@ -77,13 +78,19 @@ class _UserCreatePageState extends State<UserCreatePage> {
   }
 
   Future<void> _addUser() async {
+    late FirebaseApp app;
     try {
+      var currentUser = FirebaseAuth.instance.currentUser;
       if (_formKey.currentState!.validate()) {
         CustomLoader.show();
-        var credentials = await FirebaseAuth.instance
+        app = await Firebase.initializeApp(
+            name: 'temp', options: Firebase.app().options);
+        var credentials = await FirebaseAuth.instanceFor(app: app)
             .createUserWithEmailAndPassword(
                 email: _mailController.text,
                 password: _passwordController.text);
+
+        app.delete();
         CustomLoader.close();
         if (credentials.user == null) {
           EasyLoading.showError("Kullanıcı eklenemedi",
@@ -95,11 +102,25 @@ class _UserCreatePageState extends State<UserCreatePage> {
         }
       }
     } catch (e) {
-      print(e);
-      String message =
-          (e as FirebaseAuthException).code.toString() == "invalid-email"
-              ? "Geçerli bir mail adresi giriniz"
-              : "";
+      app.delete();
+      String message = "";
+
+      if (e is FirebaseAuthException) {
+        var code = e.code.toString();
+        switch (code) {
+          case "invalid-email":
+            message = "Geçerli bir mail adresi giriniz";
+            break;
+          case "email-already-in-use":
+            message = "Bu mail adresi kullanımda";
+            break;
+          case "weak-password":
+            message = "Daha güçlü bir şifre giriniz";
+            break;
+          default:
+        }
+      }
+
       EasyLoading.showError("Kullanıcı eklenemedi\n" + message,
           maskType: EasyLoadingMaskType.black);
     }

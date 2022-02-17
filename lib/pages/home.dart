@@ -178,20 +178,15 @@ class _HomePageState extends State<HomePage> {
           // padding: EdgeInsets.only(left: 10.0, top: 30.0, right: 10.0),
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text("Ahmet Yıldırım "),
-              accountEmail: Text("ahmetyildirim3@gmail.com"),
+              accountName: Text(""),
+              accountEmail: Text(FirebaseAuth.instance.currentUser!.email!),
             ),
-            ListTile(
-                title: Text("Kullanıcı İşlemleri"),
-                trailing: Icon(Icons.supervisor_account),
-                onTap: () {
-                  // Navigator.pop(context);
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => GoogleMapExample()));
-                }),
-            Divider(),
+            // ListTile(
+            //     title: Text("Kullanıcı İşlemleri"),
+            //     trailing: Icon(Icons.supervisor_account),
+            //     onTap: () {
+            //     }),
+            // Divider(),
             ListTile(
               title: Text("Maliyet Tablosu"),
               trailing: Icon(Icons.analytics_outlined),
