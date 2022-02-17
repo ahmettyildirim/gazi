@@ -8,6 +8,7 @@ import 'package:gazi_app/pages/maliyet.dart';
 import 'package:gazi_app/pages/sales.dart';
 import 'package:gazi_app/pages/summary.dart';
 import 'package:gazi_app/common/excel_helper.dart';
+import 'package:gazi_app/pages/user_create.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -223,6 +224,19 @@ class _HomePageState extends State<HomePage> {
                   CustomLoader.close();
                   // logOut();
                   // Navigator.pop(context);
+                }),
+            Divider(),
+            ListTile(
+                title: Text("Yeni Kullanıcı Yarat"),
+                trailing: Icon(Icons.add_sharp),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              // BubbleScreen()
+                              UserCreatePage()));
                 }),
             Divider(),
             ListTile(

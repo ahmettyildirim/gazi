@@ -196,13 +196,6 @@ class _KurbanPageState extends State<KurbanPage> {
                         FieldKeys.hisseKurbanHisseAmount,
                         int.tryParse(_searchAmountText));
                   }
-                  // var kurbanValues = snapshot.data!.docs
-                  //     .where((element) => element
-                  //         .data()[FieldKeys.hisseKurbanKurbanNo]
-                  //         .toString()
-                  //         .contains(_searchText))
-                  //     .toList(); //.snapshot.value;
-
                   return ListView.builder(
                     itemCount: kurbanValues.length,
                     itemBuilder: (context, index) {

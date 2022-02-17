@@ -25,7 +25,7 @@ class CustomLoader {
     return EasyLoading.show(
         status: 'Lütfen Bekleyiniz...',
         maskType: EasyLoadingMaskType.black,
-        dismissOnTap: false);
+        dismissOnTap: true);
   }
 
   static void close() {
