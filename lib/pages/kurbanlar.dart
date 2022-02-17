@@ -21,6 +21,7 @@ var _repositoryInstance = DataRepository.instance;
 
 class _KurbanPageState extends State<KurbanPage> {
   final _nameController = TextEditingController();
+  final _amountController = TextEditingController();
   bool isOnlyEmpty = true;
   bool isVekaletSelected = false;
   String _searchText = "";
@@ -57,6 +58,9 @@ class _KurbanPageState extends State<KurbanPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenInfo = MediaQuery.of(context);
+    final screenWidth = screenInfo.size.width;
+    final screenHeight = screenInfo.size.height;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -64,13 +68,30 @@ class _KurbanPageState extends State<KurbanPage> {
         children: [
           Padding(
             padding:
-                EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0, bottom: 0),
+                EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0, bottom: 0),
+            child: TextField(
+                keyboardType: TextInputType.numberWithOptions(
+                    decimal: true, signed: true),
+                controller: _nameController,
+                decoration:
+                    InputDecoration(labelText: "Kurban numarası ile ara "),
+                style: TextStyle(
+                    fontSize: screenHeight / 55,
+                    height: screenHeight / 1000,
+                    color: Colors.black)),
+          ),
+          Padding(
+            padding:
+                EdgeInsets.only(top: 00.0, left: 10.0, right: 10.0, bottom: 0),
             child: TextField(
               keyboardType:
                   TextInputType.numberWithOptions(decimal: true, signed: true),
-              controller: _nameController,
-              decoration:
-                  InputDecoration(labelText: "Kurban numarası ile ara "),
+              controller: _amountController,
+              decoration: InputDecoration(labelText: "Hisse tutarı ile ara "),
+                style: TextStyle(
+                    fontSize: screenHeight / 55,
+                    height: screenHeight / 1000,
+                    color: Colors.black)
             ),
           ),
           Row(
@@ -81,7 +102,7 @@ class _KurbanPageState extends State<KurbanPage> {
                 children: [
                   Text("Sadece Vekaletliler",
                       style: TextStyle(
-                          fontSize: 13,
+                          fontSize: screenHeight / 55,
                           color: Colors.blue,
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),
@@ -102,7 +123,7 @@ class _KurbanPageState extends State<KurbanPage> {
                 children: [
                   Text("Dolu Hisseleri\nGösterme",
                       style: TextStyle(
-                          fontSize: 13,
+                          fontSize: screenHeight / 55,
                           color: Colors.blue,
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),
@@ -186,26 +207,26 @@ class _KurbanPageState extends State<KurbanPage> {
                           if (widget.onHisseSelected != null) {
                             widget.onHisseSelected!(hisseKurban);
                             Navigator.pop(context);
-                          }else{
+                          } else {
                             Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    // BubbleScreen()
-                                    HisseDetail(
-                                      hisse: hisseKurban,
-                                    )));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        // BubbleScreen()
+                                        HisseDetail(
+                                          hisse: hisseKurban,
+                                        )));
                           }
                         },
-                        onLongPress: (){
+                        onLongPress: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    // BubbleScreen()
-                                    HisseDetail(
-                                      hisse: hisseKurban,
-                                    )));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      // BubbleScreen()
+                                      HisseDetail(
+                                        hisse: hisseKurban,
+                                      )));
                         },
                         child: Card(
                           color: hisseKurban.remainingHisse == 0
