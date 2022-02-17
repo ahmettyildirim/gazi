@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -113,9 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                               enabledBorder: InputBorder.none,
                               labelStyle: const TextStyle(color: Colors.grey)),
                         ),
-                        SizedBox(
-                          height:20
-                        ),
+                        SizedBox(height: 20),
                         TextFormField(
                           controller: _passwordController,
                           validator: (value) {
@@ -163,12 +162,17 @@ class _LoginPageState extends State<LoginPage> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(20),
                                 splashColor: Colors.green,
-                                onTap: () {
+                                onTap: () async {
                                   if (_formKey.currentState!.validate()) {
+                                    await EasyLoading.show(
+                                        status: 'Lütfen Bekleyiniz...',
+                                        maskType: EasyLoadingMaskType.black,
+                                        dismissOnTap: false);
                                     widget.login(
                                       _emailController.text,
                                       _passwordController.text,
                                     );
+                                    // EasyLoading.dismiss();
                                   }
                                   // Navigator.push(
                                   //     context,

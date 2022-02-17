@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/maliyet.dart';

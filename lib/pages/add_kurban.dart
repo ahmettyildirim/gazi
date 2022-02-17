@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 
@@ -120,6 +121,7 @@ class _AddKurbanState extends State<AddKurban> {
   }
 
   Future<void> addKurban() async {
+    CustomLoader.show();
     HisseKurbanModel hisseKurban = new HisseKurbanModel(
         int.parse(_saleNoController.text),
         int.parse(_kotraNoController.text),
@@ -130,6 +132,7 @@ class _AddKurbanState extends State<AddKurban> {
         isVekalet: _isVekalet);
 
     await DataRepository.instance.addItem(hisseKurban);
+    CustomLoader.close();
     Navigator.pop(context);
   }
 

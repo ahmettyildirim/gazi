@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/pages/add_sale.dart';
 import 'package:gazi_app/pages/customers.dart';
 import 'package:gazi_app/pages/kurbanlar.dart';
@@ -214,14 +215,15 @@ class _HomePageState extends State<HomePage> {
             ),
             Divider(),
             ListTile(
-              title: Text("Excele aktar"),
-              trailing: Icon(Icons.table_view_outlined),
-              onTap: () {
-                  createExcelReport();
+                title: Text("Excele aktar"),
+                trailing: Icon(Icons.table_view_outlined),
+                onTap: () async {
+                  await CustomLoader.show();
+                  await createExcelReport();
+                  CustomLoader.close();
                   // logOut();
                   // Navigator.pop(context);
-                }
-              ),
+                }),
             Divider(),
             ListTile(
                 title: Text("Çıkış"),

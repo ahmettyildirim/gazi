@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:provider/provider.dart';
 
 import 'common/authentiacation.dart';
@@ -13,6 +17,25 @@ void main() {
       builder: (context, _) => MyApp(),
     ),
   );
+  configLoading();
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.pouringHourGlass
+    ..loadingStyle = EasyLoadingStyle.light
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..dismissOnTap = true
+    ..maskType = EasyLoadingMaskType.clear
+    ..customAnimation = CustomAnimation();
 }
 
 class MyApp extends StatelessWidget {
@@ -28,13 +51,13 @@ class MyApp extends StatelessWidget {
         }
       },
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Gazi Et Mangal',
-        theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity),
-        home: MyHomePage(),
-      ),
+          debugShowCheckedModeBanner: false,
+          title: 'Gazi Et Mangal',
+          theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity),
+          home: MyHomePage(),
+          builder: EasyLoading.init()),
     );
   }
 }
@@ -155,6 +178,9 @@ class ApplicationState extends ChangeNotifier {
         email: email,
         password: password,
       );
+      if (EasyLoading.isShow) {
+        EasyLoading.dismiss();
+      }
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }

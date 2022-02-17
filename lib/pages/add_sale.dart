@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
@@ -432,7 +433,6 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
-          validator: _requiredValidator,
           keyboardType: TextInputType.number,
           controller: _kgController,
           decoration: InputDecoration(labelText: 'KG'),
@@ -644,6 +644,7 @@ class _AddSaleState extends State<AddSale> {
     if (_formKey.currentState!.validate()) {
       if (widget.sale == null) {
         if (selectedCustomer == null) {
+          CustomLoader.show();
           CustomerModel customer =
               new CustomerModel(_nameController.text, _phoneController.text);
           var customerref = await DataRepository.instance.addNewItem(customer);
@@ -715,9 +716,11 @@ class _AddSaleState extends State<AddSale> {
               int.parse(_hisseCountController.text);
           await _repositoryInstance.updateItem(_selectedHisse!);
         }
+        CustomLoader.close();
         await _showMyDialog(sale);
         Navigator.pop(context);
       } else {
+        CustomLoader.show();
         widget.sale!.kurbanNo = _saleNoController.text.isEmpty
             ? 0
             : int.parse(_saleNoController.text);
@@ -744,6 +747,7 @@ class _AddSaleState extends State<AddSale> {
             _aciklamaController.text.isEmpty ? "" : _aciklamaController.text;
         await DataRepository.instance.updateItem(widget.sale!);
         Navigator.pop(context, widget.sale!);
+        CustomLoader.close();
       }
     }
   }

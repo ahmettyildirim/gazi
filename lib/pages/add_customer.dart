@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:gazi_app/common/data_repository.dart';
@@ -16,11 +17,13 @@ class _AddCustomerState extends State<AddCustomer> {
       mask: '(###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
 
   Future<void> addCustomer() async {
+    CustomLoader.show();
     CustomerModel customer = new CustomerModel(
         _nameController.text, _phoneController.text,
         aciklama: _aciklamaController.text);
     await DataRepository.instance.addItem(customer);
     Navigator.pop(context);
+    CustomLoader.close();
   }
 
   @override

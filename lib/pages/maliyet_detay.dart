@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/maliyet.dart';
 
@@ -138,6 +139,7 @@ class _MaliyetDetayState extends State<MaliyetDetay> {
   }
 
   Future<void> addOrUpdateMaliyet() async {
+    CustomLoader.show();
     widget.maliyet.toplamSayi = [1, 2].contains(widget.maliyet.maliyetTip)
         ? int.parse(_toplamSayiController.text)
         : 0;
@@ -156,6 +158,7 @@ class _MaliyetDetayState extends State<MaliyetDetay> {
     } else {
       await DataRepository.instance.updateItem(widget.maliyet);
     }
+    CustomLoader.close();
     Navigator.pop(context);
   }
 }

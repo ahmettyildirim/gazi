@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
@@ -322,6 +323,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                   ElevatedButton(
                       child: Text("Onayla"),
                       onPressed: () async {
+                        CustomLoader.show();
                         int tutar = int.parse(_paymentController.text);
                         PaymentModel payment = new PaymentModel(
                             amount: tutar,
@@ -329,6 +331,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                             aciklama: _aciklamaController.text);
                         await _repositoryInstance.addNewPaymentWithReferenceId(
                             widget.sale.id, payment);
+                        CustomLoader.close();
 
                         Navigator.of(context).pop(tutar);
                       })
