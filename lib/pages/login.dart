@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                         //border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10)),
                     margin: const EdgeInsets.fromLTRB(20, 300, 20, 10),
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -112,6 +112,9 @@ class _LoginPageState extends State<LoginPage> {
                               labelText: "Email",
                               enabledBorder: InputBorder.none,
                               labelStyle: const TextStyle(color: Colors.grey)),
+                        ),
+                        SizedBox(
+                          height:20
                         ),
                         TextFormField(
                           controller: _passwordController,

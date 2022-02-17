@@ -6,6 +6,7 @@ import 'package:gazi_app/pages/kurbanlar.dart';
 import 'package:gazi_app/pages/maliyet.dart';
 import 'package:gazi_app/pages/sales.dart';
 import 'package:gazi_app/pages/summary.dart';
+import 'package:gazi_app/common/excel_helper.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -211,6 +212,16 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
+            Divider(),
+            ListTile(
+              title: Text("Excele aktar"),
+              trailing: Icon(Icons.table_view_outlined),
+              onTap: () {
+                  createExcelReport();
+                  // logOut();
+                  // Navigator.pop(context);
+                }
+              ),
             Divider(),
             ListTile(
                 title: Text("Çıkış"),
