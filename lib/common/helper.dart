@@ -92,3 +92,52 @@ String getMoneyString(int money) {
   return NumberFormat.currency(locale: 'eu', symbol: "TL", decimalDigits: 0)
       .format(money);
 }
+
+Future<bool> askPrompt(BuildContext context) async {
+  return await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text('Çıkış',
+                  style: TextStyle(fontSize: 20, color: Colors.redAccent, fontWeight: FontWeight.bold)),
+            ),
+            content: Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                  "Geri giderseniz girdiğiniz bilgiler kaybolacaktır.\nÇıkmak istediğinizden emin misiniz?"),
+            ),
+            actions: [
+              ButtonBar(alignment: MainAxisAlignment.spaceAround, children: [
+                ElevatedButton.icon(
+                  icon: Icon(Icons.check),
+                    label: Text(
+                      "Evet",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(context).pop(true);
+                      });
+                      // your code
+                    }),
+                ElevatedButton.icon(
+                  icon: Icon(Icons.cancel_outlined),
+                    label: Text(
+                      "Hayır",
+                      style: TextStyle(fontSize: 16, ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(context).pop(false);
+                      });
+                      // your code
+                    })
+              ])
+            ],
+          );
+        });
+      });
+}

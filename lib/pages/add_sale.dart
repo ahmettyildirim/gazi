@@ -103,6 +103,14 @@ class _AddSaleState extends State<AddSale> {
         title: Text(widget.sale == null
             ? "Yeni Satış"
             : widget.sale!.kurbanNo.toString() + " Numaralı Satış"),
+            leading: IconButton(icon:Icon(Icons.arrow_back_ios_new),
+            onPressed:() async{
+              var success = await askPrompt(context);
+                if (success) {
+                  Navigator.pop(context);
+                }
+            }
+          )
       ),
       body: SafeArea(
         bottom: true,
@@ -390,6 +398,10 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> getCustomerByPhone(phone) async {
+    if (phone.length == 2 && phone != "(5") {
+      _phoneController.text = "";
+      return;
+    }
     if (phone.length != 15) {
       setState(() {
         _nameController.text = "";
@@ -706,13 +718,12 @@ class _AddSaleState extends State<AddSale> {
                 ? ""
                 : _aciklamaController.text);
         var addedItem = await DataRepository.instance.addNewItem(sale);
-        if (_kaparoController.text.isNotEmpty) {
-          PaymentModel payment = new PaymentModel(
-              amount: int.parse(_kaparoController.text),
-              paymentType: "Nakit",
-              aciklama: "İlk ödeme");
-          var result =
-              await DataRepository.instance.addNewPayment(addedItem, payment);
+        if (_kaparoController.text.isNotEmpty && int.tryParse(_kaparoController.text) != 0) {
+            PaymentModel payment = new PaymentModel(
+                amount: int.parse(_kaparoController.text),
+                paymentType: "Nakit",
+                aciklama: "Kaparo");
+            await DataRepository.instance.addNewPayment(addedItem, payment);
         }
         if (_kurbanSubTip == 4) {
           _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
@@ -720,8 +731,15 @@ class _AddSaleState extends State<AddSale> {
           await _repositoryInstance.updateItem(_selectedHisse!);
         }
         CustomLoader.close();
-        await _showMyDialog(sale);
-        Navigator.pop(context);
+        var phone = selectedCustomer!.phone;
+        phone = phone.replaceAll(' ', '');
+        phone = phone.replaceAll('(', '');
+        phone = phone.replaceAll(')', '');
+        phone = phone.replaceAll('-', '');
+        phone = "90" + phone;
+
+        wasup(phone, sale);
+        Navigator.of(context).pop();
       } else {
         CustomLoader.show();
         widget.sale!.kurbanNo = _saleNoController.text.isEmpty
@@ -753,48 +771,6 @@ class _AddSaleState extends State<AddSale> {
         CustomLoader.close();
       }
     }
-  }
-
-  Future<void> _showMyDialog(SaleModel saleModel) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Satış Tamamlandı'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Text('Satış İşlemi Tamamlandı..'),
-                Text('Müşteriye whatsapp mesajı göndermek ister misiniz?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Evet'),
-              onPressed: () {
-                var phone = selectedCustomer!.phone;
-                phone = phone.replaceAll(' ', '');
-                phone = phone.replaceAll('(', '');
-                phone = phone.replaceAll(')', '');
-                phone = phone.replaceAll('-', '');
-                phone = "90" + phone;
-
-                wasup(phone, saleModel);
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Hayır'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<void> searchForHisse(val) async {
@@ -831,21 +807,37 @@ class _AddSaleState extends State<AddSale> {
     }
   }
 
+  String getKaparo() {
+    if (_kaparoController.text.isNotEmpty && _kaparoController.text != "0") {
+      int kaparo = int.parse(_kaparoController.text);
+      return "Ödenen Kaparo - ${getMoneyString(kaparo)}\n";
+    }
+    return "";
+  }
+
   Future<void> wasup(String num, SaleModel saleModel) async {
     String text =
         "Kurban satış işleminiz gerçekleşmiştir. Allah Kabul etsin. Bayram sabahı görüşmek dileğiyle... \nKurban No - ${saleModel.kurbanNo}\n";
     switch (saleModel.kurbanSubTip) {
       case 1:
       case 2:
+      case 5:
+        text += saleModel.kg != 0 ? "KG - ${saleModel.kg}\n" : "";
         text += "KG Birim Fiyatı - ${getMoneyString(saleModel.kgAmount)}\n";
+        text += saleModel.generalAmount != 0
+            ? "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n"
+            : "";
+        text += getKaparo();
         break;
       case 3:
         text += "Kurban Fiyatı - ${getMoneyString(saleModel.amount)}\n";
+        text += getKaparo();
         break;
       case 4:
-        text += "Hisse Sayısı - ${getMoneyString(saleModel.hisseNum)}\n";
+        text += "Hisse Sayısı - ${saleModel.hisseNum}\n";
         text += "Hisse Fiyatı - ${getMoneyString(saleModel.amount)}\n";
         text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
+        text += getKaparo();
         var value = await _repositoryInstance.getAllItemsByFilter(
             CollectionKeys.sales,
             filterName: FieldKeys.saleHisseRef,
@@ -863,21 +855,12 @@ class _AddSaleState extends State<AddSale> {
           }
         }
         break;
-      case 5:
-        text += "KG - ${getMoneyString(saleModel.kg)}\n";
-        text += "KG Birim Fiyatı - ${getMoneyString(saleModel.kgAmount)}\n";
-        text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
-        break;
       case 6:
-        text += "Adet - ${getMoneyString(saleModel.adet)}\n";
-        text += "Adet Fiyatı - ${getMoneyString(saleModel.amount)}\n";
+        text += "Adet - ${saleModel.adet}\n";
         text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
+        text += getKaparo();
         break;
       default:
-    }
-    if (_kaparoController.text.isNotEmpty && _kaparoController.text != "0") {
-      int kaparo = int.parse(_kaparoController.text);
-      text += "Ödenen Kaparo - ${getMoneyString(kaparo)}\n";
     }
     print(text);
 
