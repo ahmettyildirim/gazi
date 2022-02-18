@@ -35,10 +35,10 @@ class _UserCreatePageState extends State<UserCreatePage> {
                 child: TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   controller: _mailController,
-                  decoration: InputDecoration(labelText: "Email Adresi"),
+                  decoration: InputDecoration(labelText: "Kullanıcı Adı"),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Mail Adresini Giriniz';
+                      return 'Kullanıcı Adını Giriniz';
                     }
                     return null;
                   },
@@ -80,14 +80,13 @@ class _UserCreatePageState extends State<UserCreatePage> {
   Future<void> _addUser() async {
     late FirebaseApp app;
     try {
-      var currentUser = FirebaseAuth.instance.currentUser;
       if (_formKey.currentState!.validate()) {
         CustomLoader.show();
         app = await Firebase.initializeApp(
             name: 'temp', options: Firebase.app().options);
         var credentials = await FirebaseAuth.instanceFor(app: app)
             .createUserWithEmailAndPassword(
-                email: _mailController.text,
+                email: _mailController.text + "@kurban.com",
                 password: _passwordController.text);
 
         app.delete();

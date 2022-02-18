@@ -36,11 +36,10 @@ getTotalSales() async {
   _danaTotal = danaList.toList().fold(
       0,
       (previousValue, element) =>
-          int.parse(previousValue.toString()) + element.kaparo);
+          previousValue +
+          (element.kurbanSubTip == 3 ? element.amount : element.generalAmount));
   _kuzuTotal = kuzuList.toList().fold(
-      0,
-      (previousValue, element) =>
-          int.parse(previousValue.toString()) + element.kaparo);
+      0, (previousValue, element) => previousValue + element.generalAmount);
 }
 
 class _MaliyetPageState extends State<MaliyetPage> {

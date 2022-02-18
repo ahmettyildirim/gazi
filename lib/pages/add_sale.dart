@@ -843,6 +843,25 @@ class _AddSaleState extends State<AddSale> {
         text += "Kurban Fiyatı - ${getMoneyString(saleModel.amount)}\n";
         break;
       case 4:
+        text += "Hisse Sayısı - ${getMoneyString(saleModel.hisseNum)}\n";
+        text += "Hisse Fiyatı - ${getMoneyString(saleModel.amount)}\n";
+        text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
+        var value = await _repositoryInstance.getAllItemsByFilter(
+            CollectionKeys.sales,
+            filterName: FieldKeys.saleHisseRef,
+            filterValue: _selectedHisse!.id);
+        if (value.docs.isNotEmpty) {
+          text += "Diğer Hisse Sahipleri - \n";
+          for (int i = 0; i < value.docs.length; i++) {
+            var sale = SaleModel.fromJson(value.docs[i].data());
+            text += sale.customer.name +
+                " - " +
+                sale.customer.phone +
+                "(" +
+                sale.hisseNum.toString() +
+                " Adet)\n";
+          }
+        }
         break;
       case 5:
         text += "KG - ${getMoneyString(saleModel.kg)}\n";
@@ -860,6 +879,7 @@ class _AddSaleState extends State<AddSale> {
       int kaparo = int.parse(_kaparoController.text);
       text += "Ödenen Kaparo - ${getMoneyString(kaparo)}\n";
     }
+    print(text);
 
     // FirebaseAuth.instance.signOut();
     var whatsappURlAndroid =
@@ -873,7 +893,7 @@ class _AddSaleState extends State<AddSale> {
         await launch(whatappURLIos, forceSafariVC: false);
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: new Text("whatsapp no installed")));
+            .showSnackBar(SnackBar(content: new Text("whatsapp açılamadı")));
       }
     } else {
       // android , web
@@ -881,7 +901,7 @@ class _AddSaleState extends State<AddSale> {
         await launch(whatsappURlAndroid);
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: new Text("whatsapp no installed")));
+            .showSnackBar(SnackBar(content: new Text("whatsapp açılamadı")));
       }
     }
   }

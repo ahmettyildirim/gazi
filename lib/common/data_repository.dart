@@ -2,9 +2,9 @@ import 'dart:collection';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gazi_app/model/payment.dart';
 
 class CollectionKeys {
@@ -108,14 +108,14 @@ class DataRepository {
 //generic functions
   Future<void> addItem(GenericModel genericModel) async {
     var map = genericModel.toMap();
-    map[FieldKeys.createUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.createUser] = getUsername();
     map[FieldKeys.createTime] = DateTime.now();
     return await _addNewDocument(genericModel.colRef.doc(), map);
   }
 
   Future<DocumentReference> addNewItem(GenericModel genericModel) async {
     var map = genericModel.toMap();
-    map[FieldKeys.createUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.createUser] = getUsername();
     map[FieldKeys.createTime] = DateTime.now();
     // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
     return _firestore.collection(genericModel.collectionReferenceName).add(map);
@@ -127,14 +127,14 @@ class DataRepository {
       CollectionReference<Map<String, dynamic>> collection,
       GenericModel genericModel) async {
     var map = genericModel.toMap();
-    map[FieldKeys.createUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.createUser] = getUsername();
     map[FieldKeys.createTime] = DateTime.now();
     return collection.add(map);
   }
 
   Future<void> updateItem(GenericModel genericModel) async {
     var map = genericModel.toMap();
-    map[FieldKeys.updateUser] = FirebaseAuth.instance.currentUser!.email!;
+    map[FieldKeys.updateUser] = getUsername();
     map[FieldKeys.updateTime] = DateTime.now();
     // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
     return _firestore

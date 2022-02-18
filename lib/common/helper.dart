@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -49,6 +50,26 @@ String validateConfirmPassword(String password, String confirmPassword) {
   } else {
     return "";
   }
+}
+
+String? requiredValidator(String? text,
+    {String information = "Bu alan boş olamaz"}) {
+  if (text == null || text.isEmpty) {
+    return information;
+  }
+  return null;
+}
+
+String getUsername() {
+  var mail = FirebaseAuth.instance.currentUser!.email;
+  if (mail!.isEmpty) {
+    return "";
+  }
+  var index = mail.indexOf('@kurban.com');
+  if (index == -1) {
+    return mail;
+  }
+  return mail.substring(0, index);
 }
 
 pushReplacement(BuildContext context, Widget destination) {

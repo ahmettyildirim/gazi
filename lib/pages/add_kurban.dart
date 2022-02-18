@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 
 class AddKurban extends StatefulWidget {
@@ -39,6 +40,7 @@ class _AddKurbanState extends State<AddKurban> {
                     Padding(
                       padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: TextFormField(
+                          validator: requiredValidator,
                           keyboardType: TextInputType.number,
                           controller: _saleNoController,
                           decoration: InputDecoration(labelText: 'Kurban No')),
@@ -53,6 +55,7 @@ class _AddKurbanState extends State<AddKurban> {
                     Padding(
                       padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: TextFormField(
+                          validator: requiredValidator,
                           keyboardType: TextInputType.number,
                           controller: _hisseNumController,
                           onChanged: calculateTotal,
@@ -62,6 +65,7 @@ class _AddKurbanState extends State<AddKurban> {
                     Padding(
                       padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: TextFormField(
+                          validator: requiredValidator,
                           keyboardType: TextInputType.number,
                           controller: _hisseAmountController,
                           onChanged: calculateTotal,
@@ -121,19 +125,21 @@ class _AddKurbanState extends State<AddKurban> {
   }
 
   Future<void> addKurban() async {
-    CustomLoader.show();
-    HisseKurbanModel hisseKurban = new HisseKurbanModel(
-        int.parse(_saleNoController.text),
-        int.parse(_kotraNoController.text),
-        int.parse(_hisseNumController.text),
-        int.parse(_hisseAmountController.text),
-        aciklama: _aciklamaController.text,
-        remainingHisse: int.parse(_hisseNumController.text),
-        isVekalet: _isVekalet);
+    if (_formKey.currentState!.validate()) {
+      CustomLoader.show();
+      HisseKurbanModel hisseKurban = new HisseKurbanModel(
+          int.parse(_saleNoController.text),
+          int.parse(_kotraNoController.text),
+          int.parse(_hisseNumController.text),
+          int.parse(_hisseAmountController.text),
+          aciklama: _aciklamaController.text,
+          remainingHisse: int.parse(_hisseNumController.text),
+          isVekalet: _isVekalet);
 
-    await DataRepository.instance.addItem(hisseKurban);
-    CustomLoader.close();
-    Navigator.pop(context);
+      await DataRepository.instance.addItem(hisseKurban);
+      CustomLoader.close();
+      Navigator.pop(context);
+    }
   }
 
   void calculateTotal(val) {

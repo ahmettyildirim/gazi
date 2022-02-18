@@ -70,9 +70,6 @@ class _KurbanPageState extends State<KurbanPage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenInfo = MediaQuery.of(context);
-    final screenWidth = screenInfo.size.width;
-    final screenHeight = screenInfo.size.height;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -87,10 +84,8 @@ class _KurbanPageState extends State<KurbanPage> {
                 controller: _nameController,
                 decoration:
                     InputDecoration(labelText: "Kurban numarası ile ara "),
-                style: TextStyle(
-                    fontSize: screenHeight / 50,
-                    height: screenHeight / 1000,
-                    color: Colors.black)),
+                style:
+                    TextStyle(fontSize: 14, height: 0.5, color: Colors.black)),
           ),
           Padding(
             padding:
@@ -100,10 +95,8 @@ class _KurbanPageState extends State<KurbanPage> {
                     decimal: true, signed: true),
                 controller: _amountController,
                 decoration: InputDecoration(labelText: "Hisse tutarı ile ara "),
-                style: TextStyle(
-                    fontSize: screenHeight / 50,
-                    height: screenHeight / 1000,
-                    color: Colors.black)),
+                style:
+                    TextStyle(fontSize: 14, height: 0.5, color: Colors.black)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +106,7 @@ class _KurbanPageState extends State<KurbanPage> {
                 children: [
                   Text("Sadece Vekaletliler",
                       style: TextStyle(
-                          fontSize: screenHeight / 55,
+                          fontSize: 12,
                           color: Colors.blue,
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),
@@ -134,7 +127,7 @@ class _KurbanPageState extends State<KurbanPage> {
                 children: [
                   Text("Dolu Hisseleri\nGösterme",
                       style: TextStyle(
-                          fontSize: screenHeight / 55,
+                          fontSize: 12,
                           color: Colors.blue,
                           overflow: TextOverflow.visible),
                       textAlign: TextAlign.center),

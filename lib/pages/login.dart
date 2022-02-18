@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Mail adresini giriniz';
+                              return 'Kullanıcı adını giriniz';
                             }
                             return null;
                           },
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                               focusedBorder: UnderlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey.shade100)),
-                              labelText: "Email",
+                              labelText: "Kullanıcı Adı",
                               enabledBorder: InputBorder.none,
                               labelStyle: const TextStyle(color: Colors.grey)),
                         ),
@@ -139,15 +139,6 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
-                          child: const Text(
-                            "Şifremi Unuttum",
-                            style:
-                                TextStyle(color: Colors.blueGrey, fontSize: 11),
-                          ))),
                   Container(
                     margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                     child: Row(
@@ -170,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                                         maskType: EasyLoadingMaskType.black,
                                         dismissOnTap: false);
                                     widget.login(
-                                      _emailController.text,
+                                      _emailController.text + "@kurban.com",
                                       _passwordController.text,
                                     );
                                     // EasyLoading.dismiss();
