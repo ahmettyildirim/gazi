@@ -855,7 +855,7 @@ class _AddSaleState extends State<AddSale> {
           for (int i = 0; i < value.docs.length; i++) {
             var sale = SaleModel.fromJson(value.docs[i].data());
             text += sale.customer.name +
-                " - " +
+                " - 0" +
                 sale.customer.phone +
                 "(" +
                 sale.hisseNum.toString() +
