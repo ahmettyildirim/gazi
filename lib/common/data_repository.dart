@@ -146,10 +146,12 @@ class DataRepository {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllItems(String collectionName,
-      {String? orderBy}) {
+      {String? orderBy, bool descending = false}) {
     return orderBy == null
         ? getCollectionReference(collectionName).snapshots()
-        : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
+        : getCollectionReference(collectionName)
+            .orderBy(orderBy, descending: descending)
+            .snapshots();
   }
 
   Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getAllItemsFuture(

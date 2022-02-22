@@ -161,8 +161,7 @@ class _SaleDetailsState extends State<SaleDetails> {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    String formattedDate =
-        DateFormat('dd-MM-yyyy kk:mm').format(widget.sale.createTime!);
+    String formattedDate = getFormattedDate(widget.sale.createTime);
     return Scaffold(
         appBar: AppBar(
           title: Text("Satış Detayı"),
@@ -396,8 +395,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                           Text("İşlem Tarihi", style: TextStyle(fontSize: 12)),
                           Container(
                               child: Text(
-                                  DateFormat('dd-MM-yyyy kk:mm')
-                                      .format(paymentModel.createTime!),
+                                  getFormattedDate(paymentModel.createTime),
                                   overflow: TextOverflow.visible,
                                   textAlign: TextAlign.end,
                                   style: TextStyle(fontSize: 12)))

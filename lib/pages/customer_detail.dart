@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:gazi_app/pages/sales_detail.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomerDetail extends StatefulWidget {
@@ -152,9 +152,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    String formattedDate = widget.customer.createTime == null
-        ? ""
-        : DateFormat('dd-MM-yyyy kk:mm').format(widget.customer.createTime!);
+    String formattedDate = getFormattedDate(widget.customer.createTime);
     return Scaffold(
         appBar: AppBar(
           title: Text("Müşteri Detayı"),

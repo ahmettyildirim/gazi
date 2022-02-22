@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/maliyet.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xls;
-import 'package:intl/intl.dart';
 
 var _repositoryInstance = DataRepository.instance;
 List<QueryDocumentSnapshot<Map<String, dynamic>>> getFilteredResults(
@@ -26,7 +26,8 @@ Future<void> createExcelReport() async {
   // workbook.dispose();
 
   var bytes = await _createReport();
-  String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+  String date = getFormattedDate(DateTime.now());
   final String path = (await getApplicationSupportDirectory()).path;
   final String fileName = '$path/rapor_$date.xlsx';
   final File file = File(fileName);
@@ -110,7 +111,6 @@ Future<List<int>> _createReport() async {
   final xls.Worksheet sheet7 = workbook.worksheets[6];
   sheet7.name = "Maliyet Tablosu";
   _createSheet7(sheet7, maliyetList);
-
 
   final List<int> bytes = workbook.saveAsStream();
 
@@ -390,100 +390,97 @@ _createSheet7(xls.Worksheet sheet, List<MaliyetModel> maliyetList) {
   sheet.getRangeByName("A45").setText("EKSTRA MASRAFLAR");
   sheet.getRangeByName("A46").setText("EKSTRA AÇIKLAMA");
 
-
-  var tempList = maliyetList.where((element) => element.maliyetTip == 1).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B2").setText(tempList.first.toplamSayi.toString());
-  sheet.getRangeByName("B3").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B4").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B5").setText(tempList.first.toplamTutar.toString());
+  var tempList =
+      maliyetList.where((element) => element.maliyetTip == 1).toList();
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B2").setText(tempList.first.toplamSayi.toString());
+    sheet.getRangeByName("B3").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B4").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B5").setText(tempList.first.toplamTutar.toString());
   }
 
   tempList = maliyetList.where((element) => element.maliyetTip == 2).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B7").setText(tempList.first.toplamSayi.toString());
-  sheet.getRangeByName("B8").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B9").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B10").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B7").setText(tempList.first.toplamSayi.toString());
+    sheet.getRangeByName("B8").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B9").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B10").setText(tempList.first.toplamTutar.toString());
   }
 
   tempList = maliyetList.where((element) => element.maliyetTip == 3).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B12").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B13").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B14").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B12").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B13").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B14").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 4).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B16").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B17").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B18").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B16").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B17").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B18").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 5).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B20").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B21").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B22").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B20").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B21").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B22").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 6).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B24").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B25").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B26").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B24").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B25").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B26").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 7).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B28").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B29").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B30").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B28").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B29").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B30").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 8).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B32").setText(tempList.first.adetSayisi.toString());
-  sheet.getRangeByName("B33").setText(tempList.first.adetTutari.toString());
-  sheet.getRangeByName("B34").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B32").setText(tempList.first.adetSayisi.toString());
+    sheet.getRangeByName("B33").setText(tempList.first.adetTutari.toString());
+    sheet.getRangeByName("B34").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 9).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B36").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B36").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 10).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B37").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B37").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 11).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B38").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B38").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 12).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B39").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B39").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 13).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B40").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B40").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 14).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B41").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B41").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 15).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B42").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B42").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 16).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B43").setText(tempList.first.toplamTutar.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B43").setText(tempList.first.toplamTutar.toString());
   }
   tempList = maliyetList.where((element) => element.maliyetTip == 17).toList();
-  if(maliyetList.isNotEmpty){
-  sheet.getRangeByName("B45").setText(tempList.first.toplamTutar.toString());
-  sheet.getRangeByName("B46").setText(tempList.first.aciklama.toString());
+  if (maliyetList.isNotEmpty) {
+    sheet.getRangeByName("B45").setText(tempList.first.toplamTutar.toString());
+    sheet.getRangeByName("B46").setText(tempList.first.aciklama.toString());
   }
 
   sheet.autoFitColumn(1);
   sheet.autoFitColumn(2);
-
-
-
 }

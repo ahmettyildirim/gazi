@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String validateName(String value) {
   String pattern = r'(^[a-zA-Z ]*$)';
@@ -102,7 +106,10 @@ Future<bool> askPrompt(BuildContext context) async {
             title: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text('Çıkış',
-                  style: TextStyle(fontSize: 20, color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.redAccent,
+                      fontWeight: FontWeight.bold)),
             ),
             content: Padding(
               padding: EdgeInsets.all(8),
@@ -112,7 +119,7 @@ Future<bool> askPrompt(BuildContext context) async {
             actions: [
               ButtonBar(alignment: MainAxisAlignment.spaceAround, children: [
                 ElevatedButton.icon(
-                  icon: Icon(Icons.check),
+                    icon: Icon(Icons.check),
                     label: Text(
                       "Evet",
                       style: TextStyle(fontSize: 16),
@@ -124,10 +131,12 @@ Future<bool> askPrompt(BuildContext context) async {
                       // your code
                     }),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.cancel_outlined),
+                    icon: Icon(Icons.cancel_outlined),
                     label: Text(
                       "Hayır",
-                      style: TextStyle(fontSize: 16, ),
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                     onPressed: () {
                       setState(() {
@@ -140,4 +149,30 @@ Future<bool> askPrompt(BuildContext context) async {
           );
         });
       });
+}
+
+Future<void> launchWhatsApp({required String num, required String text}) async {
+  if (Platform.isIOS) {
+    var whatappURLIos = "https://wa.me/$num?text=${Uri.parse(text)}";
+    // for iOS phone only
+    if (await canLaunch(whatappURLIos)) {
+      await launch(whatappURLIos, forceSafariVC: false);
+    } else {
+      CustomLoader.showError("Whatsapp açılamadı.");
+    }
+  } else {
+    var whatsappURlAndroid =
+        "whatsapp://send?phone=" + num + "&text=${Uri.parse(text)}";
+    // android , web
+    if (await canLaunch(whatsappURlAndroid)) {
+      await launch(whatsappURlAndroid);
+    } else {
+      CustomLoader.showError("Whatsapp açılamadı.");
+    }
+  }
+}
+
+String getFormattedDate(DateTime? date, {String format = "dd-MM-yyyy HH:mm"}) {
+  // initializeDateFormatting();
+  return date == null ? "" : DateFormat(format).format(date);
 }

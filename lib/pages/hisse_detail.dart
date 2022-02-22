@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:gazi_app/pages/sales_detail.dart';
-import 'package:intl/intl.dart';
 
 class HisseDetail extends StatefulWidget {
   HisseDetail({Key? key, required this.hisse}) : super(key: key);
@@ -43,8 +43,7 @@ class _HisseDetailState extends State<HisseDetail> {
   }
 
   Widget _getSales() {
-    return Column(
-      children: [
+    return Column(children: [
       Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -55,11 +54,17 @@ class _HisseDetailState extends State<HisseDetail> {
                 alignment: AlignmentDirectional.centerStart,
                 width: width / 2,
                 child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: _repositoryInstance
-                        .getAllItems(CollectionKeys.sales),
+                    stream:
+                        _repositoryInstance.getAllItems(CollectionKeys.sales),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        var saleValues = snapshot.data!.docs.where((element) => element.data()[FieldKeys.saleHisseRef].toString() == widget.hisse.id).toList();
+                        var saleValues = snapshot.data!.docs
+                            .where((element) =>
+                                element
+                                    .data()[FieldKeys.saleHisseRef]
+                                    .toString() ==
+                                widget.hisse.id)
+                            .toList();
                         return ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
@@ -69,8 +74,8 @@ class _HisseDetailState extends State<HisseDetail> {
                                 saleValues[index].data(),
                                 id: saleValues[index].id);
                             return TextButton(
-                              style: ButtonStyle(
-                                  alignment: Alignment.centerRight),
+                              style:
+                                  ButtonStyle(alignment: Alignment.centerRight),
                               child: Text(
                                 sale.customer.name.toString(),
                                 overflow: TextOverflow.visible,
@@ -78,13 +83,13 @@ class _HisseDetailState extends State<HisseDetail> {
                               ),
                               onPressed: () {
                                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                // BubbleScreen()
-                                SaleDetails(
-                                  sale: sale,
-                                )));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            // BubbleScreen()
+                                            SaleDetails(
+                                              sale: sale,
+                                            )));
                               },
                             );
                           },
@@ -94,38 +99,37 @@ class _HisseDetailState extends State<HisseDetail> {
                       }
                     }),
               ),
-              
             ],
           )),
-        Divider(height: 2.0),
+      Divider(height: 2.0),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    String formattedDate =
-        DateFormat('dd-MM-yyyy kk:mm').format(widget.hisse.createTime!);
+    String formattedDate = getFormattedDate(widget.hisse.createTime);
     return Scaffold(
         appBar: AppBar(
           title: Text("Hisse Detayı"),
         ),
-        body:SingleChildScrollView(
-        child: Padding(
-            padding: const EdgeInsets.all(20.0), child: Column(children: [
-
-                getRowInfo("Kurban No", widget.hisse.kurbanNo.toString()),
-                getRowInfo("Hisse Sayısı", widget.hisse.hisseNo.toString()),
-                getRowInfo("Kalan Hisse Sayısı", widget.hisse.remainingHisse.toString()),
-                getRowInfo("Hisse Tutarı", widget.hisse.hisseAmount.toString() + "TL"),
-                getRowInfo("Vekalet Var mı?", widget.hisse.isVekalet == true ? "Evet" : "Hayır"),
-                getRowInfo("Kotra No", widget.hisse.kotraNo.toString()),
-                getRowInfo("Açıklama", widget.hisse.aciklama!),
-                getRowInfo("Satış Tarihi", formattedDate),
-                getRowInfo("Satışı Yapan", widget.hisse.createUser!),
-                _getSales()
-
-            ])))
-    );
+        body: SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(children: [
+                  getRowInfo("Kurban No", widget.hisse.kurbanNo.toString()),
+                  getRowInfo("Hisse Sayısı", widget.hisse.hisseNo.toString()),
+                  getRowInfo("Kalan Hisse Sayısı",
+                      widget.hisse.remainingHisse.toString()),
+                  getRowInfo("Hisse Tutarı",
+                      widget.hisse.hisseAmount.toString() + "TL"),
+                  getRowInfo("Vekalet Var mı?",
+                      widget.hisse.isVekalet == true ? "Evet" : "Hayır"),
+                  getRowInfo("Kotra No", widget.hisse.kotraNo.toString()),
+                  getRowInfo("Açıklama", widget.hisse.aciklama!),
+                  getRowInfo("Satış Tarihi", formattedDate),
+                  getRowInfo("Satışı Yapan", widget.hisse.createUser!),
+                  _getSales()
+                ]))));
   }
 }

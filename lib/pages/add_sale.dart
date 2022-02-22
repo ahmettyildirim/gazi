@@ -100,18 +100,17 @@ class _AddSaleState extends State<AddSale> {
     final screenHeight = screenInfo.size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.sale == null
-            ? "Yeni Satış"
-            : widget.sale!.kurbanNo.toString() + " Numaralı Satış"),
-            leading: IconButton(icon:Icon(Icons.arrow_back_ios_new),
-            onPressed:() async{
-              var success = await askPrompt(context);
+          title: Text(widget.sale == null
+              ? "Yeni Satış"
+              : widget.sale!.kurbanNo.toString() + " Numaralı Satış"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new),
+              onPressed: () async {
+                var success = await askPrompt(context);
                 if (success) {
                   Navigator.pop(context);
                 }
-            }
-          )
-      ),
+              })),
       body: SafeArea(
         bottom: true,
         top: true,
@@ -718,12 +717,13 @@ class _AddSaleState extends State<AddSale> {
                 ? ""
                 : _aciklamaController.text);
         var addedItem = await DataRepository.instance.addNewItem(sale);
-        if (_kaparoController.text.isNotEmpty && int.tryParse(_kaparoController.text) != 0) {
-            PaymentModel payment = new PaymentModel(
-                amount: int.parse(_kaparoController.text),
-                paymentType: "Nakit",
-                aciklama: "Kaparo");
-            await DataRepository.instance.addNewPayment(addedItem, payment);
+        if (_kaparoController.text.isNotEmpty &&
+            int.tryParse(_kaparoController.text) != 0) {
+          PaymentModel payment = new PaymentModel(
+              amount: int.parse(_kaparoController.text),
+              paymentType: "Nakit",
+              aciklama: "Kaparo");
+          await DataRepository.instance.addNewPayment(addedItem, payment);
         }
         if (_kurbanSubTip == 4) {
           _selectedHisse!.remainingHisse = _selectedHisse!.remainingHisse -
@@ -862,30 +862,6 @@ class _AddSaleState extends State<AddSale> {
         break;
       default:
     }
-    print(text);
-
-    // FirebaseAuth.instance.signOut();
-    var whatsappURlAndroid =
-        "whatsapp://send?phone=" + num + "&text=${Uri.parse(text)}";
-    var whatappURLIos = "https://wa.me/$num?text=${Uri.parse(text)}";
-    if (Platform.isIOS) {
-      // for iOS phone only
-      if (await canLaunch(whatappURLIos)) {
-        await launch(whatappURLIos, forceSafariVC: false);
-        whatappURLIos = "https://wa.me/$num?text=${Uri.parse(text)}";
-        await launch(whatappURLIos, forceSafariVC: false);
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: new Text("whatsapp açılamadı")));
-      }
-    } else {
-      // android , web
-      if (await canLaunch(whatsappURlAndroid)) {
-        await launch(whatsappURlAndroid);
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: new Text("whatsapp açılamadı")));
-      }
-    }
+    await launchWhatsApp(num: num, text: text);
   }
 }

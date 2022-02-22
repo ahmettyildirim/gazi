@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:gazi_app/pages/add_sale.dart';
@@ -236,7 +237,7 @@ class _SalesListState extends State<SalesList> {
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _repositoryInstance.getAllItems(CollectionKeys.sales,
-                  orderBy: FieldKeys.saleKurbanNo),
+                  orderBy: FieldKeys.createTime, descending: true),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var saleValues = snapshot.data!.docs.toList();
@@ -319,9 +320,23 @@ class _SalesListState extends State<SalesList> {
                                 AssetImage(getImagePath(sale.kurbanTip)),
                           ),
                           dense: false,
-                          trailing: Text(
-                            sale.kurbanNo.toString(),
-                            style: TextStyle(fontSize: 22),
+                          trailing: Column(
+                            children: [
+                              Text(
+                                getFormattedDate(sale.createTime,
+                                    format: "dd-MM-yyyy"),
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              Text(
+                                sale.kurbanNo.toString(),
+                                style: TextStyle(fontSize: 23),
+                              ),
+                              Text(
+                                getFormattedDate(sale.createTime,
+                                    format: "HH-mm"),
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
                           ),
                         )),
                       );
