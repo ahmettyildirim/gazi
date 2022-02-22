@@ -333,7 +333,7 @@ class _SalesListState extends State<SalesList> {
                               ),
                               Text(
                                 getFormattedDate(sale.createTime,
-                                    format: "HH-mm"),
+                                    format: "HH:mm"),
                                 style: TextStyle(fontSize: 12),
                               ),
                             ],
