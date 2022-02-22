@@ -389,7 +389,6 @@ class _AddSaleState extends State<AddSale> {
           keyboardType: TextInputType.phone,
           controller: _phoneController,
           inputFormatters: [maskFormatter],
-          enabled: widget.sale == null,
           validator: _requiredValidator,
           decoration: InputDecoration(labelText: 'Cep Telefonu'),
           onChanged: getCustomerByPhone),
@@ -432,7 +431,6 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
-        enabled: widget.sale == null,
         validator: _requiredValidator,
         controller: _nameController,
         decoration: InputDecoration(labelText: 'Müşteri Adı Soyadı'),
@@ -656,30 +654,30 @@ class _AddSaleState extends State<AddSale> {
 
   Future<void> addSale() async {
     if (_formKey.currentState!.validate()) {
+      if (selectedCustomer == null) {
+        CustomLoader.show();
+        CustomerModel customer =
+            new CustomerModel(_nameController.text, _phoneController.text);
+        var customerref = await DataRepository.instance.addNewItem(customer);
+        // await getCustomerByPhone(_phoneController.text);
+        var value = await _repositoryInstance.getAllItemsByFilter(
+            CollectionKeys.customers,
+            filterName: FieldKeys.customerPhone,
+            filterValue: _phoneController.text);
+        if (value.docs.isNotEmpty) {
+          var customer = CustomerModel.fromJson(value.docs.first.data(),
+              id: value.docs.first.id);
+          setState(() {
+            selectedCustomer = customer;
+            _nameController.text = customer.name;
+          });
+        }
+      }
+      if (selectedCustomer!.name != _nameController.text) {
+        selectedCustomer!.name = _nameController.text;
+        await _repositoryInstance.updateItem(selectedCustomer!);
+      }
       if (widget.sale == null) {
-        if (selectedCustomer == null) {
-          CustomLoader.show();
-          CustomerModel customer =
-              new CustomerModel(_nameController.text, _phoneController.text);
-          var customerref = await DataRepository.instance.addNewItem(customer);
-          // await getCustomerByPhone(_phoneController.text);
-          var value = await _repositoryInstance.getAllItemsByFilter(
-              CollectionKeys.customers,
-              filterName: FieldKeys.customerPhone,
-              filterValue: _phoneController.text);
-          if (value.docs.isNotEmpty) {
-            var customer = CustomerModel.fromJson(value.docs.first.data(),
-                id: value.docs.first.id);
-            setState(() {
-              selectedCustomer = customer;
-              _nameController.text = customer.name;
-            });
-          }
-        }
-        if (selectedCustomer!.name != _nameController.text) {
-          selectedCustomer!.name = _nameController.text;
-          await _repositoryInstance.updateItem(selectedCustomer!);
-        }
         SaleModel sale = new SaleModel(
             customer: selectedCustomer!,
             customerRef: selectedCustomer!.id,
@@ -736,6 +734,8 @@ class _AddSaleState extends State<AddSale> {
         Navigator.of(context).pop();
       } else {
         CustomLoader.show();
+        widget.sale!.customer = selectedCustomer!;
+        widget.sale!.customerRef = selectedCustomer!.id;
         widget.sale!.kurbanNo = _saleNoController.text.isEmpty
             ? 0
             : int.parse(_saleNoController.text);
