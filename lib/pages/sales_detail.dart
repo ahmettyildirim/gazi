@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:gazi_app/pages/add_sale.dart';
@@ -120,7 +121,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                                   style: ButtonStyle(
                                       alignment: Alignment.centerRight),
                                   child: Text(
-                                    payment.amount.toString() + " TL",
+                                    getMoneyString(payment.amount),
                                     overflow: TextOverflow.visible,
                                     textAlign: TextAlign.end,
                                   ),
@@ -423,24 +424,24 @@ class _SaleDetailsState extends State<SaleDetails> {
                 )),
               ),
               actions: [
-                ButtonBar(alignment: MainAxisAlignment.end, children: [
-                  // ElevatedButton(
-                  //     style: ElevatedButton.styleFrom(
-                  //         primary: Colors.redAccent,
-                  //         padding:
-                  //             EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  //         textStyle: TextStyle(
-                  //             fontSize: 15, fontWeight: FontWeight.bold)),
-                  //     child: Text(
-                  //       "Ödemeyi Sil",
-                  //       style: TextStyle(fontSize: 12),
-                  //     ),
-                  //     onPressed: () {
-                  //       setState(() {
-                  //         Navigator.of(context).pop();
-                  //       });
-                  //       // your code
-                  //     }),
+                ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.redAccent,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          textStyle: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                      child: Text(
+                        "Ödemeyi Sil",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).pop();
+                        });
+                        // your code
+                      }),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           padding:
