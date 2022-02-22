@@ -152,8 +152,16 @@ Future<bool> askPrompt(BuildContext context) async {
 }
 
 Future<void> launchWhatsApp({required String num, required String text}) async {
+  var phone = num;
+  if (phone.contains('(')) {
+    phone = phone.replaceAll(' ', '');
+    phone = phone.replaceAll('(', '');
+    phone = phone.replaceAll(')', '');
+    phone = phone.replaceAll('-', '');
+    phone = "90" + phone;
+  }
   if (Platform.isIOS) {
-    var whatappURLIos = "https://wa.me/$num?text=${Uri.parse(text)}";
+    var whatappURLIos = "https://wa.me/$phone?text=${Uri.parse(text)}";
     // for iOS phone only
     if (await canLaunch(whatappURLIos)) {
       await launch(whatappURLIos, forceSafariVC: false);
@@ -162,7 +170,7 @@ Future<void> launchWhatsApp({required String num, required String text}) async {
     }
   } else {
     var whatsappURlAndroid =
-        "whatsapp://send?phone=" + num + "&text=${Uri.parse(text)}";
+        "whatsapp://send?phone=" + phone + "&text=${Uri.parse(text)}";
     // android , web
     if (await canLaunch(whatsappURlAndroid)) {
       await launch(whatsappURlAndroid);

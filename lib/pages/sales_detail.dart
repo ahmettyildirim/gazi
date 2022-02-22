@@ -333,6 +333,16 @@ class _SaleDetailsState extends State<SaleDetails> {
                             widget.sale.id, payment);
                         CustomLoader.close();
 
+                        String whatsAppText =
+                            "${getMoneyString(tutar)} tutarındaki ödeme işleminiz başarıyla gerçekleşmiştir.";
+                        if (widget.sale.remainingAmount > tutar) {
+                          whatsAppText +=
+                              "\n Kalan ödeme tutarınız ${getMoneyString(widget.sale.remainingAmount - tutar)}";
+                        }
+                        launchWhatsApp(
+                            num: widget.sale.customer.phone,
+                            text: whatsAppText);
+                        print(whatsAppText);
                         Navigator.of(context).pop(tutar);
                       })
                 ])

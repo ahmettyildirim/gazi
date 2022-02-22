@@ -108,7 +108,7 @@ class _AddSaleState extends State<AddSale> {
               onPressed: () async {
                 var success = await askPrompt(context);
                 if (success) {
-                  Navigator.pop(context);
+                  Navigator.pop(context, widget.sale);
                 }
               })),
       body: SafeArea(
@@ -732,12 +732,6 @@ class _AddSaleState extends State<AddSale> {
         }
         CustomLoader.close();
         var phone = selectedCustomer!.phone;
-        phone = phone.replaceAll(' ', '');
-        phone = phone.replaceAll('(', '');
-        phone = phone.replaceAll(')', '');
-        phone = phone.replaceAll('-', '');
-        phone = "90" + phone;
-
         wasup(phone, sale);
         Navigator.of(context).pop();
       } else {
