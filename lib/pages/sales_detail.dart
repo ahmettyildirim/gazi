@@ -90,10 +90,12 @@ class _SaleDetailsState extends State<SaleDetails> {
                           if (val != null) {
                             setState(() {
                               widget.sale.kaparo = val + widget.sale.kaparo;
-                              if (widget.sale.kurbanSubTip != 2) {
-                                widget.sale.remainingAmount =
-                                    widget.sale.remainingAmount - val;
-                              }
+                              widget.sale.remainingAmount =
+                                  widget.sale.remainingAmount - val;
+                              widget.sale.remainingAmount =
+                                  widget.sale.remainingAmount < 0
+                                      ? widget.sale.remainingAmount = 0
+                                      : widget.sale.remainingAmount;
                             });
                           }
                         },
@@ -184,6 +186,24 @@ class _SaleDetailsState extends State<SaleDetails> {
                   },
                   child: Icon(
                     Icons.edit,
+                    size: 20.0,
+                  ),
+                )),
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    var success = await askPrompt(context,
+                        message:
+                            "Bu satış işlemini sistemden silmek üzeresiniz. Emin misiniz?",
+                        title: "!!!Dikkat!!!");
+                    if (success) {
+                      _repositoryInstance.deleteSale(widget.sale);
+                      Navigator.pop(context, widget.sale);
+                    }
+                  },
+                  child: Icon(
+                    Icons.delete,
                     size: 20.0,
                   ),
                 )),

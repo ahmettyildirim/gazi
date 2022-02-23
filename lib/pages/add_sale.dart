@@ -108,7 +108,10 @@ class _AddSaleState extends State<AddSale> {
           leading: IconButton(
               icon: Icon(Icons.arrow_back_ios_new),
               onPressed: () async {
-                var success = await askPrompt(context);
+                var success = await askPrompt(context,
+                    message:
+                        "Geri giderseniz girdiğiniz bilgiler kaybolacaktır.\nÇıkmak istediğinizden emin misiniz?",
+                    title: "Çıkış");
                 if (success) {
                   Navigator.pop(context, widget.sale);
                 }
@@ -167,7 +170,7 @@ class _AddSaleState extends State<AddSale> {
                 [0, 3, 4, 6].contains(_kurbanSubTip)
                     ? Center()
                     : _getKgAmount(screenWidth, screenHeight),
-                ![3, 4, 6].contains(_kurbanSubTip)
+                ![3, 4].contains(_kurbanSubTip)
                     ? Center()
                     : _getAmount(screenWidth, screenHeight),
                 [0, 3].contains(_kurbanSubTip)
@@ -176,7 +179,7 @@ class _AddSaleState extends State<AddSale> {
                 [0].contains(_kurbanSubTip)
                     ? Center()
                     : _getKaparo(screenWidth, screenHeight),
-                [0, 2].contains(_kurbanSubTip)
+                [0].contains(_kurbanSubTip)
                     ? Center()
                     : _getKalanTutar(screenWidth, screenHeight),
                 _kurbanSubTip != 0
@@ -462,11 +465,11 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
-          validator: _requiredValidator,
-          keyboardType: TextInputType.number,
-          controller: _adetController,
-          decoration: InputDecoration(labelText: 'Adet'),
-          onChanged: calculateTotal),
+        validator: _requiredValidator,
+        keyboardType: TextInputType.number,
+        controller: _adetController,
+        decoration: InputDecoration(labelText: 'Adet'),
+      ),
     );
   }
 
@@ -478,7 +481,7 @@ class _AddSaleState extends State<AddSale> {
           validator: _requiredValidator,
           keyboardType: TextInputType.number,
           controller: _kgAmountController,
-          decoration: InputDecoration(labelText: 'KG Birim Biyatı'),
+          decoration: InputDecoration(labelText: 'KG Birim Fiyatı'),
           onChanged: calculateTotal),
     );
   }
@@ -492,7 +495,7 @@ class _AddSaleState extends State<AddSale> {
           readOnly: _kurbanSubTip == 4,
           keyboardType: TextInputType.number,
           controller: _amountController,
-          decoration: InputDecoration(labelText: 'Birim Biyatı'),
+          decoration: InputDecoration(labelText: 'Birim Fiyatı'),
           onChanged: getRemainingAmountForNotKg),
     );
   }
@@ -508,7 +511,7 @@ class _AddSaleState extends State<AddSale> {
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
         keyboardType: TextInputType.number,
-        readOnly: true,
+        readOnly: _kurbanSubTip != 6,
         controller: _totalAmountController,
         decoration: InputDecoration(labelText: 'Genel Toplam'),
       ),
@@ -531,6 +534,11 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getKalanTutar(double screenWidth, double screenHeight) {
+    if (_kurbanSubTip == 2) {
+      if (widget.sale == null) {
+        return Center();
+      }
+    }
     return Padding(
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
@@ -573,7 +581,7 @@ class _AddSaleState extends State<AddSale> {
   }
 
   void getRemainingAmount(val) {
-    if (_kurbanSubTip == 2) {
+    if (_kurbanSubTip == 2 && widget.sale == null) {
       return;
     }
     if (_kurbanSubTip == 3) {

@@ -6,12 +6,14 @@ import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
 import 'package:gazi_app/model/payment.dart';
+import 'package:gazi_app/model/sale.dart';
 
 class CollectionKeys {
   static final users = "users";
   static final customers = "customers";
   static final hisseKurban = "hisse_kurban";
   static final sales = "sales";
+  static final salesDeleted = "sales_deleted";
   static final kotra = "kotra";
   static final hisse = "hisse";
   static final payment = "payment";
@@ -123,6 +125,13 @@ class DataRepository {
     //     genericModel.colRef.doc(), genericModel.toMap());
   }
 
+  Future<bool> deleteSale(SaleModel sale) async {
+    sale.collectionReferenceName = CollectionKeys.salesDeleted;
+    await addNewItem(sale);
+    await _firestore.collection(CollectionKeys.sales).doc(sale.id).delete();
+    return true;
+  }
+
   Future<DocumentReference> addNewItemToCollection(
       CollectionReference<Map<String, dynamic>> collection,
       GenericModel genericModel) async {
@@ -220,13 +229,13 @@ class DataRepository {
     int kaparo = data[FieldKeys.saleKaparo];
     int newKaparo = kaparo + payment.amount;
     int remainingAmount = 0;
-    if (data[FieldKeys.saleKurbanSubTip].toString() != "2") {
-      if (data[FieldKeys.saleKurbanSubTip].toString() == "3") {
-        remainingAmount = (data[FieldKeys.saleAmount] as int) - newKaparo;
-      } else {
-        remainingAmount =
-            (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
-      }
+    if (data[FieldKeys.saleKurbanSubTip].toString() == "3") {
+      remainingAmount = (data[FieldKeys.saleAmount] as int) - newKaparo;
+    } else {
+      remainingAmount = (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+    }
+    if (remainingAmount < 0) {
+      remainingAmount = 0;
     }
     await reference.update({
       FieldKeys.saleKaparo: newKaparo,

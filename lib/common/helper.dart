@@ -97,7 +97,8 @@ String getMoneyString(int money) {
       .format(money);
 }
 
-Future<bool> askPrompt(BuildContext context) async {
+Future<bool> askPrompt(BuildContext context,
+    {required String message, required String title}) async {
   return await showDialog(
       context: context,
       builder: (context) {
@@ -105,7 +106,7 @@ Future<bool> askPrompt(BuildContext context) async {
           return AlertDialog(
             title: Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Text('Çıkış',
+              child: Text(title,
                   style: TextStyle(
                       fontSize: 20,
                       color: Colors.redAccent,
@@ -113,8 +114,7 @@ Future<bool> askPrompt(BuildContext context) async {
             ),
             content: Padding(
               padding: EdgeInsets.all(8),
-              child: Text(
-                  "Geri giderseniz girdiğiniz bilgiler kaybolacaktır.\nÇıkmak istediğinizden emin misiniz?"),
+              child: Text(message),
             ),
             actions: [
               ButtonBar(alignment: MainAxisAlignment.spaceAround, children: [
@@ -184,4 +184,3 @@ String getFormattedDate(DateTime? date, {String format = "dd-MM-yyyy HH:mm"}) {
   // initializeDateFormatting();
   return date == null ? "" : DateFormat(format).format(date);
 }
-
