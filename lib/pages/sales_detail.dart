@@ -127,10 +127,23 @@ class _SaleDetailsState extends State<SaleDetails> {
                                     overflow: TextOverflow.visible,
                                     textAlign: TextAlign.end,
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      showPaymentDetail(context, payment);
-                                    });
+                                  onPressed: () async {
+                                    var result = await showPaymentDetail(
+                                        context, payment);
+                                    if (result) {
+                                      setState(() {
+                                        widget.sale.kaparo =
+                                            widget.sale.kaparo - payment.amount;
+                                        widget.sale.remainingAmount =
+                                            widget.sale.remainingAmount +
+                                                payment.amount;
+                                        widget.sale.remainingAmount =
+                                            widget.sale.remainingAmount < 0
+                                                ? widget.sale.remainingAmount =
+                                                    0
+                                                : widget.sale.remainingAmount;
+                                      });
+                                    }
                                   },
                                 );
                               },
@@ -235,7 +248,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                     ? Center()
                     : getRowInfo("Kg Birim Fiyatı",
                         widget.sale.kgAmount.toString() + " TL"),
-                ![3, 4, 6].contains(widget.sale.kurbanSubTip)
+                ![3, 4].contains(widget.sale.kurbanSubTip)
                     ? Center()
                     : getRowInfo(
                         "Birim Fiyatı", widget.sale.amount.toString() + " TL"),
@@ -362,7 +375,6 @@ class _SaleDetailsState extends State<SaleDetails> {
                         launchWhatsApp(
                             num: widget.sale.customer.phone,
                             text: whatsAppText);
-                        print(whatsAppText);
                         Navigator.of(context).pop(tutar);
                       })
                 ])
@@ -372,7 +384,7 @@ class _SaleDetailsState extends State<SaleDetails> {
         });
   }
 
-  Future<SaleModel?> showPaymentDetail(
+  Future<bool> showPaymentDetail(
       BuildContext context, PaymentModel paymentModel) async {
     return await showDialog(
         context: context,
@@ -464,10 +476,19 @@ class _SaleDetailsState extends State<SaleDetails> {
                         "Ödemeyi Sil",
                         style: TextStyle(fontSize: 12),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          Navigator.of(context).pop();
-                        });
+                      onPressed: () async {
+                        var result = await askPrompt(context,
+                            message:
+                                "Ödemeyi silmek istediğinizden emin misiniz?",
+                            title: "Ödeme Silme");
+
+                        CustomLoader.show();
+                        if (result) {
+                          await _repositoryInstance.deletePayment(
+                              widget.sale.id, paymentModel);
+                        }
+                        CustomLoader.close();
+                        Navigator.of(context).pop(result);
                         // your code
                       }),
                   ElevatedButton(
@@ -486,7 +507,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                         // await _repositoryInstance.addNewPaymentWithReferenceId(
                         //     widget.sale.id, payment);
 
-                        Navigator.of(context).pop(null);
+                        Navigator.of(context).pop(false);
                       })
                 ])
               ],

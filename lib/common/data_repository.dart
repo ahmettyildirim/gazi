@@ -131,6 +131,31 @@ class DataRepository {
     await _firestore.collection(CollectionKeys.sales).doc(sale.id).delete();
     return true;
   }
+  Future<bool> deletePayment(String saleId, PaymentModel payment) async {
+
+    var colReference =
+        _getCurrentDocumentReference(CollectionKeys.sales, saleId);
+
+  var values = await colReference.get();
+    var data = values.data() as Map<String, dynamic>;
+    int kaparo = data[FieldKeys.saleKaparo];
+    int newKaparo = kaparo - payment.amount;
+    int remainingAmount = 0;
+    if (data[FieldKeys.saleKurbanSubTip].toString() == "3") {
+      remainingAmount = (data[FieldKeys.saleAmount] as int) - newKaparo;
+    } else {
+      remainingAmount = (data[FieldKeys.saleGeneralAmount] as int) - newKaparo;
+    }
+    if (remainingAmount < 0) {
+      remainingAmount = 0;
+    }
+    await colReference.update({
+      FieldKeys.saleKaparo: newKaparo,
+      FieldKeys.saleRemainingAmount: remainingAmount
+    });
+    await _firestore.collection(CollectionKeys.sales).doc(saleId).collection(CollectionKeys.payment).doc(payment.id).delete();
+    return true;
+  }
 
   Future<DocumentReference> addNewItemToCollection(
       CollectionReference<Map<String, dynamic>> collection,
