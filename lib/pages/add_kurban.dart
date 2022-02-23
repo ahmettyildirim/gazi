@@ -127,6 +127,15 @@ class _AddKurbanState extends State<AddKurban> {
   Future<void> addKurban() async {
     if (_formKey.currentState!.validate()) {
       CustomLoader.show();
+
+      var result = await DataRepository.instance
+          .isSaleNumAlreadyGiven(int.tryParse(_saleNoController.text)!, 1);
+      if (result) {
+        CustomLoader.close();
+        CustomLoader.showError("Bu kurban numarası daha önce verilmiş.");
+        return;
+      }
+
       HisseKurbanModel hisseKurban = new HisseKurbanModel(
           int.parse(_saleNoController.text),
           int.parse(_kotraNoController.text),

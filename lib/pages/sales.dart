@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/main.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
@@ -18,7 +20,7 @@ class SalesList extends StatefulWidget {
 }
 
 var _repositoryInstance = DataRepository.instance;
-Future<void> getCustomersNew() async {}
+String order = "";
 
 String getImagePath(int index) {
   if (index == 1) {
@@ -31,6 +33,9 @@ String getImagePath(int index) {
 class _SalesListState extends State<SalesList> {
   final _nameController = TextEditingController();
   String _searchText = "";
+  int _searchIndex = 0;
+  //0 tarih yeniden eskiye, 1 tarih eskiden yeniye, 2 kurban no küçükten büyüğe/ 3 kurban no büyükten küçüğe
+
   FilterModel filterModel = new FilterModel();
   @override
   void initState() {
@@ -55,7 +60,7 @@ class _SalesListState extends State<SalesList> {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Text('Filtreleme'),
-              content: Container(
+              content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -158,20 +163,37 @@ class _SalesListState extends State<SalesList> {
                         });
                       },
                     ),
+                    Divider(
+                      height: 5.0,
+                    ),
+                    CheckboxListTile(
+                      dense: true,
+                      activeColor: Colors.green,
+                      checkColor: Colors.white,
+                      title: Text("Ödemesi Tamamlananları Gösterme"),
+                      value: filterModel.onlyRemaining,
+                      onChanged: (val) {
+                        setState(() {
+                          filterModel.onlyRemaining = val!;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
               actions: [
-                ElevatedButton(
-                    child: Text("Filtreleri Temizle"),
+                ElevatedButton.icon(
+                    label: Text("Filtreleri Temizle"),
+                    icon: Icon(Icons.clear),
                     onPressed: () {
                       setState(() {
                         filterModel.clear();
                       });
                       // your code
                     }),
-                ElevatedButton(
-                    child: Text("Onayla"),
+                ElevatedButton.icon(
+                    label: Text("Uygula"),
+                    icon: Icon(Icons.check),
                     onPressed: () {
                       Navigator.of(context).pop(filterModel);
                     })
@@ -181,17 +203,84 @@ class _SalesListState extends State<SalesList> {
         });
   }
 
+  List<String> radioGroupOrderValues = [
+    'Tarih (Yeniden Eskiye)',
+    'Tarih (Eskiden Yeniye)',
+    'Kurban No (Küçükten Büyüğe)',
+    'Kurban No (Büyükten Küçüğe)'
+  ];
+  Future<int> showOrderDialog(BuildContext context) async {
+    var _currentIndex = _searchIndex;
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState2) {
+              return AlertDialog(
+                title: Text('Sıralama'),
+                actions: <Widget>[
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context, _searchIndex);
+                    },
+                    icon: Icon(Icons.clear),
+                    label: Text('İptal'),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context, _currentIndex);
+                    },
+                    icon: Icon(Icons.check),
+                    label: Text('Uygula'),
+                  ),
+                ],
+                content: Container(
+                  width: double.minPositive,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: radioGroupOrderValues.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return RadioListTile(
+                        value: index,
+                        groupValue: _currentIndex,
+                        title: Text(radioGroupOrderValues[index]),
+                        onChanged: (val) {
+                          setState2(() {
+                            _currentIndex = index;
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        });
+  }
+
   List<QueryDocumentSnapshot<Map<String, dynamic>>> getFilteredResults(
       List<QueryDocumentSnapshot<Map<String, dynamic>>> saleList,
       String filter,
-      String filterValue) {
-    return saleList
-        .where((element) => (element.data()[filter].toString() == filterValue))
-        .toList();
+      String filterValue,
+      {bool equal = true}) {
+    return equal
+        ? saleList
+            .where(
+                (element) => (element.data()[filter].toString() == filterValue))
+            .toList()
+        : saleList
+            .where(
+                (element) => (element.data()[filter].toString() != filterValue))
+            .toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    String _orderBy = _searchIndex == 0 || _searchIndex == 1
+        ? FieldKeys.createTime
+        : FieldKeys.saleKurbanNo;
+    bool _orderByDescending = _searchIndex == 0 || _searchIndex == 3;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -228,16 +317,21 @@ class _SalesListState extends State<SalesList> {
                   },
                   icon: Icon(Icons.add),
                   label: Text("Yeni Satış")),
-              // TextButton.icon(
-              //     onPressed: (_createExcel),
-              //     icon: Icon(Icons.sort),
-              //     label: Text("Sırala")),
+              TextButton.icon(
+                  onPressed: () async {
+                    var val = await showOrderDialog(context);
+                    setState(() {
+                      _searchIndex = val;
+                    });
+                  },
+                  icon: Icon(Icons.sort),
+                  label: Text("Sırala")),
             ],
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _repositoryInstance.getAllItems(CollectionKeys.sales,
-                  orderBy: FieldKeys.createTime, descending: true),
+                  orderBy: _orderBy, descending: _orderByDescending),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var saleValues = snapshot.data!.docs.toList();
@@ -287,9 +381,17 @@ class _SalesListState extends State<SalesList> {
                             FieldKeys.saleKurbanSubTip, filteredList[i]);
                         finalList += firstList;
                       }
-                      finalList.sort((a, b) => a[FieldKeys.saleKurbanNo]
-                          .compareTo(b[FieldKeys.saleKurbanNo]));
+                      !_orderByDescending
+                          ? finalList.sort(
+                              (a, b) => a[_orderBy].compareTo(b[_orderBy]))
+                          : finalList.sort(
+                              (a, b) => b[_orderBy].compareTo(a[_orderBy]));
                       saleValues = finalList;
+                    }
+                    if (filterModel.onlyRemaining) {
+                      saleValues = getFilteredResults(
+                          saleValues, FieldKeys.saleRemainingAmount, "0",
+                          equal: false);
                     }
                   }
 
@@ -309,36 +411,41 @@ class _SalesListState extends State<SalesList> {
                                       sale: sale,
                                     ))),
                         child: Card(
+                            color: sale.remainingAmount > 0
+                                ? Color.fromARGB(255, 255, 230, 230)
+                                : Color.fromARGB(255, 230, 255, 230),
                             child: ListTile(
-                          title: Text(getKurbanTypeName(sale.kurbanTip) +
-                              "-" +
-                              getKurbanSubTypeName(sale.kurbanSubTip)),
-                          subtitle: Text(
-                              "Toplam tutar :${sale.kurbanSubTip == 3 ? sale.amount : sale.generalAmount} \nÖdenen tutar : ${sale.kaparo}\nMüşteri :${sale.customer.name}"),
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                AssetImage(getImagePath(sale.kurbanTip)),
-                          ),
-                          dense: false,
-                          trailing: Column(
-                            children: [
-                              Text(
-                                getFormattedDate(sale.createTime,
-                                    format: "dd-MM-yyyy"),
-                                style: TextStyle(fontSize: 12),
+                              title: Text(getKurbanTypeName(sale.kurbanTip) +
+                                  "-" +
+                                  getKurbanSubTypeName(sale.kurbanSubTip)),
+                              subtitle: Text(
+                                  "Müşteri :${sale.customer.name}\nToplam Tutar :${sale.kurbanSubTip == 3 ? sale.amount : sale.generalAmount} \nÖdenen Tutar : ${sale.kaparo}\nKalan Tutar : ${sale.remainingAmount}"),
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    AssetImage(getImagePath(sale.kurbanTip)),
                               ),
-                              Text(
-                                sale.kurbanNo.toString(),
-                                style: TextStyle(fontSize: 23),
+                              dense: false,
+                              trailing: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    sale.kurbanNo.toString(),
+                                    style: TextStyle(fontSize: 23),
+                                  ),
+                                  Text(
+                                    getFormattedDate(sale.createTime,
+                                        format: "HH:mm"),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  Text(
+                                    getFormattedDate(sale.createTime,
+                                        format: "dd-MM-yyyy"),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                getFormattedDate(sale.createTime,
-                                    format: "HH:mm"),
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        )),
+                            )),
                       );
                     },
                   );
@@ -363,7 +470,7 @@ class FilterModel {
   bool buyukHisse = false;
   bool kucukAyaktanKilo = false;
   bool kucukAyaktan = false;
-  FilterModel();
+  bool onlyRemaining = false;
 
   void clear() {
     this.buyukbasKurbanSelect = false;
@@ -374,5 +481,6 @@ class FilterModel {
     this.buyukHisse = false;
     this.kucukAyaktanKilo = false;
     this.kucukAyaktan = false;
+    this.onlyRemaining = false;
   }
 }

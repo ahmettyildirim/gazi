@@ -251,6 +251,15 @@ class DataRepository {
         .orderBy(FieldKeys.createTime)
         .snapshots();
   }
+
+  Future<bool> isSaleNumAlreadyGiven(int saleNo, int typeNo) async {
+    var _snapShot = await getCollectionReference(CollectionKeys.sales)
+        .where(FieldKeys.saleKurbanNo, isEqualTo: saleNo)
+        .where(FieldKeys.saleKurbanTip, isEqualTo: typeNo)
+        .snapshots()
+        .first;
+    return _snapShot.docs.isNotEmpty;
+  }
 }
 
 Future<void> addNewKotra(int kotraNo, int capacity) async {

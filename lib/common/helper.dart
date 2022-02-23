@@ -184,3 +184,4 @@ String getFormattedDate(DateTime? date, {String format = "dd-MM-yyyy HH:mm"}) {
   // initializeDateFormatting();
   return date == null ? "" : DateFormat(format).format(date);
 }
+

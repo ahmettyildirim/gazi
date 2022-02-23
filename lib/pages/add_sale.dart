@@ -40,7 +40,9 @@ class _AddSaleState extends State<AddSale> {
   var _phoneController = TextEditingController();
   var _nameController = TextEditingController();
   var maskFormatter = new MaskTextInputFormatter(
-      mask: '(###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+      mask: '(###) ###-##-##',
+      filter: {"#": RegExp(r'[0-9]')},
+      initialText: "(5");
   int _kurbanTip = 0;
   int _buyukKurbanTip = 0;
   int _kurbanSubTip = 0;
@@ -396,7 +398,7 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> getCustomerByPhone(phone) async {
-    if (phone.length == 2 && phone != "(5") {
+    if (_phoneController.text.length == 2 && _phoneController.text != "(5") {
       _phoneController.text = "";
       return;
     }
@@ -671,6 +673,19 @@ class _AddSaleState extends State<AddSale> {
             selectedCustomer = customer;
             _nameController.text = customer.name;
           });
+        }
+      }
+      if (_kurbanSubTip != 4) {
+        //hisseli satış dışında aynı kurban nosunu başkasına satılmamasıç
+        if (widget.sale == null ||
+            widget.sale!.kurbanNo.toString() != _saleNoController.text) {
+          var result = await _repositoryInstance.isSaleNumAlreadyGiven(
+              int.tryParse(_saleNoController.text)!, _kurbanTip);
+          if (result) {
+            CustomLoader.close();
+            CustomLoader.showError("Bu kurban numarası daha önce verilmiş.");
+            return;
+          }
         }
       }
       if (selectedCustomer!.name != _nameController.text) {
