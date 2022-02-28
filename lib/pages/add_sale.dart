@@ -833,7 +833,7 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> wasup(String num, SaleModel saleModel) async {
-    String text =
+    String text = "**GAZİ ET MANGAL ÇİFTLİĞİ**\n"
         "Kurban satış işleminiz gerçekleşmiştir. Allah Kabul etsin. Bayram sabahı görüşmek dileğiyle... \nKurban No - ${saleModel.kurbanNo}\n";
     switch (saleModel.kurbanSubTip) {
       case 1:
@@ -879,6 +879,7 @@ class _AddSaleState extends State<AddSale> {
         break;
       default:
     }
+    text += "\n\n 02242621313\n05161691313 ";
     await launchWhatsApp(num: num, text: text);
   }
 }

@@ -125,18 +125,26 @@ class DataRepository {
     //     genericModel.colRef.doc(), genericModel.toMap());
   }
 
+  Future<bool> deleteItem(GenericModel genericModel) async {
+    await _firestore
+        .collection(genericModel.collectionReferenceName)
+        .doc(genericModel.id)
+        .delete();
+    return true;
+  }
+
   Future<bool> deleteSale(SaleModel sale) async {
     sale.collectionReferenceName = CollectionKeys.salesDeleted;
     await addNewItem(sale);
     await _firestore.collection(CollectionKeys.sales).doc(sale.id).delete();
     return true;
   }
-  Future<bool> deletePayment(String saleId, PaymentModel payment) async {
 
+  Future<bool> deletePayment(String saleId, PaymentModel payment) async {
     var colReference =
         _getCurrentDocumentReference(CollectionKeys.sales, saleId);
 
-  var values = await colReference.get();
+    var values = await colReference.get();
     var data = values.data() as Map<String, dynamic>;
     int kaparo = data[FieldKeys.saleKaparo];
     int newKaparo = kaparo - payment.amount;
@@ -153,7 +161,12 @@ class DataRepository {
       FieldKeys.saleKaparo: newKaparo,
       FieldKeys.saleRemainingAmount: remainingAmount
     });
-    await _firestore.collection(CollectionKeys.sales).doc(saleId).collection(CollectionKeys.payment).doc(payment.id).delete();
+    await _firestore
+        .collection(CollectionKeys.sales)
+        .doc(saleId)
+        .collection(CollectionKeys.payment)
+        .doc(payment.id)
+        .delete();
     return true;
   }
 
@@ -186,6 +199,18 @@ class DataRepository {
         : getCollectionReference(collectionName)
             .orderBy(orderBy, descending: descending)
             .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getFilteredItemList(
+      String collectionName,
+      {String? filterName,
+      Object? filterValue,
+      String? orderBy,
+      bool descending = false}) {
+    return getCollectionReference(collectionName)
+        .where(filterName!, isEqualTo: filterValue)
+        .orderBy(orderBy!, descending: descending)
+        .snapshots();
   }
 
   Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getAllItemsFuture(

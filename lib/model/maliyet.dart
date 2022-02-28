@@ -53,6 +53,55 @@ String getMaliyetName(int typeId) {
   }
 }
 
+String getMaliyetNameForList(int typeId) {
+  switch (typeId) {
+    case 1:
+      return "Dana/Düve Maliyeti";
+    case 2:
+      return "Kuzuların Maliyeti";
+    case 3:
+      return "Yem Maliyeti";
+    case 4:
+      return "Tuz Maliyeti";
+    case 5:
+      return "Saman Maliyeti";
+    case 6:
+      return "Yonca Maliyeti";
+    case 7:
+      return "Pancar Küspesi Maliyeti";
+    case 8:
+      return "Arpa Küspesi Maliyeti";
+    case 9:
+      return "Bakıcı Maaşı";
+    case 10:
+      return "Elektrik Faturası";
+    case 11:
+      return "Kasaplara Ödenen Tutar";
+    case 12:
+      return "Çalışanlara Ödenen Tutar";
+    case 13:
+      return "Ambalajcıya Ödenen Tutar";
+    case 14:
+      return "Sucuk, Ekmek, Ayran,Su Maliyeti";
+    case 15:
+      return "Traktör Mazot Ücreti";
+    case 16:
+      return "Traktör Bakım Ücreti";
+    case 17:
+      return "Ekstra Maliyetler";
+    case 18:
+      return "Toplam Tutar";
+    case 19:
+      return "Dana Satış";
+    case 20:
+      return "Kuzu Satış";
+    case 21:
+      return "Toplam Kar";
+    default:
+      return "";
+  }
+}
+
 String getToplamSayiAdi(int typeId) {
   switch (typeId) {
     case 1:
@@ -79,26 +128,9 @@ String getAdetSayisiName(int typeId, {int subTypeId = 0}) {
     case 6:
       return "Yonca Balyası Adedi";
     case 7:
-      return "Pancar Küspesi Toplam KG";
+      return "Pancar Küspesi KG";
     case 8:
-      return "Arpa Küspesi Toplam KG";
-    default:
-      return "";
-  }
-}
-
-String getAdetSayisiNameWithSubType(int subTypeId) {
-  switch (subTypeId) {
-    case 1:
-      return "";
-    case 2:
-      return "";
-    case 3:
-      return "";
-    case 4:
-      return "";
-    case 5:
-      return "";
+      return "Arpa Küspesi KG";
     default:
       return "";
   }
@@ -118,14 +150,10 @@ String getAdetTutar(int typeId, {int subTypeId = 0}) {
       return "Balya Fiyatı";
     case 7:
     case 8:
-      return "Kg Fiyatı";
+      return "KG Fiyatı";
     default:
       return "";
   }
-}
-
-String getAdetTutarWithSubType(int subTypeId) {
-  return "";
 }
 
 String getMaliyetDetayTitle(int typeId, {int subTypeId = 0}) {

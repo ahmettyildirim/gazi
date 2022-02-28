@@ -86,16 +86,17 @@ class _MaliyetPageState extends State<MaliyetPage> {
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
                               itemBuilder: (context, index) {
-                                var filterMaliyet = maliyetlist.where(
-                                    (element) =>
-                                        element.maliyetTip == index + 1);
-                                MaliyetModel maliyet = filterMaliyet.isNotEmpty
-                                    ? filterMaliyet.first
-                                    : MaliyetModel(
-                                        maliyetTip: index + 1,
-                                        altMaliyetTip: 0,
-                                        toplamTutar: 0,
-                                        toplamSayi: 0);
+                                var filterMaliyet = maliyetlist
+                                    .where((element) =>
+                                        element.maliyetTip == index + 1)
+                                    .toList();
+                                // MaliyetModel maliyet = filterMaliyet.isNotEmpty
+                                //     ? filterMaliyet.first
+                                //     : MaliyetModel(
+                                //         maliyetTip: index + 1,
+                                //         altMaliyetTip: 0,
+                                //         toplamTutar: 0,
+                                //         toplamSayi: 0);
 
                                 return index == 21
                                     ? SizedBox(
@@ -152,9 +153,7 @@ class _MaliyetPageState extends State<MaliyetPage> {
                                                                     MaterialPageRoute(
                                                                         builder: (context) =>
                                                                             // BubbleScreen()
-                                                                            MaliyetDetay(
-                                                                              maliyet: maliyet,
-                                                                            )));
+                                                                            MaliyetDetay(maliyetTipId: index + 1)));
                                                               },
                                                               child: Row(
                                                                 mainAxisSize:
@@ -163,8 +162,8 @@ class _MaliyetPageState extends State<MaliyetPage> {
                                                                 children: [
                                                                   Text(
                                                                     getMoneyString(
-                                                                        maliyet
-                                                                            .toplamTutar),
+                                                                        getToplamTutar(
+                                                                            filterMaliyet)),
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             width /
@@ -215,5 +214,13 @@ class _MaliyetPageState extends State<MaliyetPage> {
             ],
           )),
     );
+  }
+
+  int getToplamTutar(List<MaliyetModel> maliyetList) {
+    if (maliyetList.isEmpty) {
+      return 0;
+    }
+    return maliyetList.fold(
+        0, (previousValue, element) => previousValue + element.toplamTutar);
   }
 }
