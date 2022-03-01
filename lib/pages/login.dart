@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -156,10 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                                 splashColor: Colors.green,
                                 onTap: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    await EasyLoading.show(
-                                        status: 'Lütfen Bekleyiniz...',
-                                        maskType: EasyLoadingMaskType.black,
-                                        dismissOnTap: false);
+                                    await CustomLoader.show();
                                     widget.login(
                                       _emailController.text + "@kurban.com",
                                       _passwordController.text,

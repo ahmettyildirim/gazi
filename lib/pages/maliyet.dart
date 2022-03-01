@@ -24,6 +24,7 @@ int _toplamKar = 0;
 getTotalSales() async {
   var sales = await _repositoryInstance
       .getCollectionReference(CollectionKeys.sales)
+      .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
       .get();
   var saleValues = sales.docs;
   var length = saleValues.length;

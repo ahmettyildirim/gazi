@@ -7,5 +7,6 @@ abstract class GenericModel {
   late final String collectionReferenceName;
   late final String? createUser;
   late final DateTime? createTime;
+  late final int? festYear;
   HashMap<String, dynamic> toMap();
 }

@@ -77,6 +77,7 @@ class FieldKeys {
   static final maliyetToplamSayi = "toplam_sayi";
   static final maliyetAdetSayisi = "adet_sayisi";
   static final maliyetAdetTutari = "adet_tutari";
+  static final festYear = "fest_year";
 }
 
 var refKotra =
@@ -112,6 +113,7 @@ class DataRepository {
     var map = genericModel.toMap();
     map[FieldKeys.createUser] = getUsername();
     map[FieldKeys.createTime] = DateTime.now();
+    map[FieldKeys.festYear] = SystemVariables.currentYear;
     return await _addNewDocument(genericModel.colRef.doc(), map);
   }
 
@@ -119,6 +121,7 @@ class DataRepository {
     var map = genericModel.toMap();
     map[FieldKeys.createUser] = getUsername();
     map[FieldKeys.createTime] = DateTime.now();
+    map[FieldKeys.festYear] = SystemVariables.currentYear;
     // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
     return _firestore.collection(genericModel.collectionReferenceName).add(map);
     // return await _addNewDocument(
@@ -176,6 +179,7 @@ class DataRepository {
     var map = genericModel.toMap();
     map[FieldKeys.createUser] = getUsername();
     map[FieldKeys.createTime] = DateTime.now();
+    map[FieldKeys.festYear] = SystemVariables.currentYear;
     return collection.add(map);
   }
 
@@ -183,17 +187,28 @@ class DataRepository {
     var map = genericModel.toMap();
     map[FieldKeys.updateUser] = getUsername();
     map[FieldKeys.updateTime] = DateTime.now();
-    // _firestore.collection(genericModel.colRef.doc().set(genericModel.toMap());
     return _firestore
         .collection(genericModel.collectionReferenceName)
         .doc(genericModel.id)
         .update(map);
-    // return await _addNewDocument(
-    //     genericModel.colRef.doc(), genericModel.toMap());
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllItems(String collectionName,
       {String? orderBy, bool descending = false}) {
+    return orderBy == null
+        ? getCollectionReference(collectionName)
+            .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
+            .snapshots()
+        : getCollectionReference(collectionName)
+            .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
+            .orderBy(orderBy, descending: descending)
+            .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllItemsWithoutDate(
+      String collectionName,
+      {String? orderBy,
+      bool descending = false}) {
     return orderBy == null
         ? getCollectionReference(collectionName).snapshots()
         : getCollectionReference(collectionName)
@@ -208,6 +223,7 @@ class DataRepository {
       String? orderBy,
       bool descending = false}) {
     return getCollectionReference(collectionName)
+        .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
         .where(filterName!, isEqualTo: filterValue)
         .orderBy(orderBy!, descending: descending)
         .snapshots();
@@ -217,11 +233,27 @@ class DataRepository {
       String collectionName,
       {String? orderBy}) async {
     return orderBy == null
-        ? getCollectionReference(collectionName).snapshots()
-        : getCollectionReference(collectionName).orderBy(orderBy).snapshots();
+        ? getCollectionReference(collectionName)
+            .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
+            .snapshots()
+        : getCollectionReference(collectionName)
+            .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
+            .orderBy(orderBy)
+            .snapshots();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getAllItemsByFilter(
+      String collectionName,
+      {String? filterName,
+      Object? filterValue}) {
+    return getCollectionReference(collectionName)
+        .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
+        .where(filterName!, isEqualTo: filterValue)
+        .snapshots()
+        .first;
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllItemsByFilterNoDate(
       String collectionName,
       {String? filterName,
       Object? filterValue}) {
@@ -313,41 +345,11 @@ class DataRepository {
 
   Future<bool> isSaleNumAlreadyGiven(int saleNo, int typeNo) async {
     var _snapShot = await getCollectionReference(CollectionKeys.sales)
+        .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
         .where(FieldKeys.saleKurbanNo, isEqualTo: saleNo)
         .where(FieldKeys.saleKurbanTip, isEqualTo: typeNo)
         .snapshots()
         .first;
     return _snapShot.docs.isNotEmpty;
   }
-}
-
-Future<void> addNewKotra(int kotraNo, int capacity) async {
-  var customer = HashMap<String, dynamic>();
-  customer["no"] = kotraNo;
-  customer["capacity"] = capacity;
-  customer["numOfItems"] = 0;
-  await refKotra.push().set(customer);
-}
-
-var refHisse =
-    FirebaseDatabase.instance.reference().child(CollectionKeys.hisse);
-
-Future<void> addNewHisse(int amount, int count) async {
-  var hisse = HashMap<String, dynamic>();
-  hisse["amount"] = amount;
-  hisse["count"] = count;
-  await refHisse.push().set(hisse);
-}
-
-Future<int?> getHisseNums() async {
-  DataSnapshot snapshot = await refHisse.once();
-  int count = 0;
-  var comingValues = snapshot.value;
-  if (comingValues != null) {
-    comingValues.forEach((key, value) {
-      count++;
-    });
-    return count;
-  }
-  return 0;
 }

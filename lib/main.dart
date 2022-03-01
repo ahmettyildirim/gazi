@@ -189,6 +189,9 @@ class ApplicationState extends ChangeNotifier {
         EasyLoading.dismiss();
       }
     } on FirebaseAuthException catch (e) {
+      if (EasyLoading.isShow) {
+        EasyLoading.dismiss();
+      }
       errorCallback(e);
     }
   }

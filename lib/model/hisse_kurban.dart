@@ -55,4 +55,7 @@ class HisseKurbanModel implements GenericModel {
     hisseKurban[FieldKeys.isVekalet] = this.isVekalet ?? false;
     return hisseKurban;
   }
+
+  @override
+  int? festYear;
 }

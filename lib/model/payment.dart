@@ -21,6 +21,7 @@ class PaymentModel implements GenericModel {
       required this.aciklama,
       this.createTime,
       this.createUser,
+      this.festYear,
       this.id = ""}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.payment);
@@ -47,4 +48,7 @@ class PaymentModel implements GenericModel {
 
   @override
   late CollectionReference<Map<String, dynamic>> colRef;
+
+  @override
+  int? festYear;
 }

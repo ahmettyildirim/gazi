@@ -49,8 +49,11 @@ class Authentication extends StatelessWidget {
       case ApplicationLoginState.loggedOut:
         return LoginPage(
           login: (email, password) {
-            signInWithEmailAndPassword(email, password,
-                (e) => _showErrorDialog(context, 'Giriş Hatalı', e));
+            signInWithEmailAndPassword(
+                email,
+                password,
+                (e) => _showErrorDialog(context, 'Giriş Hatalı',
+                    "Kullanıcı adı ve şifreyi kontrol ediniz"));
           },
         );
       case ApplicationLoginState.register:
@@ -68,8 +71,8 @@ class Authentication extends StatelessWidget {
                 email,
                 displayName,
                 password,
-                (e) =>
-                    _showErrorDialog(context, 'Failed to create account', e));
+                (e) => _showErrorDialog(context, 'Failed to create account',
+                    'Hesap oluşturulamadı'));
           },
         );
       case ApplicationLoginState.loggedIn:
@@ -83,7 +86,7 @@ class Authentication extends StatelessWidget {
     }
   }
 
-  void _showErrorDialog(BuildContext context, String title, Exception e) {
+  void _showErrorDialog(BuildContext context, String title, String message) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -96,7 +99,7 @@ class Authentication extends StatelessWidget {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  '${(e as dynamic).message}',
+                  message,
                   style: TextStyle(fontSize: 18),
                 ),
               ],

@@ -37,4 +37,7 @@ class KotraModel implements GenericModel {
     kotra[FieldKeys.kotraNumOfItems] = this.numOfItems;
     return kotra;
   }
+
+  @override
+  int? festYear;
 }

@@ -52,8 +52,8 @@ class _CustomerListState extends State<CustomerList> {
               keyboardType:
                   TextInputType.numberWithOptions(decimal: true, signed: true),
               controller: _nameController,
-              decoration:
-                  InputDecoration(labelText: "Müşteri Adı ya da cep telefonu ile filtrele"),
+              decoration: InputDecoration(
+                  labelText: "Müşteri Adı ya da cep telefonu ile filtrele"),
             ),
           ),
           TextButton.icon(
@@ -65,7 +65,8 @@ class _CustomerListState extends State<CustomerList> {
               label: Text("Yeni Müşteri Ekle")),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _repositoryInstance.getAllItems(CollectionKeys.customers,
+              stream: _repositoryInstance.getAllItemsWithoutDate(
+                  CollectionKeys.customers,
                   orderBy: FieldKeys.customerName),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -92,22 +93,23 @@ class _CustomerListState extends State<CustomerList> {
                   return ListView.builder(
                     itemCount: customerValues.length,
                     itemBuilder: (context, index) {
-                      var customer =
-                          CustomerModel.fromJson(customerValues[index].data(),id: customerValues[index].id);
+                      var customer = CustomerModel.fromJson(
+                          customerValues[index].data(),
+                          id: customerValues[index].id);
                       return GestureDetector(
                         onTap: () {
                           if (widget.onCustomerSelected != null) {
                             widget.onCustomerSelected!(customer);
                             Navigator.pop(context);
-                          }else{
+                          } else {
                             Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    // BubbleScreen()
-                                    CustomerDetail(
-                                      customer: customer,
-                                    )));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        // BubbleScreen()
+                                        CustomerDetail(
+                                          customer: customer,
+                                        )));
                           }
                         },
                         child: Card(

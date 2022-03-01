@@ -236,6 +236,28 @@ class _HomePageState extends State<HomePage> {
                 }),
             Divider(),
             ListTile(
+                title: Text("Sistem Yılı"),
+                subtitle: DropdownButton(
+                  value: SystemVariables.currentYear.toString(),
+                  items: SystemVariables.yearDropdownItems,
+                  onChanged: (val) {
+                    setState(() {
+                      SystemVariables.currentYear = int.parse(val.toString());
+                    });
+                  },
+                ),
+                trailing: Icon(Icons.add_sharp),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              // BubbleScreen()
+                              UserCreatePage()));
+                }),
+            Divider(),
+            ListTile(
                 title: Text("Çıkış"),
                 trailing: Icon(Icons.exit_to_app),
                 onTap: () {

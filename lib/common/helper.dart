@@ -7,6 +7,29 @@ import 'package:gazi_app/common/custom_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class SystemVariables {
+  static int currentYear =
+      DateTime.now().month > 8 ? DateTime.now().year + 1 : DateTime.now().year;
+
+  static List<int> get festYears {
+    List<int> results = List.empty(growable: true);
+    for (int i = 2021; i <= DateTime.now().year + 1; i++) {
+      results.add(i);
+    }
+    return results;
+  }
+
+  static List<DropdownMenuItem<String>> get yearDropdownItems {
+    List<DropdownMenuItem<String>> menuItems = List.empty(growable: true);
+    for (int i = 0; i < SystemVariables.festYears.length; i++) {
+      menuItems.add(DropdownMenuItem(
+          child: Text(SystemVariables.festYears[i].toString()),
+          value: SystemVariables.festYears[i].toString()));
+    }
+    return menuItems;
+  }
+}
+
 String validateName(String value) {
   String pattern = r'(^[a-zA-Z ]*$)';
   RegExp regExp = new RegExp(pattern);

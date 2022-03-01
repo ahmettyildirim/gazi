@@ -129,4 +129,7 @@ class SaleModel implements GenericModel {
     sale[FieldKeys.saleKotraNo] = this.kotraNo;
     return sale;
   }
+
+  @override
+  int? festYear;
 }

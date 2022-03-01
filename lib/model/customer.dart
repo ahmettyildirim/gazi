@@ -46,6 +46,9 @@ class CustomerModel implements GenericModel {
     return customer;
   }
 
+  @override
+  int? festYear;
+
   // CustomerModel.fromMap(Map<String, dynamic> map) {
   //   this.name = map[FieldKeys.customerName];
   //   this.email = map[FieldKeys.customerMail] ?? "";

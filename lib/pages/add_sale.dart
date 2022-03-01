@@ -412,7 +412,7 @@ class _AddSaleState extends State<AddSale> {
       });
       return;
     }
-    var value = await _repositoryInstance.getAllItemsByFilter(
+    var value = await _repositoryInstance.getAllItemsByFilterNoDate(
         CollectionKeys.customers,
         filterName: FieldKeys.customerPhone,
         filterValue: _phoneController.text);
@@ -670,7 +670,7 @@ class _AddSaleState extends State<AddSale> {
             new CustomerModel(_nameController.text, _phoneController.text);
         var customerref = await DataRepository.instance.addNewItem(customer);
         // await getCustomerByPhone(_phoneController.text);
-        var value = await _repositoryInstance.getAllItemsByFilter(
+        var value = await _repositoryInstance.getAllItemsByFilterNoDate(
             CollectionKeys.customers,
             filterName: FieldKeys.customerPhone,
             filterValue: _phoneController.text);

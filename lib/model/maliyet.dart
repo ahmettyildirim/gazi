@@ -264,4 +264,7 @@ class MaliyetModel implements GenericModel {
         aciklama: json[FieldKeys.aciklama] as String?,
         id: id);
   }
+
+  @override
+  int? festYear;
 }

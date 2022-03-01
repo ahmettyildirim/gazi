@@ -34,4 +34,7 @@ class HisseModel implements GenericModel {
 
   @override
   late CollectionReference<Map<String, dynamic>> colRef;
+
+  @override
+  int? festYear;
 }
