@@ -109,7 +109,7 @@ class _MaliyetAddState extends State<MaliyetAdd> {
               minLines: 2,
               decoration: InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
             ),
-            ButtonBar(
+            ButtonBar( 
               children: [
                 ElevatedButton.icon(
                   icon: Icon(Icons.arrow_back_ios_new),
@@ -125,7 +125,7 @@ class _MaliyetAddState extends State<MaliyetAdd> {
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.red)),
                         icon: Icon(Icons.delete),
-                        label: Text("Maliyeti Sil"),
+                        label: Text("Sil"),
                         onPressed: () async {
                           var result = await askPrompt(context,
                               message:
