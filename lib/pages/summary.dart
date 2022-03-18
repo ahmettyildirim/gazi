@@ -119,14 +119,19 @@ class _SummaryPageState extends State<SummaryPage> {
                             .where(
                                 (element) => element.kurbanSubTip == index + 1)
                             .toList();
-                        return ListTile(
-                          dense: false,
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                AssetImage(getImagePath(index + 1)),
+                        return GestureDetector(
+                          onTap: (){
+                            
+                          },
+                          child: ListTile(
+                            dense: false,
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage(getImagePath(index + 1)),
+                            ),
+                            title: Text(getTitle(index + 1)),
+                            subtitle: Text(getMainText(currentList, index + 1)),
                           ),
-                          title: Text(getTitle(index + 1)),
-                          subtitle: Text(getMainText(currentList, index + 1)),
                         );
                       },
                       itemCount: 6,

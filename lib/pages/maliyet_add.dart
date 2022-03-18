@@ -147,7 +147,45 @@ class _MaliyetAddState extends State<MaliyetAdd> {
                   onPressed: addOrUpdateMaliyet,
                 ),
               ],
-            )
+            ),
+            widget.maliyet.id.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Ekleyen Kişi"),
+                        Container(
+                            width: width / 2,
+                            child: Text(
+                              widget.maliyet.createUser.toString(),
+                              overflow: TextOverflow.visible,
+                              textAlign: TextAlign.end,
+                            ))
+                      ],
+                    ),
+                  )
+                : Center(),
+            widget.maliyet.id.isNotEmpty ? Divider(height: 2.0) : Center(),
+            widget.maliyet.id.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Eklenme Tarihi"),
+                        Container(
+                            width: width / 2,
+                            child: Text(
+                              getFormattedDate(widget.maliyet.createTime),
+                              overflow: TextOverflow.visible,
+                              textAlign: TextAlign.end,
+                            ))
+                      ],
+                    ),
+                  )
+                : Center(),
+            widget.maliyet.id.isNotEmpty ? Divider(height: 2.0) : Center(),
           ],
         ));
   }

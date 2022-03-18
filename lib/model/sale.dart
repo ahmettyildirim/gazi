@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/data_repository.dart';
+import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
 import 'package:gazi_app/model/payment.dart';
@@ -55,7 +56,9 @@ class SaleModel implements GenericModel {
   late String collectionReferenceName = CollectionKeys.sales;
   late DateTime? createTime;
   late String? createUser;
+  late String? kesimSaati;
   late CustomerModel customer;
+  bool? isVekalet;
   late List<PaymentModel> paymentList;
 
   SaleModel(
@@ -74,11 +77,13 @@ class SaleModel implements GenericModel {
       required this.hisseNum,
       required this.adet,
       required this.aciklama,
+      required this.kesimSaati,
       this.createTime,
       this.createUser,
       required this.customer,
       this.id = "",
-      this.kotraNo = 0}) {
+      this.kotraNo = 0,
+      this.isVekalet = false}) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.sales);
   }
@@ -103,6 +108,12 @@ class SaleModel implements GenericModel {
         kotraNo: (json[FieldKeys.saleKotraNo] ?? 0) as int,
         createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: json[FieldKeys.createUser] as String,
+        kesimSaati: json[FieldKeys.kesimSaati] != null &&
+                json[FieldKeys.kesimSaati] != ""
+            ? (json[FieldKeys.kesimSaati] as String?)
+            : getKesimSaati(json[FieldKeys.saleKurbanTip] as int,
+                json[FieldKeys.saleKurbanNo] as int),
+        isVekalet: (json[FieldKeys.isVekalet] ?? false) as bool,
         customer: CustomerModel.fromJson(json[FieldKeys.customer],
             id: json[FieldKeys.saleCustomerRef] as String),
         id: id);
@@ -127,6 +138,8 @@ class SaleModel implements GenericModel {
     sale[FieldKeys.aciklama] = this.aciklama;
     sale[FieldKeys.customer] = this.customer.toMap();
     sale[FieldKeys.saleKotraNo] = this.kotraNo;
+    sale[FieldKeys.kesimSaati] = this.kesimSaati;
+    sale[FieldKeys.isVekalet] = this.isVekalet ?? false;
     return sale;
   }
 

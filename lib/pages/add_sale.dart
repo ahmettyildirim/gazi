@@ -39,6 +39,8 @@ class _AddSaleState extends State<AddSale> {
   var _aciklamaController = TextEditingController();
   var _phoneController = TextEditingController();
   var _nameController = TextEditingController();
+  var _kesimSaatiController = TextEditingController();
+  bool _isVekalet = false;
   var maskFormatter = new MaskTextInputFormatter(
       mask: '(###) ###-##-##',
       filter: {"#": RegExp(r'[0-9]')},
@@ -71,6 +73,8 @@ class _AddSaleState extends State<AddSale> {
         _aciklamaController.text = widget.sale!.aciklama.toString();
         _phoneController.text = widget.sale!.customer.phone.toString();
         _nameController.text = widget.sale!.customer.name.toString();
+        _kesimSaatiController.text = widget.sale!.kesimSaati.toString();
+        _isVekalet = widget.sale!.isVekalet!;
       });
     }
   }
@@ -78,6 +82,7 @@ class _AddSaleState extends State<AddSale> {
   void _selectKurban(HisseKurbanModel kurban) {
     setState(() {
       _saleNoController.text = kurban.kurbanNo.toString();
+      _kesimSaatiController.text = getKesimSaati(1, kurban.kurbanNo);
       _remainingHisseLabelText =
           "Hisse Sayısı (Kalan Hisse ${kurban.remainingHisse.toString()})";
       _selectedHisse = kurban;
@@ -91,6 +96,18 @@ class _AddSaleState extends State<AddSale> {
       {String information = "Bu alan boş olamaz"}) {
     if (text == null || text.isEmpty) {
       return information;
+    }
+    return null;
+  }
+
+  String? _remainingHisseValidator(String? text) {
+    if (text == null || text.isEmpty) {
+      return "Bu alan boş olamaz";
+    }
+    if (_selectedHisse != null) {
+      if (_selectedHisse!.remainingHisse < int.parse(text)) {
+        return "Hisse sayısı kalan hisseden(${_selectedHisse!.remainingHisse}) büyük olamaz";
+      }
     }
     return null;
   }
@@ -182,6 +199,12 @@ class _AddSaleState extends State<AddSale> {
                 [0].contains(_kurbanSubTip)
                     ? Center()
                     : _getKalanTutar(screenWidth, screenHeight),
+                _kurbanSubTip != 0
+                    ? _getKesimSaati(screenWidth, screenHeight)
+                    : Center(),
+                _kurbanSubTip != 0
+                    ? _getIsVekalet(screenWidth, screenHeight)
+                    : Center(),
                 _kurbanSubTip != 0
                     ? _getAciklama(screenWidth, screenHeight)
                     : Center(),
@@ -348,10 +371,17 @@ class _AddSaleState extends State<AddSale> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         controller: _saleNoController,
+        onChanged: _fillKesimSaati,
         decoration: InputDecoration(labelText: 'Kurban No'),
         validator: _requiredValidator,
       ),
     );
+  }
+
+  void _fillKesimSaati(String val) {
+    if (val.isNotEmpty) {
+      _kesimSaatiController.text = getKesimSaati(_kurbanTip, int.parse(val));
+    }
   }
 
   Widget _getNumForHisse(double screenWidth, double screenHeight) {
@@ -557,7 +587,7 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
-        validator: _requiredValidator,
+        validator: _remainingHisseValidator,
         keyboardType: TextInputType.number,
         controller: _hisseCountController,
         onChanged: calculateTotal,
@@ -578,6 +608,42 @@ class _AddSaleState extends State<AddSale> {
         decoration: InputDecoration(labelText: 'Açıklama (İsteğe bağlı)'),
       ),
     );
+  }
+
+  Widget _getKesimSaati(double screenWidth, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: screenHeight / 30, right: screenHeight / 30, top: 5),
+      child: TextFormField(
+        keyboardType: TextInputType.datetime,
+        controller: _kesimSaatiController,
+        readOnly: true,
+        decoration: InputDecoration(labelText: 'Tahmini Kesim Saati'),
+      ),
+    );
+  }
+
+  Widget _getIsVekalet(double screenWidth, double screenHeight) {
+    return Padding(
+        padding: EdgeInsets.only(
+            left: screenHeight / 30, right: screenHeight / 30, top: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Vekaletli Satış",
+                style: TextStyle(fontSize: 15), textAlign: TextAlign.center),
+            Switch(
+              value: _isVekalet,
+              onChanged: (value) {
+                setState(() {
+                  _isVekalet = value;
+                });
+              },
+              activeTrackColor: Colors.lightBlueAccent,
+              activeColor: Colors.blueAccent,
+            ),
+          ],
+        ));
   }
 
   void getRemainingAmount(val) {
@@ -734,9 +800,12 @@ class _AddSaleState extends State<AddSale> {
             adet: _adetController.text.isEmpty
                 ? 0
                 : int.parse(_adetController.text),
+            kesimSaati: _kesimSaatiController.text,
+            isVekalet: _isVekalet,
             aciklama: _aciklamaController.text.isEmpty
                 ? ""
                 : _aciklamaController.text);
+
         var addedItem = await DataRepository.instance.addNewItem(sale);
         if (_kaparoController.text.isNotEmpty &&
             int.tryParse(_kaparoController.text) != 0) {
@@ -781,6 +850,8 @@ class _AddSaleState extends State<AddSale> {
         widget.sale!.remainingAmount = _kalanTutarController.text.isEmpty
             ? 0
             : int.parse(_kalanTutarController.text);
+        widget.sale!.kesimSaati = _kesimSaatiController.text;
+        widget.sale!.isVekalet = _isVekalet;
         widget.sale!.aciklama =
             _aciklamaController.text.isEmpty ? "" : _aciklamaController.text;
         await DataRepository.instance.updateItem(widget.sale!);
@@ -855,6 +926,8 @@ class _AddSaleState extends State<AddSale> {
         text += "Hisse Fiyatı - ${getMoneyString(saleModel.amount)}\n";
         text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
         text += getKaparo();
+        text +=
+            "Tahmini Kesim Saati - ${saleModel.kesimSaati!.replaceAll(":", "-")}\n(Bu saatten yarım saat kadar önce kesim yerinde olmanız önemle rica olunur.)";
         var value = await _repositoryInstance.getAllItemsByFilter(
             CollectionKeys.sales,
             filterName: FieldKeys.saleHisseRef,
@@ -879,7 +952,7 @@ class _AddSaleState extends State<AddSale> {
         break;
       default:
     }
-    text += "\n\n 02242621313\n05161691313 ";
+    text += "\n\n02242621313\n05161691313 ";
     await launchWhatsApp(num: num, text: text);
   }
 }

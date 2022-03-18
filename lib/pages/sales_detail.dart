@@ -268,6 +268,10 @@ class _SaleDetailsState extends State<SaleDetails> {
                         widget.sale.remainingAmount.toString() + " TL"),
                 getRowInfo("Açıklama", widget.sale.aciklama!),
                 _getPayments(),
+                getRowInfo(
+                    "Tahmini Kesim Saati", widget.sale.kesimSaati.toString()),
+                getRowInfo("Vekaletli Satış Mı?",
+                    widget.sale.isVekalet! ? "Evet" : "Hayır"),
                 getRowInfo("Satış Tarihi", formattedDate),
                 getRowInfo("Satışı Yapan", widget.sale.createUser!),
               ],

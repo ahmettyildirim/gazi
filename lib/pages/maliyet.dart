@@ -19,7 +19,6 @@ var _repositoryInstance = DataRepository.instance;
 int _totalMaliyet = 0;
 int _danaTotal = 0;
 int _kuzuTotal = 0;
-int _toplamKar = 0;
 
 getTotalSales() async {
   var sales = await _repositoryInstance

@@ -58,6 +58,7 @@ class FieldKeys {
   static final saleKotraNo = "kotra_no";
   static final saleAdet = "adet";
   static final aciklama = "aciklama";
+  static final kesimSaati = "kesim_saati";
   static final kotraNo = "no";
   static final kotraCapacity = "capacity";
   static final kotraNumOfItems = "numOfItems";
