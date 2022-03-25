@@ -254,9 +254,9 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Widget _getBuyukbasTypeMenu(double screenWidth) {
-    if (widget.sale != null) {
-      return Center();
-    }
+    // if (widget.sale != null) {
+    //   return Center();
+    // }
     return Column(
       children: [
         CustomRadioButton(
@@ -273,6 +273,7 @@ class _AddSaleState extends State<AddSale> {
             1,
             2,
           ],
+          defaultSelected: _buyukKurbanTip > 0 ? _buyukKurbanTip : null,
           radioButtonValue: (value) => {
             setState(() {
               _buyukKurbanTip = int.parse(value.toString());
@@ -831,6 +832,7 @@ class _AddSaleState extends State<AddSale> {
         widget.sale!.kurbanNo = _saleNoController.text.isEmpty
             ? 0
             : int.parse(_saleNoController.text);
+        widget.sale!.buyukKurbanTip = _buyukKurbanTip;
         widget.sale!.kotraNo = _kotraNoController.text.isEmpty
             ? 0
             : int.parse(_kotraNoController.text);
@@ -916,10 +918,14 @@ class _AddSaleState extends State<AddSale> {
             ? "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n"
             : "";
         text += getKaparo();
+        text +=
+            "Tahmini Kesim Saati - ${saleModel.kesimSaati!.replaceAll(":", "-")}\n(Bu saatten yarım saat kadar önce kesim yerinde olmanız önemle rica olunur.)";
         break;
       case 3:
         text += "Kurban Fiyatı - ${getMoneyString(saleModel.amount)}\n";
         text += getKaparo();
+        text +=
+            "Tahmini Kesim Saati - ${saleModel.kesimSaati!.replaceAll(":", "-")}\n(Bu saatten yarım saat kadar önce kesim yerinde olmanız önemle rica olunur.)";
         break;
       case 4:
         text += "Hisse Sayısı - ${saleModel.hisseNum}\n";
@@ -949,6 +955,8 @@ class _AddSaleState extends State<AddSale> {
         text += "Adet - ${saleModel.adet}\n";
         text += "Toplam Fiyat - ${getMoneyString(saleModel.generalAmount)}\n";
         text += getKaparo();
+        text +=
+            "Tahmini Kesim Saati - ${saleModel.kesimSaati!.replaceAll(":", "-")}\n(Bu saatten yarım saat kadar önce kesim yerinde olmanız önemle rica olunur.)";
         break;
       default:
     }

@@ -1,3 +1,4 @@
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
@@ -17,7 +18,39 @@ class _AddKurbanState extends State<AddKurban> {
   final _hisseAmountController = TextEditingController();
   final _totalAmountController = TextEditingController();
   final _aciklamaController = TextEditingController();
+  int _buyukKurbanTip = 0;
   bool _isVekalet = false;
+  Widget _getBuyukbasTypeMenu(double screenWidth) {
+    return Column(
+      children: [
+        CustomRadioButton(
+          enableButtonWrap: true,
+          shapeRadius: 14.0,
+          radius: 14.0,
+          enableShape: false,
+          unSelectedColor: Theme.of(context).canvasColor,
+          buttonLables: [
+            "Dana",
+            "Düve",
+          ],
+          buttonValues: [
+            1,
+            2,
+          ],
+          radioButtonValue: (value) => {
+            setState(() {
+              _buyukKurbanTip = int.parse(value.toString());
+            })
+          },
+          selectedColor: Theme.of(context).colorScheme.secondary,
+        ),
+        SizedBox(height: 10),
+        Divider(height: 3),
+        SizedBox(height: 10),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenInfo = MediaQuery.of(context);
@@ -37,6 +70,7 @@ class _AddKurbanState extends State<AddKurban> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    _getBuyukbasTypeMenu(screenWidth),
                     Padding(
                       padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: TextFormField(
@@ -125,6 +159,10 @@ class _AddKurbanState extends State<AddKurban> {
   }
 
   Future<void> addKurban() async {
+    if (_buyukKurbanTip == 0) {
+      CustomLoader.showError("Lütfen Kurban Cinsini Seçiniz");
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       CustomLoader.show();
 
@@ -141,6 +179,7 @@ class _AddKurbanState extends State<AddKurban> {
           int.parse(_kotraNoController.text),
           int.parse(_hisseNumController.text),
           int.parse(_hisseAmountController.text),
+          buyukKurbanTip: _buyukKurbanTip,
           aciklama: _aciklamaController.text,
           remainingHisse: int.parse(_hisseNumController.text),
           isVekalet: _isVekalet);

@@ -118,6 +118,8 @@ class _HisseDetailState extends State<HisseDetail> {
                 padding: const EdgeInsets.all(20.0),
                 child: Column(children: [
                   getRowInfo("Kurban No", widget.hisse.kurbanNo.toString()),
+                  getRowInfo("Cins",
+                      widget.hisse.buyukKurbanTip == 1 ? "Dana" : "Düve"),
                   getRowInfo("Hisse Sayısı", widget.hisse.hisseNo.toString()),
                   getRowInfo("Kalan Hisse Sayısı",
                       widget.hisse.remainingHisse.toString()),

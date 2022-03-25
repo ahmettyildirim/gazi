@@ -13,6 +13,7 @@ class HisseKurbanModel implements GenericModel {
   bool? isVekalet;
   int remainingHisse = 0;
   late String? aciklama;
+  late int buyukKurbanTip = 0;
   late CollectionReference<Map<String, dynamic>> colRef;
   late DateTime? createTime;
   late String? createUser;
@@ -24,6 +25,7 @@ class HisseKurbanModel implements GenericModel {
       this.aciklama = "",
       this.createTime,
       this.createUser,
+      required this.buyukKurbanTip,
       this.isVekalet = false}) {
     this.collectionReferenceName = CollectionKeys.hisseKurban;
     this.colRef = DataRepository.instance
@@ -37,6 +39,7 @@ class HisseKurbanModel implements GenericModel {
         json[FieldKeys.hisseKurbanKotraNo] as int,
         json[FieldKeys.hisseKurbanHisseNum] as int,
         json[FieldKeys.hisseKurbanHisseAmount] as int,
+        buyukKurbanTip: json[FieldKeys.saleBuyukKurbanTip] as int,
         aciklama: (json[FieldKeys.aciklama] ?? "") as String,
         createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: json[FieldKeys.createUser] as String,
@@ -49,6 +52,7 @@ class HisseKurbanModel implements GenericModel {
     hisseKurban[FieldKeys.hisseKurbanKurbanNo] = this.kurbanNo;
     hisseKurban[FieldKeys.hisseKurbanKotraNo] = this.kotraNo;
     hisseKurban[FieldKeys.hisseKurbanHisseNum] = this.hisseNo;
+    hisseKurban[FieldKeys.saleBuyukKurbanTip] = this.buyukKurbanTip;
     hisseKurban[FieldKeys.hisseKurbanHisseAmount] = this.hisseAmount;
     hisseKurban[FieldKeys.hisseKurbanRemainingHisse] = this.remainingHisse;
     hisseKurban[FieldKeys.aciklama] = this.aciklama;
