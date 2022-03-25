@@ -6,7 +6,6 @@ import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:gazi_app/pages/add_sale.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SaleDetails extends StatefulWidget {

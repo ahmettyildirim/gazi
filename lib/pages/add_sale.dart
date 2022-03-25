@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
@@ -8,7 +7,6 @@ import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'hisse_select.dart';
@@ -151,13 +149,13 @@ class _AddSaleState extends State<AddSale> {
                 Divider(height: 3),
                 SizedBox(height: 10),
                 _kurbanTip == 1
-                    ? _getBuyukbasTypeMenu(screenWidth)
+                    ? _getBuyukbasSubmenu(screenWidth)
                     : _kurbanTip == 2
                         ? _getKucukbasSubmenu(screenWidth)
                         : Center(),
                 _kurbanTip == 1
-                    ? _buyukKurbanTip != 0
-                        ? _getBuyukbasSubmenu(screenWidth)
+                    ? _kurbanSubTip != 0 && _kurbanSubTip != 4
+                        ? _getBuyukbasTypeMenu(screenWidth)
                         : Center()
                     : Center(),
                 _kurbanSubTip != 0
@@ -300,7 +298,7 @@ class _AddSaleState extends State<AddSale> {
           radius: 14.0,
           enableShape: false,
           unSelectedColor: Theme.of(context).canvasColor,
-          buttonLables: ["Ayaktan", "Hisse", "Ayaktan(Kilo)", "Karkas"],
+          buttonLables: ["Ayaktan ", "Hisse", "Ayaktan(Kilo) ", "Karkas"],
           buttonValues: [3, 4, 1, 2],
           buttonTextStyle:
               ButtonTextStyle(textStyle: TextStyle(fontSize: 10.0)),
@@ -730,6 +728,10 @@ class _AddSaleState extends State<AddSale> {
   }
 
   Future<void> addSale() async {
+    if (_kurbanTip == 1 && _kurbanSubTip != 4 && _buyukKurbanTip == 0) {
+      CustomLoader.showError("Lütfen Kurban Cinsini Seçiniz");
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       if (selectedCustomer == null) {
         CustomLoader.show();
@@ -772,7 +774,9 @@ class _AddSaleState extends State<AddSale> {
             customer: selectedCustomer!,
             customerRef: selectedCustomer!.id,
             kurbanTip: _kurbanTip,
-            buyukKurbanTip: _buyukKurbanTip,
+            buyukKurbanTip: _kurbanSubTip == 4 && _selectedHisse != null
+                ? _selectedHisse!.buyukKurbanTip
+                : _buyukKurbanTip,
             kurbanSubTip: _kurbanSubTip,
             kurbanNo: _saleNoController.text.isEmpty
                 ? 0
@@ -832,7 +836,10 @@ class _AddSaleState extends State<AddSale> {
         widget.sale!.kurbanNo = _saleNoController.text.isEmpty
             ? 0
             : int.parse(_saleNoController.text);
-        widget.sale!.buyukKurbanTip = _buyukKurbanTip;
+        widget.sale!.buyukKurbanTip =
+            _kurbanSubTip == 4 && _selectedHisse != null
+                ? _selectedHisse!.buyukKurbanTip
+                : _buyukKurbanTip;
         widget.sale!.kotraNo = _kotraNoController.text.isEmpty
             ? 0
             : int.parse(_kotraNoController.text);

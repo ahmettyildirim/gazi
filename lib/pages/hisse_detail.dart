@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gazi_app/common/custom_animation.dart';
 import 'package:gazi_app/common/data_repository.dart';
 import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/model/sale.dart';
+import 'package:gazi_app/pages/add_kurban.dart';
 import 'package:gazi_app/pages/sales_detail.dart';
 
 class HisseDetail extends StatefulWidget {
   HisseDetail({Key? key, required this.hisse}) : super(key: key);
-  final HisseKurbanModel hisse;
+  HisseKurbanModel hisse;
 
   @override
   _HisseDetailState createState() => _HisseDetailState();
@@ -112,6 +114,56 @@ class _HisseDetailState extends State<HisseDetail> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Hisse Detayı"),
+          actions: [
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    HisseKurbanModel result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                // BubbleScreen()
+                                AddKurban(
+                                  hisseKurbanModel: widget.hisse,
+                                )));
+                    setState(() {
+                      widget.hisse = result;
+                    });
+                  },
+                  child: Icon(
+                    Icons.edit,
+                    size: 20.0,
+                  ),
+                )),
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    var list = await _repositoryInstance.getAllItemsByFilter(
+                        CollectionKeys.sales,
+                        filterName: FieldKeys.saleHisseRef,
+                        filterValue: widget.hisse.id);
+                    if (list.docs.isNotEmpty) {
+                      CustomLoader.showError(
+                          "Bu hisse üzerine yapılan satışlar var. Hisseyi silmek için  önce ${widget.hisse.hisseNo} numaralı tüm satışları silmelisiniz.");
+                      return;
+                    }
+                    var success = await askPrompt(context,
+                        message:
+                            "Bu hisse tanımını sistemden silmek üzeresiniz. Emin misiniz?",
+                        title: "!!!Dikkat!!!");
+                    if (success) {
+                      _repositoryInstance.deleteHisse(widget.hisse);
+                      Navigator.pop(context, widget.hisse);
+                    }
+                  },
+                  child: Icon(
+                    Icons.delete,
+                    size: 20.0,
+                  ),
+                )),
+          ],
         ),
         body: SingleChildScrollView(
             child: Padding(

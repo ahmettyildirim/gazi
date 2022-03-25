@@ -6,6 +6,8 @@ import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/hisse_kurban.dart';
 
 class AddKurban extends StatefulWidget {
+  AddKurban({Key? key, this.hisseKurbanModel}) : super(key: key);
+  final HisseKurbanModel? hisseKurbanModel;
   @override
   _AddKurbanState createState() => _AddKurbanState();
 }
@@ -20,6 +22,28 @@ class _AddKurbanState extends State<AddKurban> {
   final _aciklamaController = TextEditingController();
   int _buyukKurbanTip = 0;
   bool _isVekalet = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.hisseKurbanModel != null) {
+      setState(() {
+        _saleNoController.text = widget.hisseKurbanModel!.kurbanNo.toString();
+        _kotraNoController.text = widget.hisseKurbanModel!.kotraNo.toString();
+        _hisseNumController.text = widget.hisseKurbanModel!.hisseNo.toString();
+        _hisseAmountController.text =
+            widget.hisseKurbanModel!.hisseAmount.toString();
+        _totalAmountController.text = (widget.hisseKurbanModel!.hisseAmount *
+                widget.hisseKurbanModel!.hisseNo)
+            .toString();
+        _aciklamaController.text = widget.hisseKurbanModel!.aciklama.toString();
+        _buyukKurbanTip = widget.hisseKurbanModel!.buyukKurbanTip;
+        _isVekalet = widget.hisseKurbanModel!.isVekalet ?? false;
+      });
+    }
+  }
+
   Widget _getBuyukbasTypeMenu(double screenWidth) {
     return Column(
       children: [
@@ -37,6 +61,10 @@ class _AddKurbanState extends State<AddKurban> {
             1,
             2,
           ],
+          defaultSelected: widget.hisseKurbanModel != null &&
+                  widget.hisseKurbanModel!.buyukKurbanTip > 0
+              ? widget.hisseKurbanModel!.buyukKurbanTip
+              : null,
           radioButtonValue: (value) => {
             setState(() {
               _buyukKurbanTip = int.parse(value.toString());
@@ -59,8 +87,21 @@ class _AddKurbanState extends State<AddKurban> {
     return StatefulBuilder(builder: (context, setState) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Yeni Kurban Ekle"),
-        ),
+            title: Text(widget.hisseKurbanModel == null
+                ? "Yeni Hisse Ekle"
+                : widget.hisseKurbanModel!.kurbanNo.toString() +
+                    " Numaralı Hisse"),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios_new),
+                onPressed: () async {
+                  var success = await askPrompt(context,
+                      message:
+                          "Geri giderseniz girdiğiniz bilgiler kaybolacaktır.\nÇıkmak istediğinizden emin misiniz?",
+                      title: "Çıkış");
+                  if (success) {
+                    Navigator.pop(context, widget.hisseKurbanModel);
+                  }
+                })),
         body: Container(
             padding: EdgeInsets.only(top: 20, left: 10, right: 10),
             child: SingleChildScrollView(
@@ -149,7 +190,10 @@ class _AddKurbanState extends State<AddKurban> {
                     Padding(
                         padding: EdgeInsets.only(top: 15, left: 10, right: 10),
                         child: ElevatedButton(
-                            onPressed: addKurban, child: Text("Ekle"))),
+                            onPressed: addKurban,
+                            child: Text(widget.hisseKurbanModel == null
+                                ? "Ekle"
+                                : "Güncelle"))),
                   ],
                 ),
               ),
@@ -165,28 +209,46 @@ class _AddKurbanState extends State<AddKurban> {
     }
     if (_formKey.currentState!.validate()) {
       CustomLoader.show();
-
-      var result = await DataRepository.instance
-          .isSaleNumAlreadyGiven(int.tryParse(_saleNoController.text)!, 1);
-      if (result) {
-        CustomLoader.close();
-        CustomLoader.showError("Bu kurban numarası daha önce verilmiş.");
-        return;
+      if (widget.hisseKurbanModel == null ||
+          widget.hisseKurbanModel!.kurbanNo.toString() !=
+              _saleNoController.text) {
+        var result = await DataRepository.instance
+            .isSaleNumAlreadyGiven(int.tryParse(_saleNoController.text)!, 1);
+        if (result) {
+          CustomLoader.close();
+          CustomLoader.showError("Bu kurban numarası daha önce verilmiş.");
+          return;
+        }
       }
 
-      HisseKurbanModel hisseKurban = new HisseKurbanModel(
-          int.parse(_saleNoController.text),
-          int.parse(_kotraNoController.text),
-          int.parse(_hisseNumController.text),
-          int.parse(_hisseAmountController.text),
-          buyukKurbanTip: _buyukKurbanTip,
-          aciklama: _aciklamaController.text,
-          remainingHisse: int.parse(_hisseNumController.text),
-          isVekalet: _isVekalet);
+      if (widget.hisseKurbanModel == null) {
+        HisseKurbanModel hisseKurban = new HisseKurbanModel(
+            int.parse(_saleNoController.text),
+            int.parse(_kotraNoController.text),
+            int.parse(_hisseNumController.text),
+            int.parse(_hisseAmountController.text),
+            buyukKurbanTip: _buyukKurbanTip,
+            aciklama: _aciklamaController.text,
+            remainingHisse: int.parse(_hisseNumController.text),
+            isVekalet: _isVekalet);
 
-      await DataRepository.instance.addItem(hisseKurban);
-      CustomLoader.close();
-      Navigator.pop(context);
+        await DataRepository.instance.addItem(hisseKurban);
+        CustomLoader.close();
+        Navigator.pop(context, widget.hisseKurbanModel);
+      } else {
+        CustomLoader.show();
+        widget.hisseKurbanModel!.aciklama = _aciklamaController.text;
+        widget.hisseKurbanModel!.buyukKurbanTip = _buyukKurbanTip;
+        widget.hisseKurbanModel!.hisseAmount =
+            int.parse(_hisseAmountController.text);
+        widget.hisseKurbanModel!.hisseNo = int.parse(_hisseNumController.text);
+        widget.hisseKurbanModel!.isVekalet = _isVekalet;
+        widget.hisseKurbanModel!.kotraNo = int.parse(_kotraNoController.text);
+        widget.hisseKurbanModel!.kurbanNo = int.parse(_saleNoController.text);
+        await DataRepository.instance.updateItem(widget.hisseKurbanModel!);
+        Navigator.pop(context, widget.hisseKurbanModel!);
+        CustomLoader.close();
+      }
     }
   }
 

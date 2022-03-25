@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
 import 'package:gazi_app/model/general_model.dart';
+import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
 
@@ -14,6 +15,7 @@ class CollectionKeys {
   static final hisseKurban = "hisse_kurban";
   static final sales = "sales";
   static final salesDeleted = "sales_deleted";
+  static final hisseDeleted = "hisse_deleted";
   static final kotra = "kotra";
   static final hisse = "hisse";
   static final payment = "payment";
@@ -141,6 +143,16 @@ class DataRepository {
     sale.collectionReferenceName = CollectionKeys.salesDeleted;
     await addNewItem(sale);
     await _firestore.collection(CollectionKeys.sales).doc(sale.id).delete();
+    return true;
+  }
+
+  Future<bool> deleteHisse(HisseKurbanModel hisse) async {
+    hisse.collectionReferenceName = CollectionKeys.hisseDeleted;
+    await addNewItem(hisse);
+    await _firestore
+        .collection(CollectionKeys.hisseKurban)
+        .doc(hisse.id)
+        .delete();
     return true;
   }
 
