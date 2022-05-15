@@ -38,7 +38,14 @@ String getKesimSaati(int tip, int kurbanNo) {
     } else {
       date = date.add(Duration(minutes: 40));
       int num = kurbanNo - 15;
-      date = date.add(Duration(minutes: num * 10));
+      double addedMinutes = num * 6.7;
+      double addedRemainder = addedMinutes.remainder(10);
+      if (addedRemainder > 5) {
+        addedMinutes = addedMinutes + 10 - addedRemainder;
+      } else {
+        addedMinutes = addedMinutes - addedRemainder;
+      }
+      date = date.add(Duration(minutes: addedMinutes.toInt()));
       return getFormattedDate(date, format: "HH:mm");
     }
   } else {
