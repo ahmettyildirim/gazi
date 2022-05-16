@@ -17,6 +17,65 @@ List<QueryDocumentSnapshot<Map<String, dynamic>>> getFilteredResults(
       .where((element) => (element.data()[filter].toString() == filterValue))
       .toList();
 }
+String getNumForIndex(int num){
+  switch (num) {
+    case 1:
+      return "A";
+    case 2:
+      return "B";
+    case 3:
+      return "C";
+    case 4:
+      return "D";
+    case 5:
+      return "E";
+    case 6:
+      return "F";
+    case 7:
+      return "G";
+    case 8:
+      return "H";
+    case 9:
+      return "I";
+    case 10:
+      return "J";
+    case 11:
+      return "K";
+    case 12:
+      return "L";
+    case 13:
+      return "M";
+    case 14:
+      return "N";
+    case 15:
+      return "O";
+    case 16:
+      return "P";
+    case 17:
+      return "Q";
+    case 18:
+      return "R";
+    case 19:
+      return "S";
+    case 20:
+      return "T";
+    case 21:
+      return "U";
+    case 22:
+      return "V";
+    case 23:
+      return "W";
+    case 24:
+      return "X";
+    case 25:
+      return "Y";
+    case 26:
+      return "Z";
+    default:
+      return "AA";
+  }
+
+}
 
 Future<void> createExcelReport() async {
   // final xls.Workbook workbook = xls.Workbook();
@@ -353,133 +412,356 @@ _createSheet6(xls.Worksheet sheet, List<SaleModel> saleList) {
 }
 
 _createSheet7(xls.Worksheet sheet, List<MaliyetModel> maliyetList) {
-  sheet.getRangeByName("A2").setText("Toplam Dana/Düve Sayısı");
-  sheet.getRangeByName("A3").setText("Toplam Dana/Düve KG");
-  sheet.getRangeByName("A4").setText("Dana/Düve KG Fiyatı");
-  sheet.getRangeByName("A5").setText("TOPLAM DANA/DÜVE MALİYETİ");
-  sheet.getRangeByName("A7").setText("Toplam Kuzu Sayısı");
-  sheet.getRangeByName("A8").setText("Toplam Kuzu KG");
-  sheet.getRangeByName("A9").setText("Kuzu KG Fiyatı");
-  sheet.getRangeByName("A10").setText("TOPLAM KUZU MALİYETİ");
-  sheet.getRangeByName("A12").setText("Toplam Yem Çuvalı Adedi");
-  sheet.getRangeByName("A13").setText("Çuval Fiyatı");
-  sheet.getRangeByName("A14").setText("TOPLAM YEM MALİYETİ");
-  sheet.getRangeByName("A16").setText("Toplam Tuz Çuvalı Adedi");
-  sheet.getRangeByName("A17").setText("Çuval Fiyatı");
-  sheet.getRangeByName("A18").setText("TOPLAM TUZ MALİYETİ");
-  sheet.getRangeByName("A20").setText("Toplam Saman Balyası Adedi");
-  sheet.getRangeByName("A21").setText("Balya Fiyatı");
-  sheet.getRangeByName("A22").setText("TOPLAM SAMAN MALİYETİ");
-  sheet.getRangeByName("A24").setText("Toplam Yonca Balyası Adedi");
-  sheet.getRangeByName("A25").setText("Balya Fiyatı");
-  sheet.getRangeByName("A26").setText("TOPLAM YONCA MALİYETİ");
-  sheet.getRangeByName("A28").setText("Toplam Pancar Küspesi KG");
-  sheet.getRangeByName("A29").setText("KG Fiyatı");
-  sheet.getRangeByName("A30").setText("TOPLAM PANCAR KÜSPESİ MALİYETİ");
-  sheet.getRangeByName("A32").setText("Toplam Arpa Küspesi KG");
-  sheet.getRangeByName("A33").setText("KG Fiyatı");
-  sheet.getRangeByName("A34").setText("TOPLAM ARPA KÜSPESİ MALİYETİ");
-  sheet.getRangeByName("A36").setText("BAKICI MAAŞLARI TOPLAMI");
-  sheet.getRangeByName("A37").setText("ELEKTRİK FATURASI TOPLAMI");
-  sheet.getRangeByName("A38").setText("KASAPLARA ÖDENEN TOPLAM TUTAR");
-  sheet.getRangeByName("A39").setText("ÇALIŞANLARA ÖDENEN TOPLAM TUTAR");
-  sheet.getRangeByName("A40").setText("AMBALAJCIYA ÖDENEN TOPLAM TUTAR");
-  sheet.getRangeByName("A41").setText("SUCUK, EKMEK, AYRAN, SU MALİYETİ");
-  sheet.getRangeByName("A42").setText("YILLIK TRAKTÖR MAZOT ÜCRETİ");
-  sheet.getRangeByName("A43").setText("YILLIK TRAKTÖR BAKIM ÜCRETİ");
-  sheet.getRangeByName("A45").setText("EKSTRA MASRAFLAR");
-  sheet.getRangeByName("A46").setText("EKSTRA AÇIKLAMA");
-
+  int total =0;
+  
+  // sheet.getRangeByName("A12").setText("Toplam Yem Çuvalı Adedi");
+  // sheet.getRangeByName("A13").setText("Çuval Fiyatı");
+  // sheet.getRangeByName("A14").setText("TOPLAM YEM MALİYETİ");
+  // sheet.getRangeByName("A16").setText("Toplam Tuz Çuvalı Adedi");
+  // sheet.getRangeByName("A17").setText("Çuval Fiyatı");
+  // sheet.getRangeByName("A18").setText("TOPLAM TUZ MALİYETİ");
+  // sheet.getRangeByName("A20").setText("Toplam Saman Balyası Adedi");
+  // sheet.getRangeByName("A21").setText("Balya Fiyatı");
+  // sheet.getRangeByName("A22").setText("TOPLAM SAMAN MALİYETİ");
+  // sheet.getRangeByName("A24").setText("Toplam Yonca Balyası Adedi");
+  // sheet.getRangeByName("A25").setText("Balya Fiyatı");
+  // sheet.getRangeByName("A26").setText("TOPLAM YONCA MALİYETİ");
+  // sheet.getRangeByName("A28").setText("Toplam Pancar Küspesi KG");
+  // sheet.getRangeByName("A29").setText("KG Fiyatı");
+  // sheet.getRangeByName("A30").setText("TOPLAM PANCAR KÜSPESİ MALİYETİ");
+  // sheet.getRangeByName("A32").setText("Toplam Arpa Küspesi KG");
+  // sheet.getRangeByName("A33").setText("KG Fiyatı");
+  // sheet.getRangeByName("A34").setText("TOPLAM ARPA KÜSPESİ MALİYETİ");
+  // sheet.getRangeByName("A36").setText("BAKICI MAAŞLARI TOPLAMI");
+  // sheet.getRangeByName("A37").setText("ELEKTRİK FATURASI TOPLAMI");
+  // sheet.getRangeByName("A38").setText("KASAPLARA ÖDENEN TOPLAM TUTAR");
+  // sheet.getRangeByName("A39").setText("ÇALIŞANLARA ÖDENEN TOPLAM TUTAR");
+  // sheet.getRangeByName("A40").setText("AMBALAJCIYA ÖDENEN TOPLAM TUTAR");
+  // sheet.getRangeByName("A41").setText("SUCUK, EKMEK, AYRAN, SU MALİYETİ");
+  // sheet.getRangeByName("A42").setText("YILLIK TRAKTÖR MAZOT ÜCRETİ");
+  // sheet.getRangeByName("A43").setText("YILLIK TRAKTÖR BAKIM ÜCRETİ");
+  // sheet.getRangeByName("A45").setText("EKSTRA MASRAFLAR");
+  // sheet.getRangeByName("A46").setText("EKSTRA AÇIKLAMA");
+  int index = 2;
   var tempList =
       maliyetList.where((element) => element.maliyetTip == 1).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B2").setText(tempList.first.toplamSayi.toString());
-    sheet.getRangeByName("B3").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B4").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B5").setText(tempList.first.toplamTutar.toString());
+  total = 0;
+  if (tempList.isNotEmpty) {
+    index+=4;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1) + (index - 3).toString()).setText("Dana/Düve Sayısı");
+        sheet.getRangeByName(getNumForIndex(i*2+1) + (index - 2).toString()).setText("Dana/Düve KG");
+        sheet.getRangeByName(getNumForIndex(i*2+1) + (index - 1).toString()).setText("Dana/Düve KG Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1) + (index).toString()).setText("Dana/Düve Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2) + (index - 3).toString()).setText(tempList[i].toplamSayi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2) + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
-
+  index++;
+  sheet.getRangeByName("A" + index.toString()).setText("Toplam Dana/Düve Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
   tempList = maliyetList.where((element) => element.maliyetTip == 2).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B7").setText(tempList.first.toplamSayi.toString());
-    sheet.getRangeByName("B8").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B9").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B10").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=4;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 3).toString()).setText("Kuzu Sayısı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Kuzu KG");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("Kuzu KG Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Kuzu Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 3).toString()).setText(tempList[i].toplamSayi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Kuzu Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
 
   tempList = maliyetList.where((element) => element.maliyetTip == 3).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B12").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B13").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B14").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=3;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Yem Çuvalı Adedi");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("Çuval Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Yem Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Yem Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 4).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B16").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B17").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B18").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=3;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Tuz Çuvalı Adedi");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("Çuval Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Tuz Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Tuz Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 5).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B20").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B21").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B22").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=3;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Saman Balyası Adedi");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("Balya Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Saman Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Saman Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 6).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B24").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B25").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B26").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=3;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Yonca Balyası Adedi");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("Balya Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Yonca Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Yonca Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
   tempList = maliyetList.where((element) => element.maliyetTip == 7).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B28").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B29").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B30").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=3;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Pancar Küspesi KG");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("KG Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Pancar Küspesi Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Pancar Küspesi Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
   tempList = maliyetList.where((element) => element.maliyetTip == 8).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B32").setText(tempList.first.adetSayisi.toString());
-    sheet.getRangeByName("B33").setText(tempList.first.adetTutari.toString());
-    sheet.getRangeByName("B34").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index+=3;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 2).toString()).setText("Arpa Küspesi KG");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index - 1).toString()).setText("KG Fiyatı");
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + (index).toString()).setText("Arpa Küspesi Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 2).toString()).setText(tempList[i].adetSayisi.toString());
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index - 1).toString()).setText(getMoneyString(tempList[i].adetTutari));
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + (index).toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Arpa Küspesi Maliyeti :");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
   tempList = maliyetList.where((element) => element.maliyetTip == 9).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B36").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Bakıcı Maaşı");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Bakıcı Maaşı Ücreti:");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 10).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B37").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Elektrik Faturasu");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Elektrik Faturası");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 11).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B38").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Kasap Ücreti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Kasap Ücreti");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 12).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B39").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Çalışan Ücreti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Çalışanlara Ödenen Toplam Tutar");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 13).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B40").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Ambalajcı Ücreti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Ambalajcıya Ödenen Toplam Tutar");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 14).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B41").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Sucuk, Ekmek, Ayran, Su Maliyeti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Sucuk, Ekmek, Ayran, Su Maliyeti");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 15).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B42").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Traktör Mazot Ücreti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Traktör Mazot Ücreti");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 16).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B43").setText(tempList.first.toplamTutar.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Traktör Bakım Ücreti");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Traktör Bakım Ücreti");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
+
+
+
   tempList = maliyetList.where((element) => element.maliyetTip == 17).toList();
-  if (maliyetList.isNotEmpty) {
-    sheet.getRangeByName("B45").setText(tempList.first.toplamTutar.toString());
-    sheet.getRangeByName("B46").setText(tempList.first.aciklama.toString());
+  total =0;
+   if (tempList.isNotEmpty) {
+     index++;
+    for(int i=0; i<tempList.length;i++){
+        sheet.getRangeByName(getNumForIndex(i*2+1)  + index.toString()).setText("Extra Maliyet");
+        sheet.getRangeByName(getNumForIndex(i*2+2)  + index.toString()).setText(getMoneyString(tempList[i].toplamTutar));
+        total += tempList[i].toplamTutar; 
+        sheet.autoFitColumn(i*2+1);
+    }
   }
+  index++;
+  sheet.getRangeByName("A"+ index.toString()).setText("Toplam Extra Maliyetler");
+  sheet.getRangeByName("B"+ index.toString()).setText(getMoneyString(total));
+  index++;
 
   sheet.autoFitColumn(1);
   sheet.autoFitColumn(2);
