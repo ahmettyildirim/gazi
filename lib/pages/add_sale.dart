@@ -173,7 +173,7 @@ class _AddSaleState extends State<AddSale> {
                 _kurbanSubTip != 0
                     ? _getKotra(screenWidth, screenHeight)
                     : Center(),
-                ![6].contains(_kurbanSubTip)
+                ![6, 5].contains(_kurbanSubTip)
                     ? Center()
                     : _getAdet(screenWidth, screenHeight),
                 ![4].contains(_kurbanSubTip)
@@ -494,11 +494,11 @@ class _AddSaleState extends State<AddSale> {
       padding: EdgeInsets.only(
           left: screenHeight / 30, right: screenHeight / 30, top: 5),
       child: TextFormField(
-        validator: _requiredValidator,
-        keyboardType: TextInputType.number,
-        controller: _adetController,
-        decoration: InputDecoration(labelText: 'Adet'),
-      ),
+          validator: _requiredValidator,
+          keyboardType: TextInputType.number,
+          controller: _adetController,
+          decoration: InputDecoration(labelText: 'Adet'),
+          onChanged: calculateTotal),
     );
   }
 
@@ -702,6 +702,11 @@ class _AddSaleState extends State<AddSale> {
     } else if (_kurbanSubTip == 6) {
       setState(() {
         _totalAmountController.text = (adet * amount).toString();
+      });
+      getRemainingAmount(val);
+    } else if (_kurbanSubTip == 5) {
+      setState(() {
+        _totalAmountController.text = (adet * kg * kgAmount).toString();
       });
       getRemainingAmount(val);
     } else {
@@ -919,6 +924,7 @@ class _AddSaleState extends State<AddSale> {
       case 1:
       case 2:
       case 5:
+        text += "Adet - ${saleModel.adet}\n";
         text += saleModel.kg != 0 ? "KG - ${saleModel.kg}\n" : "";
         text += "KG Birim Fiyatı - ${getMoneyString(saleModel.kgAmount)}\n";
         text += saleModel.generalAmount != 0

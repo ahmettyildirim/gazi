@@ -39,9 +39,20 @@ String getImagePath(int index) {
 }
 
 String getMainText(List<SaleModel> values, int index) {
-  String totalSaleAmount = index != 6
-      ? values.length.toString()
-      : getKucukKurbanAdet(values).toString();
+  String totalSaleAmount = "";
+  switch (index) {
+    case 4:
+      totalSaleAmount = getHisseKurbanAdet(values).toString();
+      break;
+    case 5:
+    case 6:
+      totalSaleAmount = getKucukKurbanAdet(values).toString();
+      break;
+    default:
+      totalSaleAmount = values.length.toString();
+      break;
+  }
+
   String totalPaidAmount = values
       .toList()
       .fold(
@@ -120,9 +131,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                 (element) => element.kurbanSubTip == index + 1)
                             .toList();
                         return GestureDetector(
-                          onTap: (){
-                            
-                          },
+                          onTap: () {},
                           child: ListTile(
                             dense: false,
                             leading: CircleAvatar(
@@ -219,8 +228,16 @@ String? _passwordValidator(String? text) {
 }
 
 int getKucukKurbanAdet(List<SaleModel> list) {
-  return list.where((element) => element.kurbanSubTip == 6).toList().fold(
+  return list.where((element) => element.kurbanTip == 2).toList().fold(
       0,
       (previousValue, element) =>
-          int.parse(previousValue.toString()) + element.adet);
+          int.parse(previousValue.toString()) +
+          (element.adet != 0 ? element.adet : 1));
+}
+
+int getHisseKurbanAdet(List<SaleModel> list) {
+  return list.where((element) => element.kurbanSubTip == 4).toList().fold(
+      0,
+      (previousValue, element) =>
+          int.parse(previousValue.toString()) + element.hisseNum);
 }

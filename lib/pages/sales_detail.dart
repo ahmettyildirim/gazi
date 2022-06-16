@@ -172,10 +172,27 @@ class _SaleDetailsState extends State<SaleDetails> {
     await launch(launchUri.toString());
   }
 
+  Future<void> checkKesimSaati(BuildContext context) async {
+    String _kesimSaati =
+        getKesimSaati(widget.sale.kurbanTip, widget.sale.kurbanNo);
+    if (widget.sale.kesimSaati.toString() != _kesimSaati) {
+      bool response = await askPrompt(context,
+          message:
+              "Kesim saati güncellendi. Yeni saati ($_kesimSaati) kaydetmek ve müşteriye günceleme mesajı göndermek ister misiniz?",
+          title: "Kesim Saati Güncelleme");
+      if (response) {
+        String whatsAppText =
+            "**GAZİ ET MANGAL ÇİFTLİĞİ**\nKurban kesim saatini ${_kesimSaati.replaceAll(":", "-")} olarak güncellemiştir. Bilgilerinize sunarız.";
+        launchWhatsApp(num: widget.sale.customer.phone, text: whatsAppText);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     String formattedDate = getFormattedDate(widget.sale.createTime);
+    Future.delayed(Duration.zero, () => checkKesimSaati(context));
     return Scaffold(
         appBar: AppBar(
           title: Text("Satış Detayı"),
@@ -237,7 +254,7 @@ class _SaleDetailsState extends State<SaleDetails> {
                         "Cins", getBuyukKurbanCins(widget.sale.buyukKurbanTip))
                     : Center(),
                 getRowInfo("Kotra No", widget.sale.kotraNo.toString()),
-                widget.sale.kurbanSubTip == 6
+                [5, 6].contains(widget.sale.kurbanSubTip)
                     ? getRowInfo("Adet", widget.sale.adet.toString())
                     : Center(),
                 [0, 3, 4, 6].contains(widget.sale.kurbanSubTip)

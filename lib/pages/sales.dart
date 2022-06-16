@@ -32,6 +32,7 @@ String getImagePath(int index) {
 
 class _SalesListState extends State<SalesList> {
   final _nameController = TextEditingController();
+  final _createUserController = TextEditingController();
   String _searchText = "";
   int _searchIndex = 0;
   //0 tarih yeniden eskiye, 1 tarih eskiden yeniye, 2 kurban no küçükten büyüğe/ 3 kurban no büyükten küçüğe
@@ -51,6 +52,17 @@ class _SalesListState extends State<SalesList> {
         });
       }
     });
+    _createUserController.addListener(() {
+      if (_createUserController.text.isEmpty) {
+        setState(() {
+          filterModel.createUser = "";
+        });
+      } else {
+        setState(() {
+          filterModel.createUser = _createUserController.text;
+        });
+      }
+    });
   }
 
   Future<FilterModel> showFilterDialog(BuildContext context) async {
@@ -64,6 +76,17 @@ class _SalesListState extends State<SalesList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    TextField(
+                        keyboardType: TextInputType.numberWithOptions(
+                            decimal: true, signed: true),
+                        controller: _createUserController,
+                        decoration:
+                            InputDecoration(labelText: "Satış Yapan Kişi "),
+                        style: TextStyle(
+                            fontSize: 14, height: 0.5, color: Colors.black)),
+                    Divider(
+                      height: 5.0,
+                    ),
                     CheckboxListTile(
                       dense: true,
                       activeColor: Colors.green,
@@ -178,6 +201,9 @@ class _SalesListState extends State<SalesList> {
                         });
                       },
                     ),
+                    Divider(
+                      height: 5.0,
+                    ),
                   ],
                 ),
               ),
@@ -188,6 +214,7 @@ class _SalesListState extends State<SalesList> {
                     onPressed: () {
                       setState(() {
                         filterModel.clear();
+                        _createUserController.text = "";
                       });
                       // your code
                     }),
@@ -339,6 +366,10 @@ class _SalesListState extends State<SalesList> {
                     saleValues = getFilteredResults(
                         saleValues, FieldKeys.saleKurbanNo, _searchText);
                   } else {
+                    if (filterModel.createUser.isNotEmpty) {
+                      saleValues = getFilteredResults(saleValues,
+                          FieldKeys.createUser, filterModel.createUser);
+                    }
                     if (filterModel.buyukbasKurbanSelect &&
                         !filterModel.kucukbasKurbanSelect) {
                       saleValues = getFilteredResults(
@@ -471,6 +502,7 @@ class FilterModel {
   bool kucukAyaktanKilo = false;
   bool kucukAyaktan = false;
   bool onlyRemaining = false;
+  String createUser = "";
 
   void clear() {
     this.buyukbasKurbanSelect = false;
@@ -482,5 +514,6 @@ class FilterModel {
     this.kucukAyaktanKilo = false;
     this.kucukAyaktan = false;
     this.onlyRemaining = false;
+    this.createUser = "";
   }
 }
