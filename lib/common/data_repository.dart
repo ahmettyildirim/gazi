@@ -142,6 +142,16 @@ class DataRepository {
   Future<bool> deleteSale(SaleModel sale) async {
     sale.collectionReferenceName = CollectionKeys.salesDeleted;
     await addNewItem(sale);
+    if (sale.kurbanSubTip == 4) {
+      var colReference = _getCurrentDocumentReference(
+          CollectionKeys.hisseKurban, sale.hisseRef);
+      var values = await colReference.get();
+      var data = values.data() as Map<String, dynamic>;
+      int remainingHisse = data[FieldKeys.hisseKurbanRemainingHisse];
+      await colReference.update({
+        FieldKeys.hisseKurbanRemainingHisse: remainingHisse + sale.hisseNum
+      });
+    }
     await _firestore.collection(CollectionKeys.sales).doc(sale.id).delete();
     return true;
   }
