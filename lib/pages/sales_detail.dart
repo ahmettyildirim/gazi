@@ -184,6 +184,8 @@ class _SaleDetailsState extends State<SaleDetails> {
         String whatsAppText =
             "**GAZİ ET MANGAL ÇİFTLİĞİ**\nKurban kesim saatini ${_kesimSaati.replaceAll(":", "-")} olarak güncellemiştir. Bilgilerinize sunarız.";
         launchWhatsApp(num: widget.sale.customer.phone, text: whatsAppText);
+        widget.sale.kesimSaati = _kesimSaati;
+        _repositoryInstance.updateItem(widget.sale);
       }
     }
   }
