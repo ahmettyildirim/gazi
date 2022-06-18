@@ -40,7 +40,6 @@ dependencies:
   flutter_login: ^2.2.1
   font_awesome_flutter: ^9.2.0
   syncfusion_flutter_xlsio: ^19.4.52-beta
-  path_provider: ^2.0.9
   flutter_mailer: ^2.0.1
   open_file: ^3.2.1
   flutter_easyloading: ^3.0.3
