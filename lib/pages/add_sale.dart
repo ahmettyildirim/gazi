@@ -168,9 +168,6 @@ class _AddSaleState extends State<AddSale> {
                 [0, 4].contains(_kurbanSubTip)
                     ? Center()
                     : _getNum(screenWidth, screenHeight),
-                _kurbanSubTip != 0
-                    ? _getKesimSaati(screenWidth, screenHeight)
-                    : Center(),
                 ![4].contains(_kurbanSubTip)
                     ? Center()
                     : _getNumForHisse(screenWidth, screenHeight),
