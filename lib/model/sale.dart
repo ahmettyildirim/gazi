@@ -108,11 +108,7 @@ class SaleModel implements GenericModel {
         kotraNo: (json[FieldKeys.saleKotraNo] ?? 0) as int,
         createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
         createUser: json[FieldKeys.createUser] as String,
-        kesimSaati: json[FieldKeys.kesimSaati] != null &&
-                json[FieldKeys.kesimSaati] != ""
-            ? (json[FieldKeys.kesimSaati] as String?)
-            : getKesimSaati(json[FieldKeys.saleKurbanTip] as int,
-                json[FieldKeys.saleKurbanNo] as int),
+        kesimSaati: json[FieldKeys.kesimSaati] as String?,
         isVekalet: (json[FieldKeys.isVekalet] ?? false) as bool,
         customer: CustomerModel.fromJson(json[FieldKeys.customer],
             id: json[FieldKeys.saleCustomerRef] as String),

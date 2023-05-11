@@ -173,8 +173,8 @@ class _SaleDetailsState extends State<SaleDetails> {
   }
 
   Future<void> checkKesimSaati(BuildContext context) async {
-    String _kesimSaati =
-        getKesimSaati(widget.sale.kurbanTip, widget.sale.kurbanNo);
+    String _kesimSaati = await _repositoryInstance.getKesimSaati(
+        widget.sale.kurbanTip, widget.sale.kurbanNo);
     if (widget.sale.kesimSaati.toString() != _kesimSaati) {
       bool response = await askPrompt(context,
           message:

@@ -7,6 +7,7 @@ import 'package:gazi_app/pages/customers.dart';
 import 'package:gazi_app/pages/kurbanlar.dart';
 import 'package:gazi_app/pages/maliyet.dart';
 import 'package:gazi_app/pages/sales.dart';
+import 'package:gazi_app/pages/settings.dart';
 import 'package:gazi_app/pages/summary.dart';
 import 'package:gazi_app/common/excel_helper.dart';
 import 'package:gazi_app/pages/user_create.dart';
@@ -255,6 +256,19 @@ class _HomePageState extends State<HomePage> {
                           builder: (context) =>
                               // BubbleScreen()
                               UserCreatePage()));
+                }),
+            Divider(),
+            ListTile(
+                title: Text("Ayarlar"),
+                trailing: Icon(Icons.settings),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              // BubbleScreen()
+                              SettingsPage()));
                 }),
             Divider(),
             ListTile(

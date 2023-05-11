@@ -9,6 +9,8 @@ import 'package:gazi_app/model/hisse_kurban.dart';
 import 'package:gazi_app/model/payment.dart';
 import 'package:gazi_app/model/sale.dart';
 
+import '../model/settings.dart';
+
 class CollectionKeys {
   static final users = "users";
   static final customers = "customers";
@@ -20,6 +22,7 @@ class CollectionKeys {
   static final hisse = "hisse";
   static final payment = "payment";
   static final maliyet = "maliyet";
+  static final settings = "settings";
 }
 
 class FieldKeys {
@@ -81,6 +84,14 @@ class FieldKeys {
   static final maliyetAdetSayisi = "adet_sayisi";
   static final maliyetAdetTutari = "adet_tutari";
   static final festYear = "fest_year";
+  static final startHour = "startHour";
+  static final startMinute = "startMinute";
+  static final buyukbasEndHour = "buyukbasEndHour";
+  static final buyukbasEndMinute = "buyukbasEndMinute";
+  static final kucukbasEndHour = "kucukbasEndHour";
+  static final kucukbasEndMinute = "kucukbasEndMinute";
+  static final buyukbasNumber = "buyukbasNumber";
+  static final kucukbasNumber = "kucukbasNumber";
 }
 
 var refKotra =
@@ -374,5 +385,67 @@ class DataRepository {
         .snapshots()
         .first;
     return _snapShot.docs.isNotEmpty;
+  }
+
+  Future<String> getKesimSaati(int tip, int kurbanNo) async {
+    var settingsList =
+        await getCollectionReference(CollectionKeys.settings).get();
+    var setting = settingsList.docs[0].data();
+    SettingsModel settings = SettingsModel.fromJson(setting);
+    DateTime date =
+        new DateTime(2022, 1, 1, settings.startHour, settings.startMinute, 0);
+    if (tip == 1) {
+      if (kurbanNo <= 15) {
+        return getFormattedDate(date, format: "HH:mm");
+      } else {
+        date = date.add(Duration(minutes: 40));
+        int num = kurbanNo - 15;
+
+        int minutes = ((settings.buyukbasEndHour - settings.startHour) * 60) +
+            (settings.buyukbasEndMinute - (settings.startMinute + 40));
+        double kesimAralik = minutes / (settings.buyukbasNumber - 15);
+        double addedMinutes = num * kesimAralik;
+        double addedRemainder = addedMinutes.remainder(10);
+        if (addedRemainder > 5) {
+          addedMinutes = addedMinutes + 10 - addedRemainder;
+        } else {
+          addedMinutes = addedMinutes - addedRemainder;
+        }
+        date = date.add(Duration(minutes: addedMinutes.toInt()));
+        return getFormattedDate(date, format: "HH:mm");
+      }
+    } else {
+      if (kurbanNo <= 20) {
+        return getFormattedDate(date, format: "HH:mm");
+      } else {
+        var saleList = await getCollectionReference(CollectionKeys.sales)
+            .where(FieldKeys.festYear, isEqualTo: SystemVariables.currentYear)
+            .where(FieldKeys.saleKurbanTip, isEqualTo: 2)
+            .where(FieldKeys.saleKurbanNo, isLessThan: kurbanNo)
+            .get();
+        var sales = saleList.docs;
+        int count = 0;
+        for (int i = 0; i < saleList.docs.length; i++) {
+          count += saleList.docs[i].data()[FieldKeys.saleAdet] as int;
+        }
+        date = date.add(Duration(minutes: 30));
+
+        int minutes = ((settings.kucukbasEndHour - settings.startHour) * 60) +
+            (settings.kucukbasEndMinute - (settings.startMinute + 20));
+        double kesimAralik = minutes / (settings.kucukbasNumber - 15);
+        double addedMinutes = count * kesimAralik;
+        double addedRemainder = addedMinutes.remainder(10);
+        if (addedRemainder > 5) {
+          addedMinutes = addedMinutes + 10 - addedRemainder;
+        } else {
+          addedMinutes = addedMinutes - addedRemainder;
+        }
+        date = date.add(Duration(minutes: addedMinutes.toInt()));
+
+        // int num = (kurbanNo - 20) ~/ 3;
+        // date = date.add(Duration(minutes: num * 10));
+        return getFormattedDate(date, format: "HH:mm");
+      }
+    }
   }
 }

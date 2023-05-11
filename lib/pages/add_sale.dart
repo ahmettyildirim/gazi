@@ -78,9 +78,10 @@ class _AddSaleState extends State<AddSale> {
   }
 
   void _selectKurban(HisseKurbanModel kurban) {
-    setState(() {
+    setState(() async {
       _saleNoController.text = kurban.kurbanNo.toString();
-      _kesimSaatiController.text = getKesimSaati(1, kurban.kurbanNo);
+      _kesimSaatiController.text =
+          await _repositoryInstance.getKesimSaati(1, kurban.kurbanNo);
       _remainingHisseLabelText =
           "Hisse Sayısı (Kalan Hisse ${kurban.remainingHisse.toString()})";
       _selectedHisse = kurban;
@@ -167,6 +168,9 @@ class _AddSaleState extends State<AddSale> {
                 [0, 4].contains(_kurbanSubTip)
                     ? Center()
                     : _getNum(screenWidth, screenHeight),
+                _kurbanSubTip != 0
+                    ? _getKesimSaati(screenWidth, screenHeight)
+                    : Center(),
                 ![4].contains(_kurbanSubTip)
                     ? Center()
                     : _getNumForHisse(screenWidth, screenHeight),
@@ -377,9 +381,10 @@ class _AddSaleState extends State<AddSale> {
     );
   }
 
-  void _fillKesimSaati(String val) {
+  void _fillKesimSaati(String val) async {
     if (val.isNotEmpty) {
-      _kesimSaatiController.text = getKesimSaati(_kurbanTip, int.parse(val));
+      _kesimSaatiController.text =
+          await _repositoryInstance.getKesimSaati(_kurbanTip, int.parse(val));
     }
   }
 

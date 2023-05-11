@@ -27,7 +27,7 @@ getTotalSales() async {
       .get();
   var saleValues = sales.docs;
   var length = saleValues.length;
-  List<SaleModel> salelist = List.empty(growable: true);
+  List<SaleModel> salelist = List.empty(growable: true); 
   for (int i = 0; i < length; i++) {
     salelist.add(SaleModel.fromJson(saleValues[i].data()));
   }
