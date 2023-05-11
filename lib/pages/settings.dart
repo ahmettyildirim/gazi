@@ -29,8 +29,13 @@ class _SettingsPageState extends State<SettingsPage> {
   var _passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     getSettings();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var screenInfo = MediaQuery.of(context);
     final screenWidth = screenInfo.size.width;
     final screenHeight = screenInfo.size.height;
@@ -51,12 +56,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     controller: _startHourController,
                     decoration:
                         InputDecoration(labelText: "Kesim Başlangıç (Saat)"),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Değer Giriniz';
-                      }
-                      return null;
-                    },
                   ),
                 ),
                 Padding(
@@ -178,7 +177,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             left: screenWidth / 8,
                             right: screenWidth / 8),
                         child: ElevatedButton(
-                            onPressed: _addUser, child: Text("Kaydet"))),
+                            onPressed: _addSetting, child: Text("Kaydet"))),
                   ],
                 )
               ],
@@ -190,11 +189,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   getSettings() async {
+    if (_startHourController.text != '') {
+      return;
+    }
     var sales = await _repositoryInstance
         .getCollectionReference(CollectionKeys.settings)
         .get();
     var setting = sales.docs[0].data();
-    SettingsModel settings = SettingsModel.fromJson(setting);
+    var settings = SettingsModel.fromJson(setting);
     setState(() {
       _startHourController.text = settings.startHour.toString();
       _startMinuteController.text = settings.startMinute.toString();
@@ -207,51 +209,26 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  Future<void> _addUser() async {
-    late FirebaseApp app;
-    try {
-      if (_formKey.currentState!.validate()) {
-        CustomLoader.show();
-        app = await Firebase.initializeApp(
-            name: 'temp', options: Firebase.app().options);
-        var credentials = await FirebaseAuth.instanceFor(app: app)
-            .createUserWithEmailAndPassword(
-                email: _kuzuFinishHourController.text + "@kurban.com",
-                password: _passwordController.text);
+  Future<void> _addSetting() async {
+    var sales = await _repositoryInstance
+        .getCollectionReference(CollectionKeys.settings)
+        .get();
+    var setting = sales.docs[0].data();
+    var settings = SettingsModel.fromJson(setting, id: sales.docs[0].id);
 
-        app.delete();
-        CustomLoader.close();
-        if (credentials.user == null) {
-          EasyLoading.showError("Kullanıcı eklenemedi",
-              maskType: EasyLoadingMaskType.black);
-        } else {
-          EasyLoading.showSuccess("Kullanıcı Eklendi",
-              maskType: EasyLoadingMaskType.black);
-          Navigator.of(context).pop();
-        }
-      }
-    } catch (e) {
-      app.delete();
-      String message = "";
-
-      if (e is FirebaseAuthException) {
-        var code = e.code.toString();
-        switch (code) {
-          case "invalid-email":
-            message = "Geçerli bir mail adresi giriniz";
-            break;
-          case "email-already-in-use":
-            message = "Bu mail adresi kullanımda";
-            break;
-          case "weak-password":
-            message = "Daha güçlü bir şifre giriniz";
-            break;
-          default:
-        }
-      }
-
-      EasyLoading.showError("Kullanıcı eklenemedi\n" + message,
-          maskType: EasyLoadingMaskType.black);
-    }
+    settings.buyukbasEndHour = int.parse(this._danaFinishHourController.text);
+    settings.buyukbasEndMinute =
+        int.parse(this._danaFinishMinuteController.text);
+    settings.buyukbasNumber = int.parse(this._danaNumber.text);
+    settings.kucukbasEndHour = int.parse(this._kuzuFinishHourController.text);
+    settings.kucukbasEndMinute =
+        int.parse(this._kuzuFinishMinuteController.text);
+    settings.kucukbasNumber = int.parse(this._kuzuNumber.text);
+    settings.startHour = int.parse(this._startHourController.text);
+    settings.startMinute = int.parse(this._startMinuteController.text);
+    await _repositoryInstance.updateItem(settings);
+    CustomLoader.close();
+    EasyLoading.showSuccess("Ayarlar Güncellendi",
+        maskType: EasyLoadingMaskType.black);
   }
 }

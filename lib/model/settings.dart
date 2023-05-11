@@ -14,7 +14,7 @@ class SettingsModel implements GenericModel {
   int kucukbasEndMinute;
   int buyukbasNumber;
   int kucukbasNumber;
-  late String collectionReferenceName;
+  late String collectionReferenceName = CollectionKeys.settings;
   late DateTime? createTime;
   late String? createUser;
 
@@ -29,6 +29,7 @@ class SettingsModel implements GenericModel {
     this.kucukbasNumber, {
     this.createTime,
     this.createUser,
+    this.id = "",
   }) {
     this.colRef =
         DataRepository.instance.getCollectionReference(CollectionKeys.settings);
@@ -36,17 +37,17 @@ class SettingsModel implements GenericModel {
 
   factory SettingsModel.fromJson(Map<dynamic, dynamic> json, {String id = ""}) {
     return SettingsModel(
-      json["startHour"] as int,
-      json["startMinute"] as int,
-      json["buyukbasEndHour"] as int,
-      json["buyukbasEndMinute"] as int,
-      json["buyukbasNumber"] as int,
-      json["kucukbasEndHour"] as int,
-      json["kucukbasEndMinute"] as int,
-      json["kucukbasNumber"] as int,
-      createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
-      createUser: json[FieldKeys.createUser] as String,
-    );
+        json["startHour"] as int,
+        json["startMinute"] as int,
+        json["buyukbasEndHour"] as int,
+        json["buyukbasEndMinute"] as int,
+        json["buyukbasNumber"] as int,
+        json["kucukbasEndHour"] as int,
+        json["kucukbasEndMinute"] as int,
+        json["kucukbasNumber"] as int,
+        createTime: (json[FieldKeys.createTime] as Timestamp).toDate(),
+        createUser: json[FieldKeys.createUser] as String,
+        id: id);
   }
 
   @override
