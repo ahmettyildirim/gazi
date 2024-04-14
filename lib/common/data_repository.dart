@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gazi_app/common/helper.dart';
 import 'package:gazi_app/model/customer.dart';
@@ -94,8 +93,6 @@ class FieldKeys {
   static final kucukbasNumber = "kucukbasNumber";
 }
 
-var refKotra =
-    FirebaseDatabase.instance.reference().child(CollectionKeys.kotra);
 
 class DataRepository {
   static final DataRepository instance = DataRepository();

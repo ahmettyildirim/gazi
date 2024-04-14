@@ -30,6 +30,36 @@ class SystemVariables {
   }
 }
 
+String getKesimSaati(int tip, int kurbanNo) {
+  DateTime date = new DateTime(2023, 1, 1, 7, 20, 0);
+  if (tip == 1) {
+    if (kurbanNo <= 15) {
+      return getFormattedDate(date, format: "HH:mm");
+    } else {
+      date = date.add(Duration(minutes: 40));
+      int num = kurbanNo - 15;
+      double addedMinutes = num * 6.7;
+      double addedRemainder = addedMinutes.remainder(10);
+      if (addedRemainder > 5) {
+        addedMinutes = addedMinutes + 10 - addedRemainder;
+      } else {
+        addedMinutes = addedMinutes - addedRemainder;
+      }
+      date = date.add(Duration(minutes: addedMinutes.toInt()));
+      return getFormattedDate(date, format: "HH:mm");
+    }
+  } else {
+    if (kurbanNo <= 20) {
+      return getFormattedDate(date, format: "HH:mm");
+    } else {
+      date = date.add(Duration(minutes: 30));
+      int num = (kurbanNo - 20) ~/ 3;
+      date = date.add(Duration(minutes: num * 10));
+      return getFormattedDate(date, format: "HH:mm");
+    }
+  }
+}
+
 String validateName(String value) {
   String pattern = r'(^[a-zA-Z ]*$)';
   RegExp regExp = new RegExp(pattern);
