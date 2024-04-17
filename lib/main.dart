@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gazi_app/common/custom_animation.dart';
 import 'package:provider/provider.dart';
 import 'common/authentiacation.dart';
@@ -48,14 +47,6 @@ class MyApp extends StatelessWidget {
         }
       },
       child: MaterialApp(
-          localizationsDelegates: [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('tr', '')
-          ],
           debugShowCheckedModeBanner: false,
           title: 'Gazi Et Mangal',
           theme: ThemeData(
